@@ -52,6 +52,22 @@ class Gridable_Admin {
 		$this->version = $version;
 	}
 
+	function add_media_button( $editor_id ) {
+		// Setup the icon - currently using a dashicon
+		$icon = '<span class="wp-media-buttons-icon dashicons dashicons-layout" style="font-size:16px;margin-top:-2px;"></span>';
+
+		printf( '<a href="#" class="button gridable-insert-row-button" id="%s" data-editor="%s" title="%s">%s %s</a>',
+			'gradable-add-row-button',
+			esc_attr( $editor_id ),
+			esc_attr__( 'Add Row', 'gridable' ),
+			$icon,
+			__( 'Add Row', 'gridable' )
+		);
+
+		wp_enqueue_script( 'gridable-editor', plugin_dir_url( __FILE__ ) . 'js/admin-editor.js', array( 'jquery' ), $this->version, true );
+
+	}
+
 	function wp_print_grider_tinymce_templates() {
 		$row_classes = array(
 			'pixcode',

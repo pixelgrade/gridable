@@ -151,6 +151,9 @@ class Gridable {
 
 		$plugin_admin = new Gridable_Admin( $this->get_gridable(), $this->get_version() );
 
+
+		add_action( 'media_buttons', array( $plugin_admin, 'add_media_button' ), 15 );
+
 		add_filter( 'mce_external_plugins', array( $plugin_admin, 'add_grider_tinymce_plugin' ) );
 		add_action( 'admin_footer', array( $plugin_admin, 'wp_print_grider_tinymce_templates' ) );
 
