@@ -66,9 +66,9 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-gridable.php';
  * @since    1.0.0
  */
 function run_gridable() {
-
-	$plugin = new Gridable();
-	$plugin->run();
+	global $gridable_plugin;
+	$gridable_plugin = new Gridable();
+	$gridable_plugin->run();
 
 }
 run_gridable();

@@ -1,0 +1,40 @@
+.row.gridable-mceItem {
+	background: #ebebeb;
+	border-top: 1px solid #333;
+	border-bottom: 1px solid #333;
+}
+
+.col.gridable-mceItem {
+	background: #e3e3e3;
+	border-left: 1px solid #333;
+
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+
+.col.gridable-mceItem:last-child {
+	border-right: 1px solid #333;
+}
+// The Grid
+
+[data-gridable-row] {
+	display: flex;
+	flex-flow: row wrap;
+}
+
+[data-sh-col-attr-size] {
+	flex: 0 0 100%;
+}
+
+@for $i from 1 through 6 {
+	[data-sh-col-attr-size="#{2*$i}"] {
+		flex-basis: percentage($i/6)
+	}
+}
+
+[data-sh-col-attr-size] {
+	box-sizing: border-box;
+	background: #EEE;
+	padding: 10px;
+}

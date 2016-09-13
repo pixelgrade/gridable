@@ -11,8 +11,17 @@
 
 		shortcode += '<p>[/row]</p>';
 
-		console.debug(shortcode);
-		wp.media.editor.insert(shortcode);
+		console.log(shortcode);
+		shortcode = wpAutoP( shortcode );
+		console.log(shortcode);
+		wp.media.editor.insert( shortcode );
 	});
+
+	var wpAutoP = function ( content ) {
+		if ( switchEditors && switchEditors.wpautop ) {
+			content = switchEditors.wpautop(content);
+		}
+		return content;
+	};
 
 })( jQuery );

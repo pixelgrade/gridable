@@ -67,7 +67,7 @@ class Gridable_Public {
 			$size =  $atts['size'];
 		}
 
-		$size = apply_filters('wpig_sh_col_attr_size', $size); ?>
+		$size = apply_filters('gridable_sh_col_attr_size', $size); ?>
 		<div class="col-12  hand-span-<?php echo $size; ?>">
 			<?php echo $content ?>
 		</div>

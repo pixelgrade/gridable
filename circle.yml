@@ -1,0 +1,80 @@
+machine:
+  timezone:
+    Europe/Copenhagen
+  node:
+    version: 6.5.0
+
+  php:
+    version: 5.3.3
+
+  # This will be added to the `/etc/hosts` file
+  hosts:
+    gridable.dev: 127.0.0.1
+
+general:
+  branches:
+    only:
+      - master
+
+dependencies:
+  # we automatically cache and restore many dependencies between
+  # builds. If you need to, you can add custom paths to cache:
+  cache_directories:
+    - "~/gridable/node_modules" # relative to the user's home directory
+    - "~/gridable/wordpress/wp-content/plugins/gridable/node_modules" # relative to the user's home directory
+
+  pre:
+    - npm install gulp -g
+
+    # No password is required for the MySQL user `ubuntu`
+    - mysql -u ubuntu -e "create database wordpress"
+
+    # Use cURL to fetch WP-CLI
+    - curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+
+    # Make sure WP-CLI is executable
+    - chmod +x wp-cli.phar
+
+    # Download WordPress into `wordpress` directory
+    - ./wp-cli.phar core download --allow-root --path=wordpress
+
+    # Generate `wp-config.php` file
+    - ./wp-cli.phar core config --allow-root --dbname=wordpress --dbuser=ubuntu --dbhost=localhost --path=wordpress
+
+    # Install WordPress
+    - ./wp-cli.phar core install --allow-root --admin_name=admin --admin_password=admin --admin_email=admin@example.com --url=http://gridable.dev:8080 --title=WordPress --path=wordpress
+
+    - ./wp-cli.phar plugin install jetpack --activate --path=wordpress
+
+    - ./wp-cli.phar plugin install customify --activate --path=wordpress
+
+    # Clonse WP Pusher plugin from GitHub
+    #- git clone git@github.com:pixelgrade/gridable.git wordpress/wp-content/plugins/gridable -b 39-phpunit
+    # or better ...move this build inside the wordpress plugins folder
+    - cd ../; rsync -av --exclude='gridable/wordpress' gridable gridable/wordpress/wp-content/plugins
+
+    - cd wordpress/wp-content/plugins/gridable; npm install; gulp server
+
+    # And use WP-CLI to activate it
+    #- ./wp-cli.phar theme activate gridable --path=wordpress
+
+    - tests/install-wp-tests.sh wordpress_test ubuntu '' localhost latest
+
+  post:
+    # Copy Apache conf into `site-available`
+    - cp ~/gridable/tests/apache-ci.conf /etc/apache2/sites-available
+
+    # Use `a2ensite` to create a symlink for the config
+    - a2ensite apache-ci.conf
+
+    # Restart the Apache server
+    - sudo service apache2 restart
+
+test:
+  override:
+    - mkdir -p $CIRCLE_TEST_REPORTS/phpunit
+
+    # This is just for us to see that the WP Pusher plugin was actually installed and is active
+    - ./wp-cli.phar plugin list --path=wordpress
+    # Finally, run our Behat features
+    - cd wordpress/wp-content/plugins/gridable/tests; phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit.xml

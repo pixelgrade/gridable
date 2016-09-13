@@ -151,12 +151,12 @@ class Gridable {
 
 		$plugin_admin = new Gridable_Admin( $this->get_gridable(), $this->get_version() );
 
-
 		add_action( 'media_buttons', array( $plugin_admin, 'add_media_button' ), 15 );
 
 		add_filter( 'mce_external_plugins', array( $plugin_admin, 'add_grider_tinymce_plugin' ) );
 		add_action( 'admin_footer', array( $plugin_admin, 'wp_print_grider_tinymce_templates' ) );
 
+		// also inside the wp-editor we cannot localize parameters, so we simply output the javascript code
 		add_action( 'admin_head', array( $plugin_admin, 'my_add_styles_admin' ) );
 	}
 
@@ -171,7 +171,7 @@ class Gridable {
 
 		$plugin_public = new Gridable_Public( $this->get_gridable(), $this->get_version() );
 
-		add_filter( 'wpig_sh_col_attr_size', array( $plugin_public, 'mce_sh_col_size_classes' ) );
+		add_filter( 'gridable_sh_col_attr_size', array( $plugin_public, 'mce_sh_col_size_classes' ) );
 
 		add_shortcode( 'col', array( $plugin_public, 'add_column_shortcode' ) );
 		add_shortcode( 'row', array( $plugin_public, 'add_row_shortcode' ) );

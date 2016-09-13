@@ -27,7 +27,7 @@ class Gridable_Admin {
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @var      string    $gridable    The ID of this plugin.
+	 * @var      string $gridable The ID of this plugin.
 	 */
 	private $gridable;
 
@@ -36,7 +36,7 @@ class Gridable_Admin {
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @var      string    $version    The current version of this plugin.
+	 * @var      string $version The current version of this plugin.
 	 */
 	private $version;
 
@@ -44,12 +44,13 @@ class Gridable_Admin {
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
-	 * @param      string    $gridable       The name of this plugin.
-	 * @param      string    $version    The version of this plugin.
+	 *
+	 * @param      string $gridable The name of this plugin.
+	 * @param      string $version The version of this plugin.
 	 */
 	public function __construct( $gridable, $version ) {
 		$this->gridable = $gridable;
-		$this->version = $version;
+		$this->version  = $version;
 	}
 
 	function add_media_button( $editor_id ) {
@@ -64,8 +65,16 @@ class Gridable_Admin {
 			__( 'Add Row', 'gridable' )
 		);
 
+		/**
+		 * Enqueue the editor script only when there is an editor on page.
+		 * We ditch `admin_enqueue_scripts` intentionally since the editor can appear on non-edit pages like theme options
+		 */
 		wp_enqueue_script( 'gridable-editor', plugin_dir_url( __FILE__ ) . 'js/admin-editor.js', array( 'jquery' ), $this->version, true );
 
+		global $editor_styles;
+		$editor_styles = array_merge( $editor_styles, array(
+			plugin_dir_url( __FILE__ ) . 'css/editor-style.css'
+		) );
 	}
 
 	function wp_print_grider_tinymce_templates() {
@@ -77,84 +86,47 @@ class Gridable_Admin {
 		$col_classes = array(
 			'grid__item'
 		); ?>
-		<script type="text/html" id="tmpl-wpig-grider-row">
-			<div class="{{data.classes}} <?php echo join( ' ', apply_filters( 'wpig_mce_sh_row_classes', $row_classes ) );?>" {{data.atts}} data-mce-resize="false" data-mce-placeholder="1">
+		<script type="text/html" id="tmpl-gridable-grider-row">
+			<div
+				class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_row_classes', $row_classes ) ); ?>"
+				{{data.atts}} data-gridable-row="1" data-mce-resize="false" data-mce-placeholder="1">
 				{{{data.content}}}
 			</div>
 		</script>
 
-		<script type="text/html" id="tmpl-wpig-grider-col">
-			<div class="{{data.classes}} <?php echo join( ' ', apply_filters( 'wpig_mce_sh_col_classes', $col_classes ) );?>" {{data.atts}} data-mce-resize="false" data-mce-placeholder="1">
+		<script type="text/html" id="tmpl-gridable-grider-col">
+			<div
+				class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_col_classes', $col_classes ) ); ?>"
+				{{data.atts}} data-mce-resize="false" data-mce-placeholder="1">
 				<p>{{{data.content}}}</p>
 			</div>
 		</script>
 	<?php }
 
-
 	function add_grider_tinymce_plugin( $plugin_array ) {
-
-		$plugin_array['wpig_grider'] =  plugin_dir_url( __FILE__ ) . 'js/gridable.js';
+		$plugin_array['interact'] = plugin_dir_url( __FILE__ ) . 'js/interact.js';
+		$plugin_array['gridable'] = plugin_dir_url( __FILE__ ) . 'js/gridable.js';
 
 		return $plugin_array;
 	}
 
 	function my_add_styles_admin() {
 		global $current_screen;
-		$type = $current_screen->post_type;
 
-		if ( is_admin()) { ?>
+		if ( is_admin() ) { ?>
 			<script type="text/javascript">
-				var gridable_sh_col_classes = JSON.parse( '<?php echo json_encode( apply_filters( 'wpig_sh_col_attr_size', array() ) ) ?>' );
+
+				var gridable_params = {
+					sh_col_classes: JSON.parse('<?php echo json_encode( apply_filters( 'gridable_sh_col_attr_size', array() ) ) ?>'),
+					l10n: JSON.parse('<?php echo json_encode( apply_filters( 'gridable_editor_l10n_labels', array(
+						'remove_row' => esc_html__( 'Remove Row', 'gridable' ),
+						'edit_row' => esc_html__( 'Edit Row', 'gridable' ),
+						'add_column' => esc_html__( 'Add Column', 'gridable' ),
+						'new_column_content' => esc_html__( 'The new column', 'gridable' ),
+					) ) ) ?>')
+				};
 			</script>
 			<?php
 		}
 	}
-
-//	/**
-//	 * Register the stylesheets for the admin area.
-//	 *
-//	 * @since    1.0.0
-//	 */
-//	public function enqueue_styles() {
-//
-//		/**
-//		 * This function is provided for demonstration purposes only.
-//		 *
-//		 * An instance of this class should be passed to the run() function
-//		 * defined in Gridable_Loader as all of the hooks are defined
-//		 * in that particular class.
-//		 *
-//		 * The Gridable_Loader will then create the relationship
-//		 * between the defined hooks and the functions defined in this
-//		 * class.
-//		 */
-//
-//		wp_enqueue_style( $this->gridable, plugin_dir_url( __FILE__ ) . 'css/gridable-admin.css', array(), $this->version, 'all' );
-//
-//	}
-//
-//	/**
-//	 * Register the JavaScript for the admin area.
-//	 *
-//	 * @since    1.0.0
-//	 */
-//	public function enqueue_scripts() {
-//
-//		/**
-//		 * This function is provided for demonstration purposes only.
-//		 *
-//		 * An instance of this class should be passed to the run() function
-//		 * defined in Gridable_Loader as all of the hooks are defined
-//		 * in that particular class.
-//		 *
-//		 * The Gridable_Loader will then create the relationship
-//		 * between the defined hooks and the functions defined in this
-//		 * class.
-//		 */
-//
-//		wp_enqueue_script( $this->gridable, plugin_dir_url( __FILE__ ) . 'js/gridable-admin.js', array( 'jquery' ), $this->version, false );
-//
-//	}
-//
-//
 }
