@@ -1,20 +1,18 @@
 .row.gridable-mceItem {
 	background: #ebebeb;
-	border-top: 1px solid #333;
-	border-bottom: 1px solid #333;
+	border: 1px dashed #bbb;
+	padding: 5px;
+	position: relative;
 }
 
 .col.gridable-mceItem {
-	background: #e3e3e3;
-	border-left: 1px solid #333;
+	position: relative;
+	background: #fefefe;
+	border: 1px dashed #bbb;
 
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
-}
-
-.col.gridable-mceItem:last-child {
-	border-right: 1px solid #333;
 }
 // The Grid
 
@@ -38,3 +36,26 @@
 	background: #EEE;
 	padding: 10px;
 }
+
+//.resize_control {
+//	background: #fff;
+//	border: 0;
+//	outline: 0 !important;
+//	cursor: col-resize !important;
+//
+//	display: block;
+//
+//	width: 18px;
+//	height: auto;
+//
+//	top: 5px;
+//	bottom: 5px;
+//
+//	position: absolute;
+//
+//	z-index: 50;
+//	background: url("../icons/icon.png");
+//	background-repeat: no-repeat;
+//	background-position: 0;
+//	background-size: contain;
+//}

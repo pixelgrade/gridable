@@ -1,6 +1,6 @@
 (function () {
 	/**
-	 *
+	 * A TinyMCE plugin which handles the rendering of grid shortcodes
 	 */
 	tinymce.PluginManager.add('gridable', function ( editor, url ) {
 
@@ -9,26 +9,6 @@
 		}
 		var toolbar,
 			l10n = gridable_params.l10n;
-
-
-		function dragMoveListener( event ) {
-			var target = event.target,
-				// keep the dragged position in the data-x/data-y attributes
-				x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
-				y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-			// translate the element
-			target.style.webkitTransform =
-				target.style.transform =
-					'translate(' + x + 'px, ' + y + 'px)';
-
-			// update the posiion attributes
-			target.setAttribute('data-x', x);
-			target.setAttribute('data-y', y);
-		}
-
-		// this is used later in the resizing and gesture demos
-		window.dragMoveListener = dragMoveListener;
 
 		// the bix X button that removes the entre row shortcode
 		editor.addButton('gridable_row_remove', {
@@ -109,30 +89,7 @@
 				node = editor.dom.create('DIV', {}, tmp);
 
 				wrap[0].appendChild(node.children[0]);
-
-				// target elements with the "draggable" class
-				interact( columns[0] )
-					.origin('self')
-					.resizable({
-						onmove: function ( e ) {
-							console.log(e);
-						},
-						// max          : Number,
-						// maxPerElement: Number,
-						// manualStart  : Boolean,
-						// snap         : {/* ... */},
-						// restrict     : {/* ... */},
-						// inertia      : {/* ... */},
-						// autoScroll   : {/* ... */},
-						//
-						// square       : true || false,
-						edges: {
-							top   : false,       // Use pointer coords to check for resize.
-							left  : true,      // Disable resizing from left edge.
-							bottom: false,// Resize if pointer target matches selector
-							right : true    // Resize if pointer target is the given Element
-						}
-					});
+				clearfix();
 			}
 		});
 
@@ -140,7 +97,7 @@
 			if ( editor.wp && editor.wp._createToolbar ) {
 				toolbar = editor.wp._createToolbar([
 					'gridable_add_col',
-					'gridable_edit_row',
+					// 'gridable_edit_row',
 					'gridable_row_remove'
 				]);
 			}
@@ -160,8 +117,10 @@
 			}
 		});
 
-
 		function replaceShortcodes( content ) {
+
+			// first remove s
+			content = removeAutoP(content);
 
 			var new_content = wp.shortcode.replace('row', content, function ( args ) {
 				return getRowTemplate(args);
@@ -171,9 +130,19 @@
 				return getColTemplate(args);
 			});
 
+			new_content = wpAutoP( new_content );
+
 			return new_content;
 		}
 
+		/**
+		 * This function must restore the shortcodes from the rendering state
+		 *
+		 * Since we are handling html we rather create a DOM element and use its innerHTML as parsing method
+		 *
+		 * @param content
+		 * @returns {*|string}
+		 */
 		function restoreShortcodes( content ) {
 
 			if ( typeof( window.QTags ) !== 'undefined' ) {
@@ -181,25 +150,7 @@
 			}
 
 			var div = document.createElement('div');
-
 			div.innerHTML = content;
-
-			// first restore back the row shortcodes
-			var rows = div.querySelectorAll('.row.gridable-mceItem'),
-				to_replaceR = '';
-
-			for ( var indexR = 0; indexR < rows.length; indexR++ ) {
-
-				var row_atts = '';
-
-				if ( typeof rows[indexR].getAttribute('data-sh-attr-cols_nr') !== "null" ) {
-					row_atts += ' cols_nr="' + rows[indexR].getAttribute('data-sh-attr-cols_nr') + '"';
-				}
-
-				to_replaceR = '<p>[row' + row_atts + ']</p>' + rows[indexR].innerHTML + '<p>[/row]</p>';
-
-				content = content.replace(rows[indexR].outerHTML, to_replaceR);
-			}
 
 			var cols = div.querySelectorAll('.col.gridable-mceItem'),
 				to_replaceC = '';
@@ -213,27 +164,120 @@
 				}
 
 				to_replaceC = '<p>[col' + col_atts + ']</p><p>' + cols[indexC].innerHTML + '</p><p>[/col]</p>';
-
-				content = content.replace(cols[indexC].outerHTML, to_replaceC);
+				div.innerHTML = div.innerHTML.replace( cols[indexC].outerHTML , to_replaceC);
 			}
 
-			return content;
+			// first restore back the row shortcodes
+			var rows = div.querySelectorAll('.row.gridable-mceItem'),
+				to_replaceR = '';
+
+			for ( var indexR = 0; indexR < rows.length; indexR++ ) {
+
+				var row_atts = '';
+
+				if ( typeof rows[indexR].getAttribute('data-sh-row-attr-cols_nr') !== "null" ) {
+					row_atts += ' cols_nr="' + rows[indexR].getAttribute('data-sh-row-attr-cols_nr') + '"';
+				}
+
+				to_replaceR = '<p>[row' + row_atts + ']</p>' + rows[indexR].innerHTML + '<p>[/row]</p>';
+
+				div.innerHTML = div.innerHTML.replace(rows[indexR].outerHTML, to_replaceR);
+			}
+
+			return div.innerHTML;
 		}
 
 		editor.on('BeforeSetContent', function ( event ) {
-			event.content = removeAutoP(event.content);
 			event.content = replaceShortcodes(event.content);
-			event.content = wpAutoP(event.content);
 		});
+
+
+		//
+		// editor.on('SetContent', function ( event ) {
+		//
+		// 	var startMovingTheControl = function ( e ) {
+		// 		console.log( 'moving now' );
+		// 		// var new_left = parseInt( e.target.style.left.replace('px', '') ) + e.movementX;
+		// 		// e.target.setAttribute('style', 'left: ' + new_left + 'px;' );
+		// 	};
+		//
+		// 	var gridableControlOnMouseDown = function ( e ) {
+		// 		e.target.parentElement.style.pointerEvents = false;
+		//
+		// 		if ( e.target.className.indexOf('resize_control') > -1 ) {
+		// 			// console.log( 'down');
+		// 			e.target.addEventListener('mousemove', startMovingTheControl );
+		// 		}
+		// 	};
+		//
+		// 	var gridableControlOnMouseUp = function ( e ) {
+		// 		e.target.removeEventListener('mousemove', startMovingTheControl );
+		// 		console.log('remove moving');
+		// 	};
+		//
+		// 	var gridableControlOnMouseOut = function ( ev ) {
+		// 		console.log('remove moving');
+		// 		// console.log('out the FUCK!!!!! of the element');
+		//
+		// 		ev.target.removeEventListener('mousemove', startMovingTheControl );
+		//
+		// 		//this is the original element the event handler was assigned to
+		// 		var e = ev.toElement || ev.relatedTarget;
+		// 		if (e.parentNode == this || e == this) {
+		// 			return;
+		// 		}
+		//
+		// 	};
+		//
+		// 	setTimeout( function (  ) {
+		//
+		// 		var columns = editor.$('.col.gridable-mceItem');
+		//
+		// 		// make each col resizable
+		// 		columns.each(function ( i, column ) {
+		//
+		// 			if ( i < columns.length - 1 ) {
+		//
+		// 				var control_span = document.createElement('span');
+		// 				control_span.classList.add('resize_control');
+		// 				control_span.setAttribute('contenteditable', false );
+		// 				control_span.setAttribute('draggable', true );
+		//
+		// 				var ps = column.getBoundingClientRect();
+		// 				var new_left = ps.width - 5;
+		//
+		// 				// control_span.setAttribute('style', 'left: ' + new_left + 'px;' );
+		// 				control_span.style.left = new_left + 'px';
+		// 				// column.appendChild( control_span );
+		// 				column.parentNode.insertBefore(control_span, column.nextSibling);
+		//
+		// 				editor.dom.bind( control_span, 'mousedown', gridableControlOnMouseDown);
+		// 				editor.dom.bind( control_span, 'mouseup', gridableControlOnMouseUp);
+		// 				// editor.dom.bind( control_span, 'mouseout', gridableControlOnMouseOut);
+		// 			}
+		// 		});
+		// 	}, 600 );
+		// });
+
+		//
+		// editor.on('ObjectResized', function ( e ) {
+		// 	console.log('this was a resize');
+		// });
+		//
+		// editor.on('ObjectSelected', function ( e ) {
+		// 	console.log('this is a resize');
+		// });
 
 		editor.on('PostProcess', function ( event ) {
 			if ( event.content ) {
 				event.content = restoreShortcodes(event.content);
+				// clearfix();
 			}
 		});
 
 		//helper functions
 		function getRowTemplate( args ) {
+
 			var rowSh = wp.template("gridable-grider-row"),
 				atts = get_attrs_string('row', args);
 
@@ -258,6 +302,7 @@
 		/**
 		 * First get all the attributes and save them from cols_nr="4" into `data-attr-sh-cols_nr="4"`
 		 *
+		 * @param tag
 		 * @param atts
 		 * @returns {string}
 		 */
@@ -293,6 +338,17 @@
 				content = switchEditors.pre_wpautop(content);
 			}
 			return content;
+		};
+
+		var clearfix = function (  ) {
+			// if ( switchEditors && switchEditors.wpautop ) {
+			// 	content = switchEditors.wpautop(content);
+			// }
+			// return content;
+
+
+			switchEditors.go( 'content', 'html' );
+			switchEditors.go( 'content', 'tmce' );
 		};
 	});
 })();

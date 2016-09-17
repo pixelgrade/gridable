@@ -71,6 +71,10 @@ class Gridable_Admin {
 		 */
 		wp_enqueue_script( 'gridable-editor', plugin_dir_url( __FILE__ ) . 'js/admin-editor.js', array( 'jquery' ), $this->version, true );
 
+		wp_localize_script( 'gridable-editor', 'gridable_editor_params', array(
+			'new_column_content' => 'New column'
+		) );
+
 		global $editor_styles;
 		$editor_styles = array_merge( $editor_styles, array(
 			plugin_dir_url( __FILE__ ) . 'css/editor-style.css'
@@ -87,24 +91,19 @@ class Gridable_Admin {
 			'grid__item'
 		); ?>
 		<script type="text/html" id="tmpl-gridable-grider-row">
-			<div
-				class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_row_classes', $row_classes ) ); ?>"
-				{{data.atts}} data-gridable-row="1" data-mce-resize="false" data-mce-placeholder="1">
+			<div class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_row_classes', $row_classes ) ); ?>" {{data.atts}} data-gridable-row="1" data-mce-resize="false" data-mce-placeholder="1">
 				{{{data.content}}}
 			</div>
 		</script>
 
 		<script type="text/html" id="tmpl-gridable-grider-col">
-			<div
-				class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_col_classes', $col_classes ) ); ?>"
-				{{data.atts}} data-mce-resize="false" data-mce-placeholder="1">
+			<div class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_col_classes', $col_classes ) ); ?>" {{data.atts}} data-mce-resize="false" data-mce-placeholder="1">
 				<p>{{{data.content}}}</p>
 			</div>
 		</script>
 	<?php }
 
 	function add_grider_tinymce_plugin( $plugin_array ) {
-		$plugin_array['interact'] = plugin_dir_url( __FILE__ ) . 'js/interact.js';
 		$plugin_array['gridable'] = plugin_dir_url( __FILE__ ) . 'js/gridable.js';
 
 		return $plugin_array;
@@ -115,13 +114,12 @@ class Gridable_Admin {
 
 		if ( is_admin() ) { ?>
 			<script type="text/javascript">
-
 				var gridable_params = {
 					sh_col_classes: JSON.parse('<?php echo json_encode( apply_filters( 'gridable_sh_col_attr_size', array() ) ) ?>'),
 					l10n: JSON.parse('<?php echo json_encode( apply_filters( 'gridable_editor_l10n_labels', array(
-						'remove_row' => esc_html__( 'Remove Row', 'gridable' ),
-						'edit_row' => esc_html__( 'Edit Row', 'gridable' ),
-						'add_column' => esc_html__( 'Add Column', 'gridable' ),
+						'remove_row'         => esc_html__( 'Remove Row', 'gridable' ),
+						'edit_row'           => esc_html__( 'Edit Row', 'gridable' ),
+						'add_column'         => esc_html__( 'Add Column', 'gridable' ),
 						'new_column_content' => esc_html__( 'The new column', 'gridable' ),
 					) ) ) ?>')
 				};

@@ -7,21 +7,24 @@
 
 		var shortcode = '<p>[row cols_nr="1"]</p>';
 
-		shortcode += '<p>[col size="12"]</p><p>Our dining atmosphere is casual and comfortable.</p><p>[/col]</p>';
+		shortcode += '<p>[col size="12"]</p><p>' + gridable_editor_params.new_column_content + '</p><p>[/col]</p>';
 
-		shortcode += '<p>[/row]</p>';
+		shortcode += '<p>[/row]</p><p></p><p></p>';
 
-		console.log(shortcode);
-		shortcode = wpAutoP( shortcode );
-		console.log(shortcode);
 		wp.media.editor.insert( shortcode );
+
+		clearfix();
 	});
 
-	var wpAutoP = function ( content ) {
-		if ( switchEditors && switchEditors.wpautop ) {
-			content = switchEditors.wpautop(content);
-		}
-		return content;
+	var clearfix = function (  ) {
+		// if ( switchEditors && switchEditors.wpautop ) {
+		// 	content = switchEditors.wpautop(content);
+		// }
+		// return content;
+
+
+		switchEditors.go( 'content', 'html' );
+		switchEditors.go( 'content', 'tmce' );
 	};
 
 })( jQuery );

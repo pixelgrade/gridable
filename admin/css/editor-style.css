@@ -1,8 +1,6 @@
-.row.gridable-mceItem { background: #ebebeb; border-top: 1px solid #333; border-bottom: 1px solid #333; }
+.row.gridable-mceItem { background: #ebebeb; border: 1px dashed #bbb; padding: 5px; position: relative; }
 
-.col.gridable-mceItem { background: #e3e3e3; border-left: 1px solid #333; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; }
-
-.col.gridable-mceItem:last-child { border-right: 1px solid #333; }
+.col.gridable-mceItem { position: relative; background: #fefefe; border: 1px dashed #bbb; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box; }
 
 [data-gridable-row] { display: -ms-flexbox; display: flex; -ms-flex-flow: row wrap; flex-flow: row wrap; }
 
