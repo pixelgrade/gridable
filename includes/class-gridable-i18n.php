@@ -6,7 +6,7 @@
  * Loads and defines the internationalization files for this plugin
  * so that it is ready for translation.
  *
- * @link       http://example.com
+ * @link       https://pixelgrade.com
  * @since      1.0.0
  *
  * @package    Gridable
@@ -22,7 +22,7 @@
  * @since      1.0.0
  * @package    Gridable
  * @subpackage Gridable/includes
- * @author     Your Name <email@example.com>
+ * @author     PixelGrade <contact@pixelgrade.com>
  */
 class Gridable_i18n {
 

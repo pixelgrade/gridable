@@ -6,7 +6,7 @@
  * A class definition that includes attributes and functions used across both the
  * public-facing side of the site and the admin area.
  *
- * @link       http://example.com
+ * @link       https://pixelgrade.com
  * @since      1.0.0
  *
  * @package    Gridable
@@ -25,7 +25,7 @@
  * @since      1.0.0
  * @package    Gridable
  * @subpackage Gridable/includes
- * @author     Your Name <email@example.com>
+ * @author     PixelGrade <contact@pixelgrade.com>
  */
 class Gridable {
 
@@ -171,10 +171,11 @@ class Gridable {
 
 		$plugin_public = new Gridable_Public( $this->get_gridable(), $this->get_version() );
 
-		add_filter( 'gridable_sh_col_attr_size', array( $plugin_public, 'mce_sh_col_size_classes' ) );
+//		add_filter( 'gridable_sh_col_attr_size', array( $plugin_public, 'mce_sh_col_size_classes' ) );
 
-		add_shortcode( 'col', array( $plugin_public, 'add_column_shortcode' ) );
+		add_action( 'wp_enqueue_scripts', array( $plugin_public, 'enqueue_styles' ) );
 		add_shortcode( 'row', array( $plugin_public, 'add_row_shortcode' ) );
+		add_shortcode( 'col', array( $plugin_public, 'add_column_shortcode' ) );
 	}
 
 	/**

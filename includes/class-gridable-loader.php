@@ -3,7 +3,7 @@
 /**
  * Register all actions and filters for the plugin
  *
- * @link       http://example.com
+ * @link       https://pixelgrade.com
  * @since      1.0.0
  *
  * @package    Gridable
@@ -19,7 +19,7 @@
  *
  * @package    Gridable
  * @subpackage Gridable/includes
- * @author     Your Name <email@example.com>
+ * @author     PixelGrade <contact@pixelgrade.com>
  */
 class Gridable_Loader {
 

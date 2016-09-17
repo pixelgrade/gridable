@@ -3,7 +3,7 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       http://example.com
+ * @link       https://pixelgrade.com
  * @since      1.0.0
  *
  * @package    Gridable
@@ -18,7 +18,7 @@
  *
  * @package    Gridable
  * @subpackage Gridable/admin
- * @author     Your Name <email@example.com>
+ * @author     PixelGrade <contact@pixelgrade.com>
  */
 class Gridable_Admin {
 
@@ -83,8 +83,8 @@ class Gridable_Admin {
 
 	function wp_print_grider_tinymce_templates() {
 		$row_classes = array(
-			'pixcode',
-			'pixcode--grid',
+			'gridable',
+			'gridable--grid',
 			'grid'
 		);
 		$col_classes = array(

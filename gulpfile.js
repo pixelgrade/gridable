@@ -87,6 +87,11 @@ gulp.task( 'build', ['copy-folder'], function() {
 	files_to_remove = [
 		'**/codekit-config.json',
 		'node_modules',
+		'tests',
+		'.travis.yml',
+		'circle.yml',
+		'phpunit.xml.dist',
+		'.sass-cache',
 		'config.rb',
 		'gulpfile.js',
 		'package.json',

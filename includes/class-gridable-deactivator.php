@@ -3,7 +3,7 @@
 /**
  * Fired during plugin deactivation
  *
- * @link       http://example.com
+ * @link       https://pixelgrade.com
  * @since      1.0.0
  *
  * @package    Gridable
@@ -18,7 +18,7 @@
  * @since      1.0.0
  * @package    Gridable
  * @subpackage Gridable/includes
- * @author     Your Name <email@example.com>
+ * @author     PixelGrade <contact@pixelgrade.com>
  */
 class Gridable_Deactivator {
 

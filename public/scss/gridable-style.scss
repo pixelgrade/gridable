@@ -5,22 +5,22 @@
 
 // The Grid
 
-[data-gridable-row] {
+[data-gridable-row], .gridable--row {
 	display: flex;
 	flex-flow: row wrap;
 }
 
-[data-sh-col-attr-size] {
+[data-sh-col-attr-size], .gridable--col {
 	flex: 0 0 100%;
 }
 
 @for $i from 1 through 6 {
-	[data-sh-col-attr-size="#{2*$i}"] {
+	[data-sh-col-attr-size="#{2*$i}"], .hand-span-#{2*$i} {
 		flex-basis: percentage($i/6)
 	}
 }
 
-[data-sh-col-attr-size] {
+[data-sh-col-attr-size], .gridable--col {
 	box-sizing: border-box;
 	background: #EEE;
 	padding: 10px;

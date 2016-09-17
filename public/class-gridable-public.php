@@ -3,7 +3,7 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * @link       http://example.com
+ * @link       https://pixelgrade.com
  * @since      1.0.0
  *
  * @package    Gridable
@@ -18,7 +18,7 @@
  *
  * @package    Gridable
  * @subpackage Gridable/public
- * @author     Your Name <email@example.com>
+ * @author     PixelGrade <contact@pixelgrade.com>
  */
 class Gridable_Public {
 
@@ -54,8 +54,8 @@ class Gridable_Public {
 	}
 
 	public function add_row_shortcode( $atts, $content ) { ?>
-		<div class="pixcode pixcode--row row">
-			<?php echo $content ?>
+		<div class="gridable gridable--row">
+			<?php echo do_shortcode( $content ); ?>
 		</div>
 	<?php }
 
@@ -68,8 +68,8 @@ class Gridable_Public {
 		}
 
 		$size = apply_filters('gridable_sh_col_attr_size', $size); ?>
-		<div class="col-12  hand-span-<?php echo $size; ?>">
-			<?php echo $content ?>
+		<div class="gridable--col  hand-span-<?php echo $size; ?>">
+			<?php echo do_shortcode( $content ); ?>
 		</div>
 	<?php }
 
@@ -93,28 +93,28 @@ class Gridable_Public {
 		return $classes;
 	}
 
-//	/**
-//	 * Register the stylesheets for the public-facing side of the site.
-//	 *
-//	 * @since    1.0.0
-//	 */
-//	public function enqueue_styles() {
-//
-//		/**
-//		 * This function is provided for demonstration purposes only.
-//		 *
-//		 * An instance of this class should be passed to the run() function
-//		 * defined in Gridable_Loader as all of the hooks are defined
-//		 * in that particular class.
-//		 *
-//		 * The Gridable_Loader will then create the relationship
-//		 * between the defined hooks and the functions defined in this
-//		 * class.
-//		 */
-//
-//		wp_enqueue_style( $this->gridable, plugin_dir_url( __FILE__ ) . 'css/gridable-public.css', array(), $this->version, 'all' );
-//
-//	}
+	/**
+	 * Register the stylesheets for the public-facing side of the site.
+	 *
+	 * @since    1.0.0
+	 */
+	public function enqueue_styles() {
+
+		/**
+		 * This function is provided for demonstration purposes only.
+		 *
+		 * An instance of this class should be passed to the run() function
+		 * defined in Gridable_Loader as all of the hooks are defined
+		 * in that particular class.
+		 *
+		 * The Gridable_Loader will then create the relationship
+		 * between the defined hooks and the functions defined in this
+		 * class.
+		 */
+
+		wp_enqueue_style( $this->gridable, plugin_dir_url( __FILE__ ) . 'css/gridable-style.css', array(), $this->version, 'all' );
+
+	}
 //
 //	/**
 //	 * Register the JavaScript for the public-facing side of the site.
