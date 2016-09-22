@@ -118,6 +118,9 @@
 		});
 
 		function replaceShortcodes( content ) {
+			console.group('replace');
+
+			console.log( content );
 
 			// first remove s
 			content = removeAutoP(content);
@@ -131,7 +134,7 @@
 			});
 
 			new_content = wpAutoP( new_content );
-
+			console.groupEnd('replace');
 			return new_content;
 		}
 
@@ -144,7 +147,11 @@
 		 * @returns {*|string}
 		 */
 		function restoreShortcodes( content ) {
+			console.group('restore');
 
+			content = removeAutoP(content);
+
+			console.log( content );
 			if ( typeof( window.QTags ) !== 'undefined' ) {
 				window.QTags.closeAllTags('content');
 			}
@@ -184,6 +191,7 @@
 				div.innerHTML = div.innerHTML.replace(rows[indexR].outerHTML, to_replaceR);
 			}
 
+			console.groupEnd('restore');
 			return div.innerHTML;
 		}
 
@@ -191,8 +199,6 @@
 			event.content = replaceShortcodes(event.content);
 		});
 
-
-		//
 		// editor.on('SetContent', function ( event ) {
 		//
 		// 	var startMovingTheControl = function ( e ) {
@@ -259,7 +265,6 @@
 		// 	}, 600 );
 		// });
 
-		//
 		// editor.on('ObjectResized', function ( e ) {
 		// 	console.log('this was a resize');
 		// });
@@ -271,7 +276,6 @@
 		editor.on('PostProcess', function ( event ) {
 			if ( event.content ) {
 				event.content = restoreShortcodes(event.content);
-				// clearfix();
 			}
 		});
 
@@ -345,7 +349,6 @@
 			// 	content = switchEditors.wpautop(content);
 			// }
 			// return content;
-
 
 			switchEditors.go( 'content', 'html' );
 			switchEditors.go( 'content', 'tmce' );

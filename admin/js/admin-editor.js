@@ -11,9 +11,11 @@
 
 		shortcode += '<p>[/row]</p><p></p><p></p>';
 
+		// switchEditors.go( 'content', 'html' );
 		wp.media.editor.insert( shortcode );
 
-		clearfix();
+		// switchEditors.go( 'content', 'tmce' );
+		// clearfix();
 	});
 
 	var clearfix = function (  ) {
@@ -22,9 +24,6 @@
 		// }
 		// return content;
 
-
-		switchEditors.go( 'content', 'html' );
-		switchEditors.go( 'content', 'tmce' );
 	};
 
 })( jQuery );
