@@ -21,6 +21,7 @@
 }
 
 [data-sh-col-attr-size], .gridable--col {
+	overflow: hidden;
 	box-sizing: border-box;
 	background: #EEE;
 	padding: 10px;

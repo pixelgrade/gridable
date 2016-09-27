@@ -15,4 +15,4 @@
 
 [data-sh-col-attr-size="12"], .hand-span-12 { -ms-flex-preferred-size: 100%; flex-basis: 100%; }
 
-[data-sh-col-attr-size], .gridable--col { box-sizing: border-box; background: #EEE; padding: 10px; }
+[data-sh-col-attr-size], .gridable--col { overflow: hidden; box-sizing: border-box; background: #EEE; padding: 10px; }

@@ -19,3 +19,7 @@ wp-content/plugins/hello.php
 .sass-cache
 node_modules
 
+admin/css/*.map
+public/css/*.map
+
+*.map
