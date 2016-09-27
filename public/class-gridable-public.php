@@ -53,11 +53,14 @@ class Gridable_Public {
 		$this->version = $version;
 	}
 
-	public function add_row_shortcode( $atts, $content ) { ?>
+	public function add_row_shortcode( $atts, $content ) {
+		ob_start(); ?>
 		<div class="gridable gridable--row">
 			<?php echo do_shortcode( $content ); ?>
 		</div>
-	<?php }
+		<?php
+		return ob_get_clean();
+	}
 
 	public function add_column_shortcode( $atts, $content ) {
 
@@ -67,11 +70,14 @@ class Gridable_Public {
 			$size =  $atts['size'];
 		}
 
+		ob_start();
 		$size = apply_filters('gridable_sh_col_attr_size', $size); ?>
 		<div class="gridable--col  hand-span-<?php echo $size; ?>">
 			<?php echo do_shortcode( $content ); ?>
 		</div>
-	<?php }
+		<?php
+		return ob_get_clean();
+	}
 
 	function mce_sh_col_size_classes( $classes ){
 

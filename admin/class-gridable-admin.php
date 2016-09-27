@@ -72,13 +72,20 @@ class Gridable_Admin {
 		wp_enqueue_script( 'gridable-editor', plugin_dir_url( __FILE__ ) . 'js/admin-editor.js', array( 'jquery' ), $this->version, true );
 
 		wp_localize_script( 'gridable-editor', 'gridable_editor_params', array(
-			'new_column_content' => 'New column'
+			'new_column_content' => esc_html__( 'Content', 'gridable' )
 		) );
 
 		global $editor_styles;
-		$editor_styles = array_merge( $editor_styles, array(
-			plugin_dir_url( __FILE__ ) . 'css/editor-style.css'
-		) );
+		if ( ! empty( $editor_styles ) && is_array($editor_styles) ) {
+			$editor_styles = array_merge( $editor_styles, array(
+				plugin_dir_url( __FILE__ ) . 'css/editor-style.css'
+			) );
+		} else {
+			$editor_styles = array(
+				plugin_dir_url( __FILE__ ) . 'css/editor-style.css'
+			);
+		}
+
 	}
 
 	function wp_print_grider_tinymce_templates() {
@@ -90,17 +97,8 @@ class Gridable_Admin {
 		$col_classes = array(
 			'grid__item'
 		); ?>
-		<script type="text/html" id="tmpl-gridable-grider-row">
-			<div class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_row_classes', $row_classes ) ); ?>" {{data.atts}} data-gridable-row="1" data-mce-resize="false" data-mce-placeholder="1">
-				{{{data.content}}}
-			</div>
-		</script>
-
-		<script type="text/html" id="tmpl-gridable-grider-col">
-			<div class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_col_classes', $col_classes ) ); ?>" {{data.atts}} data-mce-resize="false" data-mce-placeholder="1">
-				<p>{{{data.content}}}</p>
-			</div>
-		</script>
+		<script type="text/html" id="tmpl-gridable-grider-row"><div class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_row_classes', $row_classes ) ); ?>" {{data.atts}} data-gridable-row="1" data-mce-resize="false" data-mce-placeholder="1">{{{data.content}}}</div></script>
+		<script type="text/html" id="tmpl-gridable-grider-col"><div class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_col_classes', $col_classes ) ); ?>" {{data.atts}} data-mce-resize="false" data-mce-placeholder="1">{{{data.content}}}</div></script>
 	<?php }
 
 	function add_grider_tinymce_plugin( $plugin_array ) {
@@ -120,7 +118,7 @@ class Gridable_Admin {
 						'remove_row'         => esc_html__( 'Remove Row', 'gridable' ),
 						'edit_row'           => esc_html__( 'Edit Row', 'gridable' ),
 						'add_column'         => esc_html__( 'Add Column', 'gridable' ),
-						'new_column_content' => esc_html__( 'The new column', 'gridable' ),
+						'new_column_content' => esc_html__( 'Content', 'gridable' ),
 					) ) ) ?>')
 				};
 			</script>

@@ -4,26 +4,62 @@
 	// Insert shortcode into TinyMCE
 	$('#gradable-add-row-button').click(function(event) {
 		event.preventDefault();
+		/**
+		 * Create one row shortcode with one column inside
+		 */
 
-		var shortcode = '<p>[row cols_nr="1"]</p>';
+		var column_content = wp.html.string( {
+			tag: 'p',
+			content: gridable_editor_params.new_column_content
+		});
 
-		shortcode += '<p>[col size="12"]</p><p>' + gridable_editor_params.new_column_content + '</p><p>[/col]</p>';
+		var column = wp.html.string({
+			tag: 'div',
+			attrs: {
+				class: "col gridable-mceItem grid__item",
+				"data-sh-col-attr-size": "6",
+				"data-mce-placeholder": "1"
+			},
+			content: column_content
+		});
 
-		shortcode += '<p>[/row]</p><p></p><p></p>';
+		column += wp.html.string({
+			tag: 'div',
+			attrs: {
+				class: "col gridable-mceItem grid__item",
+				"data-sh-col-attr-size": "6",
+				"data-mce-placeholder": "1"
+			},
+			content: column_content
+		});
 
-		// switchEditors.go( 'content', 'html' );
-		wp.media.editor.insert( shortcode );
+		var row = wp.html.string({
+			tag: 'div',
+			attrs: {
+				class: "row gridable-mceItem gridable gridable--grid grid",
+				"data-sh-row-attr-cols_nr": "2",
+				"data-gridable-row": "1",
+				"data-mce-placeholder": "1"
+			},
+			content: column
+		});
 
-		// switchEditors.go( 'content', 'tmce' );
-		// clearfix();
+
+		var brElm = wp.html.string({ tag: 'br'});
+
+		row = row + brElm;
+
+		/**
+		 * Insert the new shortcode in the editor
+		 */
+		wp.media.editor.insert( row );
+
+		function wpAutoP( content ) {
+			if ( switchEditors && switchEditors.wpautop ) {
+				content = switchEditors.wpautop(content);
+			}
+			return content;
+		};
+
 	});
-
-	var clearfix = function (  ) {
-		// if ( switchEditors && switchEditors.wpautop ) {
-		// 	content = switchEditors.wpautop(content);
-		// }
-		// return content;
-
-	};
-
 })( jQuery );
