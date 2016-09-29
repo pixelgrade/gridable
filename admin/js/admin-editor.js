@@ -23,6 +23,13 @@
 			content: column_content
 		});
 
+		var handle = wp.html.string({
+			tag: 'div',
+			attrs: {
+				class: "gridable__handle"
+			}
+		});
+
 		column += wp.html.string({
 			tag: 'div',
 			attrs: {
@@ -30,7 +37,7 @@
 				"data-sh-col-attr-size": "6",
 				"data-mce-placeholder": "1"
 			},
-			content: column_content
+			content: handle + column_content
 		});
 
 		var row = wp.html.string({

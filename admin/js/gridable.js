@@ -239,18 +239,109 @@
 			}
 			// console.debug( div.innerHTML );
 
+			bindResizeHandlers();
+
 			console.groupEnd('restore');
 			return div.innerHTML;
 		}
 
-		editor.on('BeforeSetContent', function ( event ) {
+		function bindResizeHandlers() {
+
+			editor.$( '.gridable' ).each(function (i, grid) {
+
+				var $grid = editor.$( grid ),
+					resizing = false,
+					$next = editor.$(),
+					$prev =	editor.$(),
+					nextWidth,
+					prevWidth,
+					xStart,
+					xLast,
+					xEnd;
+
+				if ( $grid.hasClass( 'gridable--resize-bound' ) ) {
+					return;
+				}
+
+				$grid.addClass( 'gridable--resize-bound' );
+
+				var gridStyle = getComputedStyle( grid ),
+					gridWidth = grid.clientWidth - parseFloat(gridStyle.paddingLeft) - parseFloat(gridStyle.paddingRight),
+					colWidth = gridWidth / 12;
+
+				function updateLoop() {
+
+					if ( ! resizing ) {
+						return;
+					}
+
+					if ( $next.length && $prev.length && typeof xStart !== "unedfined" ) {
+
+						if ( xLast - xStart >= colWidth ) {
+							var nextSpan = parseInt( $next[0].getAttribute('data-sh-col-attr-size'), 10 ),
+								prevSpan = parseInt( $prev[0].getAttribute('data-sh-col-attr-size'), 10 );
+
+							if ( nextSpan != 2 ) {
+								$next[0].setAttribute('data-sh-col-attr-size', nextSpan - 2);
+								$prev[0].setAttribute('data-sh-col-attr-size', prevSpan + 2);
+
+								xStart += 2 * colWidth;
+							}
+						} else if ( xStart - xLast >= colWidth ) {
+							var nextSpan = parseInt( $next[0].getAttribute('data-sh-col-attr-size'), 10 ),
+								prevSpan = parseInt( $prev[0].getAttribute('data-sh-col-attr-size'), 10 );
+
+							if ( prevSpan != 2 ) {
+								$next[0].setAttribute('data-sh-col-attr-size', nextSpan + 2);
+								$prev[0].setAttribute('data-sh-col-attr-size', prevSpan - 2);
+
+								xStart -= 2 * colWidth;
+							}
+						}
+					}
+
+					requestAnimationFrame(updateLoop);
+				}
+
+				$grid.children().children('.gridable__handle').on( 'mousedown', function(e) {
+					e.preventDefault();
+
+					$grid.addClass('grabbing');
+
+					$next = editor.$(e.target).parent();
+					$prev = $next.prev();
+					xStart = e.clientX;
+
+					resizing = true;
+					updateLoop();
+
+					var width = parseInt( $next[0].offsetWidth, 10 ),
+						colNo = Math.round( width / colWidth );
+				});
+
+				$grid.on( 'mousemove', function(e) {
+					xLast = e.clientX;
+				});
+
+				$grid.on( 'mouseup mouseleave', function(e) {
+					$grid.removeClass('grabbing');
+					$next.find( '.gridable__handle' ).css( 'transform', 'translate3d(0,0,0)');
+					xEnd = e.clientX;
+					resizing = false;
+				});
+			});
+		}
+
+		editor.on( 'BeforeSetContent', function ( event ) {
 			event.content = replaceShortcodes(event.content);
+			bindResizeHandlers();
 		});
 
-		editor.on('PostProcess', function ( event ) {
+		editor.on( 'PostProcess', function ( event ) {
 			if ( event.content ) {
 				event.content = restoreShortcodes(event.content);
 			}
+			bindResizeHandlers();
 		});
 
 		/** === Helper functions ==== **/
