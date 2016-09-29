@@ -4,7 +4,6 @@
  */
 
 // The Grid
-
 [data-gridable-row], .gridable--row {
 	display: flex;
 	flex-flow: row wrap;
@@ -23,6 +22,5 @@
 [data-sh-col-attr-size], .gridable--col {
 	overflow: hidden;
 	box-sizing: border-box;
-	background: #EEE;
 	padding: 10px;
 }
