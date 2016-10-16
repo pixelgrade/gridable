@@ -23,13 +23,6 @@
 			content: column_content
 		});
 
-		var handle = wp.html.string({
-			tag: 'div',
-			attrs: {
-				class: "gridable__handle"
-			}
-		});
-
 		column += wp.html.string({
 			tag: 'div',
 			attrs: {
@@ -37,7 +30,7 @@
 				"data-sh-col-attr-size": "6",
 				"data-mce-placeholder": "1"
 			},
-			content: handle + column_content
+			content: column_content
 		});
 
 		var row = wp.html.string({
@@ -50,15 +43,10 @@
 			},
 			content: column
 		});
-
-
-		var brElm = wp.html.string({ tag: 'br'});
-
-		row = row + brElm;
-
 		/**
 		 * Insert the new shortcode in the editor
 		 */
+		console.debug(row);
 		wp.media.editor.insert( row );
 
 		function wpAutoP( content ) {
