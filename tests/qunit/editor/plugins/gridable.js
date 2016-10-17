@@ -22,23 +22,38 @@
 		}
 	});
 
-	test("Test column shortcode set", function() {
-		editor.setContent('[col size="6"]<p>Content</p>[/col]');
-		equal(editor.getContent(), '<p>[col size="6"]</p><p>Content</p><p>[/col]</p>');
-	});
-
+	/**
+	 * Scenario:
+	 * Add a column in the editor and test if it is well wrapped
+	 * Call the render command and test if it is returning the correct markup
+	 */
 	test("Test column render command", function() {
 		editor.setContent('[col size="6"]<p>Content</p>[/col]');
+		equal(editor.getContent(), '<p>[col size="6"]</p><p>Content</p><p>[/col]</p>');
 		editor.execCommand('gridableRender');
 		equal(editor.getContent(), '<div class="col gridable-mceItem  " data-sh-col-attr-size="6" data-mce-placeholder="1"><p>Content</p></div>');
 	});
 
+	/**
+	 * Scenario:
+	 * Set up a rendered column
+	 * Call the restore command
+	 * Check if the result is a correct shortcode
+	 */
 	test("Test column restore command", function() {
 		editor.setContent('<div class="col gridable-mceItem  " data-sh-col-attr-size="6" data-mce-placeholder="1"><p>Content</p></div>');
 		editor.execCommand('gridableRestore');
 		equal(editor.getContent(), '<p>[col size=\"6\"]</p><p>Content</p><p>[/col]</p>');
 	});
 
+	/**
+	 * Scenario
+	 * Setup a column shortcode
+	 * Select the inner content
+	 * Press Enter key
+	 * Test if the result has the right p tags order
+	 * Setup a rendered shortcode and redo the steps aboce
+	 */
 	test("Test column shortcode render and restore after an Enter key is pressed", function() {
 		editor.setContent('[col size="6"]<p>Content</p>[/col]');
 
@@ -59,13 +74,12 @@
 		equal(editor.getContent(), '<p>[col size="6"]</p><p>Cont</p><p>ent</p><p>[/col]</p>');
 	});
 
-	test("Test row shortcode set", function() {
-		editor.setContent('[row cols_nr="2"][col size="6"]<p>Content</p>[/col][col size="6"]<p>Content</p>[/col][/row]');
-		equal(editor.getContent(), '<p>[row cols_nr=\"2\"][col size=\"6\"]</p><p>Content</p><p>[/col][col size=\"6\"]</p><p>Content</p><p>[/col][/row]</p>');
-	});
 
 	test("Test row render command", function() {
 		editor.setContent('[row cols_nr="2"][col size="6"]<p>Content</p>[/col][col size="6"]<p>Content</p>[/col][/row]');
+
+		equal(editor.getContent(), '<p>[row cols_nr=\"2\"][col size=\"6\"]</p><p>Content</p><p>[/col][col size=\"6\"]</p><p>Content</p><p>[/col][/row]</p>');
+
 		editor.execCommand('gridableRender');
 		equal(editor.getContent(), '<div class=\"row gridable-mceItem \" data-sh-row-attr-cols_nr=\"2\" data-gridable-row=\"1\" data-mce-placeholder=\"1\"><div class=\"col gridable-mceItem  \" data-sh-col-attr-size=\"6\" data-mce-placeholder=\"1\"><p>Content</p></div><div class=\"col gridable-mceItem  \" data-sh-col-attr-size=\"6\" data-mce-placeholder=\"1\"><p>Content</p></div></div>');
 	});

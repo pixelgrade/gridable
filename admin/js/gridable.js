@@ -1,6 +1,9 @@
 (function () {
 	/**
 	 * A TinyMCE plugin which handles the rendering of grid shortcodes
+	 * Docs to consider:
+	 * Manager: https://www.tinymce.com/docs/api/tinymce/tinymce.editormanager
+	 * Events: https://www.tinymce.com/docs/api/tinymce/tinymce.editor/#events
 	 */
 	tinymce.PluginManager.add('gridable', function ( editor, url ) {
 		var toolbar,
@@ -228,50 +231,49 @@
 			// console.groupEnd('init');
 		});
 
-		/**
-		 * While pressing enter in editor the cursor should not be allowd the leave the coulmn
-		 */
-		// editor.on('keydown', function ( evt ) {
-		//
-		// 	if ( evt.keyCode == 13 ) { // if Enter is pressed
-		// 		var dom = editor.dom,
-		// 			selection = editor.selection,
-		// 			settings = editor.settings,
-		// 			rng = selection.getRng(true),
-		// 			container = rng.startContainer,
-		// 			parentBlock = dom.getParent(container, dom.isBlock), // Find parent block and setup empty block paddings
-		// 			containerBlock = parentBlock ? dom.getParent(parentBlock.parentNode, dom.isBlock) : null;
-		//
-		// 		// Handle enter in column item
-		// 		if ( typeof parentBlock!== "null"
-		// 		&& dom.isEmpty(parentBlock)
-		// 		&& containerBlock !== null
-		// 		&& typeof containerBlock.tagName !== "undefined"
-		// 		&& "DIV" === containerBlock.tagName
-		// 		&& containerBlock.className.indexOf( "col gridable-mceItem") !== -1 ) {
-		// 			editor.execCommand("InsertLineBreak", false, evt);
-		// 			evt.preventDefault();
-		// 			return false;
-		// 		}
-		// 	}
-		// });
+		editor.on('keydown', function ( evt ) {
+			/**
+			 * While pressing enter in editor the cursor should not be allowd the leave the column
+			 */
+			if ( evt.keyCode == 13 ) { // if Enter is pressed
+				var dom = editor.dom,
+					selection = editor.selection,
+					settings = editor.settings,
+					rng = selection.getRng(true),
+					container = rng.startContainer,
+					parentBlock = dom.getParent(container, dom.isBlock), // Find parent block and setup empty block paddings
+					containerBlock = parentBlock ? dom.getParent(parentBlock.parentNode, dom.isBlock) : null;
+
+				// Handle enter in column item
+				if ( typeof parentBlock!== "null"
+				&& dom.isEmpty(parentBlock)
+				&& containerBlock !== null
+				&& typeof containerBlock.tagName !== "undefined"
+				&& "DIV" === containerBlock.tagName
+				&& containerBlock.className.indexOf( "col gridable-mceItem") !== -1 ) {
+					editor.execCommand("InsertLineBreak", false, evt);
+					evt.preventDefault();
+					return false;
+				}
+			}
+		});
 
 		/**
 		 * Event triggered when the content is set
 		 * Here we replace the shortcodes like [row] with <div class="row">
 		 */
-		// editor.on( 'BeforeSetContent', function ( event ) {
-		// 	// console.group('BeforeSetContent');
-		//
-		// 	if ( ! event.content || 'html' === event.mode ) {
-		// 		return;
-		// 	}
-		//
-		// 	setTimeout(function ( e ) {
-		// 		editor.execCommand( 'gridableRender' );
-		// 	},1000);
-		// 	// console.groupEnd('BeforeSetContent');
-		// });
+		editor.on( 'BeforeSetContent', function ( event ) {
+			// console.group('BeforeSetContent');
+			if ( ! event.content || 'html' === event.mode ) {
+				return;
+			}
+
+			// a little delay to understand what is going up
+			setTimeout(function ( e ) {
+				editor.execCommand( 'gridableRender' );
+			},500);
+			// console.groupEnd('BeforeSetContent');
+		});
 
 		// editor.on( 'GetContent', function ( event ) {
 		// 	console.group('GetContent');
@@ -302,23 +304,30 @@
 		// 	}
 		// });
 
-		// editor.on( 'PostProcess', function ( event ) {
-		//
-		// 	if ( ! event.content || ! event.get ) {
-		// 		return;
-		// 	}
-		//
-		// 	editor.execCommand('gridableRestore');
+		editor.on( 'PostProcess', function ( event ) {
+
+			if ( ! event.content || ! event.get ) {
+				return;
+			}
+
+			editor.execCommand('gridableRestore');
+		});
+
+		// editor.on( 'savecontent', function ( event ) {
+		// 	console.group('savecontent');
+		// editor.execCommand('gridableRestore');
+		// 	console.groupEnd('savecontent');
 		// });
 
 		// editor.on( 'LoadContent', function ( event ) {
 		// 	console.log(' LoadContent');
 		// 	editor.execCommand( 'gridableRender' );
 		// });
-		//
+
 		// editor.on( 'SaveContent', function ( event ) {
 		// 	tinyMCE.execCommand('gridableRestore');
 		// });
+
 		// editor.on( 'PreProcess', function ( event ) {
 		// 	console.log('pre process');
 		// 	console.log(event);
@@ -367,20 +376,24 @@
 		 */
 		editor.addCommand( 'gridableRestore', function() {
 			console.group('gridableRestore');
+
 			// hold all the content inside a HTML element.This way we keep it safe
 			// var content_process = this.dom.create('DIV', {}, event.content);
 			var content_process = this.dom.doc.body;
 
+			// get all the columns inside the editor
 			var columns = content_process.querySelectorAll('.col.gridable-mceItem'),
 				columnReplacement = '';
 
 			for ( var columnIndex = 0; columnIndex < columns.length; columnIndex++ ) {
+				// create a new shortcode string like [col size="6"]
 				var columnReplacement = wp.shortcode.string({
 					tag: 'col',
 					attrs: {size: columns[columnIndex].getAttribute('data-sh-col-attr-size')},
 					content: columns[columnIndex].innerHTML
 				});
 
+				// now replace the column html with the [col] shortcode
 				content_process.innerHTML = content_process.innerHTML.replace(columns[columnIndex].outerHTML, columnReplacement);
 			}
 
@@ -396,9 +409,11 @@
 					content: rows[rowIndex].innerHTML
 				});
 
+				// replace the row html with the shortcode
 				content_process.innerHTML = content_process.innerHTML.replace(rows[rowIndex].outerHTML, rowReplacement);
 			}
 
+			// @TODO find a better way to save the restored content without rendering it
 			// this.dom.setHTML(this.dom.doc.body, content_process.innerHTML, {format: 'raw', no_events: true});
 			this.dom.doc.body.innerHTML = content_process.innerHTML;
 			// this.setContent(content_process.innerHTML, { no_events: true});
@@ -482,6 +497,7 @@
 
 			if ( typeof next !== "undefined" ) {
 
+				// get the HTML template of a column
 				var col = getColTemplate({
 					tag: "col",
 					content: next.shortcode.content,
