@@ -110,7 +110,7 @@ class Gridable_Public {
 		}
 
 		$size = apply_filters( "gridable_sh_{$tag}_attr_size", $size );
-		$class = apply_filters( "gridable_sh_{$tag}_attr_size", "gridable--col  hand-span-" . $size);
+//		$class = apply_filters( "gridable_sh_{$tag}_attr_size", 'gridable--col  hand-span-' . $size);
 
 		if ( ! empty( $class ) ) {
 			$class = "class=" . $class . '"';
@@ -141,7 +141,7 @@ class Gridable_Public {
 		/**
 		 * Template localization between plugin and theme
 		 */
-		$theme_path = apply_filters( 'gridable_theme_templates_path_filter', "templates/gridable/", $tag );
+		$theme_path = apply_filters( 'gridable_theme_templates_path_filter', "template-parts/gridable/", $tag );
 		$theme_path = $theme_path . $tag . '.php';
 		$located    = locate_template( $theme_path, false, false );
 		if ( ! $located ) {
