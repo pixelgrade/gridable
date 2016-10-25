@@ -27,7 +27,7 @@ class Gridable_Public {
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @var      string    $gridable    The ID of this plugin.
+	 * @var      string $gridable The ID of this plugin.
 	 */
 	private $gridable;
 
@@ -36,7 +36,7 @@ class Gridable_Public {
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @var      string    $version    The current version of this plugin.
+	 * @var      string $version The current version of this plugin.
 	 */
 	private $version;
 
@@ -44,44 +44,116 @@ class Gridable_Public {
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
-	 * @param      string    $gridable       The name of the plugin.
-	 * @param      string    $version    The version of this plugin.
+	 *
+	 * @param      string $gridable The name of the plugin.
+	 * @param      string $version The version of this plugin.
 	 */
 	public function __construct( $gridable, $version ) {
-
 		$this->gridable = $gridable;
-		$this->version = $version;
+		$this->version  = $version;
 	}
 
+	/**
+	 * Render the [row]
+	 *
+	 * This function allows themes to overwrite row templates
+	 * in `theme_name/temaplates/gridable/row.php` (filtrable path)
+	 *
+	 * @param $atts
+	 * @param $content
+	 *
+	 * @return string
+	 */
 	public function add_row_shortcode( $atts, $content ) {
-		ob_start(); ?>
-		<div class="gridable gridable--row">
-			<?php echo do_shortcode( $content ); ?>
-		</div>
-		<?php
+		$tag = 'row';
+		$atts = shortcode_atts( array(
+			'cols_nr' => ''
+		), $atts );
+
+		$cols_nr = 1;
+		if ( ! empty( $atts['cols_nr'] ) ) {
+			$cols_nr = (int) $atts['cols_nr'];
+		}
+
+		$class = apply_filters( "gridable_sh_{$tag}_attr_size", "gridable gridable--row" );
+
+		// get sh template
+		$template = $this->get_localed_sh_templated( $tag );
+		// load it
+		ob_start();
+		require $template;
 		return ob_get_clean();
 	}
 
+	/**
+	 * Render the [col]
+	 *
+	 * This function allows themes to overwrite col templates
+	 * in `theme_name/temaplates/gridable/col.php` (filtrable path)
+	 *
+	 * @param $atts
+	 * @param $content
+	 *
+	 * @return string
+	 */
 	public function add_column_shortcode( $atts, $content ) {
+		$tag = 'col';
+
+		$atts = shortcode_atts( array(
+			'size' => ''
+		), $atts );
 
 		$size = 1;
 
 		if ( ! empty( $atts['size'] ) ) {
-			$size =  $atts['size'];
+			$size = (int) $atts['size'];
 		}
 
+		$size = apply_filters( "gridable_sh_{$tag}_attr_size", $size );
+		$class = apply_filters( "gridable_sh_{$tag}_attr_size", "gridable--col  hand-span-" . $size);
+
+		if ( ! empty( $class ) ) {
+			$class = "class=" . $class . '"';
+		}
+
+		// get sh template
+		$template = $this->get_localed_sh_templated( $tag );
+		// load it
 		ob_start();
-		$size = apply_filters('gridable_sh_col_attr_size', $size); ?>
-		<div class="gridable--col  hand-span-<?php echo $size; ?>">
-			<?php echo do_shortcode( $content ); ?>
-		</div>
-		<?php
+		require $template;
 		return ob_get_clean();
 	}
 
-	function mce_sh_col_size_classes( $classes ){
+	/**
+	 * This function will try to return the right template for a given tag
+	 * If the template exists in theme it will have priority
+	 * Else the plugin default from partials will be returned
+	 * @param $tag
+	 *
+	 * @return bool|string
+	 */
+	function get_localed_sh_templated( $tag ) {
 
-		$classes =  array(
+		if ( empty( $tag ) ) {
+			return false;
+		}
+
+		/**
+		 * Template localization between plugin and theme
+		 */
+		$theme_path = apply_filters( 'gridable_theme_templates_path_filter', "templates/gridable/", $tag );
+		$theme_path = $theme_path . $tag . '.php';
+		$located    = locate_template( $theme_path, false, false );
+		if ( ! $located ) {
+			$located =  dirname( __FILE__ ) . '/partials/' . $tag . '.php';
+		}
+
+		return $located;
+	}
+
+	function mce_sh_col_size_classes( $classes ) {
+
+		$classes = array(
 			1  => 'lap-one-twelfth',
 			2  => 'lap-two-twelfths',
 			3  => 'lap-three-twelfths',
