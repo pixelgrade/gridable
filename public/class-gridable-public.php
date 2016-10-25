@@ -110,10 +110,11 @@ class Gridable_Public {
 		}
 
 		$size = apply_filters( "gridable_sh_{$tag}_attr_size", $size );
-//		$class = apply_filters( "gridable_sh_{$tag}_attr_size", 'gridable--col  hand-span-' . $size);
 
-		if ( ! empty( $class ) ) {
-			$class = "class=" . $class . '"';
+		$classes = apply_filters( "gridable_sh_{$tag}_attr_size", array( 'gridable--col', 'hand-span-' . $size ), $size );
+
+		if ( ! empty( $classes ) ) {
+			$class = 'class="' . join( ' ', $classes) . '"';
 		}
 
 		// get sh template
