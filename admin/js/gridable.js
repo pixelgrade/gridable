@@ -97,18 +97,10 @@
 		 * Create the toolbar with the controls for row
 		 */
 		editor.on('wptoolbar', function ( args ) {
-
-			if ( typeof args.element.parentElement !== "undefined" ) {
-				return false;
-			}
-
-			if ( args.element.parentElement.nodeName === 'DIV' && args.element.parentElement.className.indexOf('gridable-mceItem') !== -1 ) {
-				var parent = editor.$(args.element).parents('.row.gridable-mceItem');
-				if ( typeof parent[0] === "undefined" ) {
-					return false;
-				}
+			var column = editor.dom.$(args.element).closest('div.row.gridable-mceItem');
+			if ( column.length > 0 ) {
 				args.toolbar = toolbar;
-				args.selection = parent[0];
+				args.selection = column[0];
 			}
 		});
 
@@ -129,20 +121,24 @@
 		/**
 		 * Whenever the cursor changes it's position the parent may be a grid column, then we need to add handlers
 		 */
-		editor.on( 'NodeChange', function ( event ) {
-			debug = false;
-			var node = editor.selection.getNode(),
-				wrap = editor.dom.$(node).closest('.row.gridable-mceItem');
-
+		editor.on('NodeChange', function ( event ) {
+			if ( 'html' === window.getUserSetting('editor') ) {
+				return;
+			}
+			var wrap = editor.dom.$(event.element).closest('.row.gridable-mceItem');
 			// if the parent is a column: Add resize handlers
 			if ( wrap.length > 0 ) {
-				editor.execCommand( 'gridableAddResize' );
+				editor.execCommand('gridableAddResize');
 			} else { // remove the resize handlers
-				editor.execCommand( 'gridableRemoveResize' );
+				editor.execCommand('gridableRemoveResize');
 			}
 		});
 
 		editor.on('keydown', function ( evt ) {
+			if ( 'html' === window.getUserSetting('editor') ) {
+				return;
+			}
+
 			/**
 			 * While pressing enter in editor the cursor should not be allowd the leave the column
 			 */
@@ -156,12 +152,12 @@
 					containerBlock = parentBlock ? dom.getParent(parentBlock.parentNode, dom.isBlock) : null;
 
 				// Handle enter in column item
-				if ( typeof parentBlock!== "null"
-				&& dom.isEmpty(parentBlock)
-				&& containerBlock !== null
-				&& typeof containerBlock.tagName !== "undefined"
-				&& "DIV" === containerBlock.tagName
-				&& containerBlock.className.indexOf( "col gridable-mceItem") !== -1 ) {
+				if ( typeof parentBlock !== "null"
+					&& dom.isEmpty(parentBlock)
+					&& containerBlock !== null
+					&& typeof containerBlock.tagName !== "undefined"
+					&& "DIV" === containerBlock.tagName
+					&& containerBlock.className.indexOf("col gridable-mceItem") !== -1 ) {
 					editor.execCommand("InsertLineBreak", false, evt);
 					evt.preventDefault();
 					return false;
@@ -173,51 +169,33 @@
 		 * Event triggered when the content is set
 		 * Here we replace the shortcodes like [row] with <div class="row">
 		 */
-		editor.on( 'BeforeSetContent', function ( event ) {
-			// console.group('BeforeSetContent');
-			if ( ! event.content || 'html' === event.mode ) {
+		editor.on('SetContent', function ( event ) {
+			console.group('GetContent');
+			if ( !event.content || 'raw' === event.format || 'savecontent' === event.type ) {
 				return;
 			}
-
-			// a little delay to understand what is going up
-			setTimeout(function ( e ) {
-				editor.execCommand( 'gridableRender' );
-			},500);
-			// console.groupEnd('BeforeSetContent');
+			editor.execCommand('gridableRender');
+			console.groupEnd('GetContent');
 		});
 
 		/**
 		 * When the content is saved we need en ensure that we don't forget resize handlers and rendered shortcodes
 		 */
-		editor.on( 'submit', function ( event ) {
-			editor.execCommand('gridableRemoveResize');
-			editor.execCommand('gridableRestore');
+		editor.on('SaveContent', function ( event ) {
+			// we must ensure we don't forget any handlers in front-end
+			event.content = event.content.replace('/<div class="gridable__handle"></div>/', '');
 		});
 
 		/**
 		 * After we save the content ensure that the shortcodes are rendered back
 		 */
-		editor.on( 'savecontent', function ( event ) {
-			editor.execCommand('gridableRender');
-		});
 
-		editor.on( 'PostProcess', function ( event ) {
-			if ( ! event.content || ! event.get ) {
+		editor.on('PreProcess', function ( event ) {
+			if ( 'html' === window.getUserSetting('editor') ) {
 				return;
 			}
 
-			setTimeout(function(){
-				if ( 'html' === window.getUserSetting('editor') ) {
-
-					var $body = editor.getBody();
-
-					if ( $body.className.indexOf('gridable--resize-handlers-on') !== -1 ) {
-						editor.execCommand('gridableRemoveResize');
-					}
-
-					editor.execCommand('gridableRestore');
-				}
-			},100);
+			editor.execCommand('gridableRestore');
 		});
 
 		/**
@@ -228,9 +206,8 @@
 		 * @param content
 		 * @returns {*}
 		 */
-		editor.addCommand( 'gridableRender', function() {
+		editor.addCommand('gridableRender', function () {
 			console.group('gridableRender');
-
 			var content = this.dom.doc.body.innerHTML;
 
 			if ( typeof content === "undefined" ) {
@@ -241,13 +218,14 @@
 			// content = remove_p_around_shortcodes( content );
 
 			// same for cols
-			content = maybe_replace_columns( content );
+			content = maybe_replace_columns(content);
 
 			// now replace row shortcodes with their HTML if there are any
-			content = maybe_replace_rows( content );
+			content = maybe_replace_rows(content);
 
-			this.setContent(content, { no_events: true});
+			// event.content = content;
 
+			this.dom.doc.body.innerHTML = content;
 			console.groupEnd('gridableRender');
 		});
 
@@ -261,13 +239,19 @@
 		 * @param content
 		 * @returns {*|string}
 		 */
-		editor.addCommand( 'gridableRestore', function() {
+		editor.addCommand('gridableRestore', function () {
 			console.group('gridableRestore');
 
 			// hold all the content inside a HTML element.This way we keep it safe
 			// var content_process = this.dom.create('DIV', {}, event.content);
 			var content_process = this.dom.doc.body,
 				restore_needed = false;
+
+			if ( content_process.className.indexOf('gridable--resize-handlers-on') !== -1 ) {
+				editor.execCommand('gridableRemoveResize');
+			}
+
+			content_process.innerHTML = content_process.innerHTML.replace(/(<p>&nbsp;<\/p>)/gi, '<br />');
 
 			// get all the columns inside the editor
 			var columns = content_process.querySelectorAll('.col.gridable-mceItem'),
@@ -306,7 +290,7 @@
 			if ( restore_needed ) {
 				// @TODO find a better way to save the restored content without rendering it
 				// this.setContent(content_process.innerHTML, { no_events: true});
-				this.getElement().value = content_process.innerHTML;
+				content_process = this.dom.doc.body.innerHTML = content_process.innerHTML;
 			}
 			console.groupEnd('gridableRestore');
 		});
@@ -314,14 +298,14 @@
 		/**
 		 * Function to add Column Resize Handlers and bound events
 		 */
-		editor.addCommand( 'gridableAddResize', function() {
+		editor.addCommand('gridableAddResize', function () {
 			var $body = this.dom.doc.body;
 			// if the handlers are already here we quit
 			if ( $body.className.indexOf('gridable--resize-handlers-on') !== -1 ) {
 				return;
 			}
 
-			var $columns = editor.dom.$( '.col.gridable-mceItem'),
+			var $columns = editor.dom.$('.col.gridable-mceItem'),
 				handle = wp.html.string({
 					tag: 'div',
 					attrs: {
@@ -346,31 +330,28 @@
 			handlers.on('mousedown', function ( e ) {
 				console.log('handler mouse down');
 				e.preventDefault();
-			} );
+			});
 
 			handlers.on('mousemove', function ( e ) {
 				console.log('handler mousemove');
 				e.preventDefault();
-			} );
+			});
 
 			handlers.on('mouseup mouseleave', function ( e ) {
 				console.log('handler mouse out');
 			});
 		});
 
-		editor.addCommand( 'gridableRemoveResize', function() {
+		editor.addCommand('gridableRemoveResize', function () {
 			var $body = this.dom.doc.body,
-				wrap = this.dom.$('.gridable__handle');
+				resize_handlers = this.dom.$('.gridable__handle');
 
-			if ( wrap.length < 1 || $body.className.indexOf('gridable--resize-handlers-on') === -1 ) {
+			if ( resize_handlers.length < 1 ) {
 				return;
 			}
 
-			this.dom.remove(wrap);
-
+			this.dom.remove(resize_handlers);
 			$body.classList.remove('gridable--resize-handlers-on');
-
-			this.setContent($body.innerHTML, { no_events: true});
 		});
 
 		/** === Helper functions ==== **/
@@ -386,25 +367,25 @@
 		 */
 		var remove_p_around_shortcodes = function ( content ) {
 			/** Starting shortcodes **/
-			content = content.replace( /<p>\[+row (.*)\]<\/p>/gmi, '[row $1]');
-			content = content.replace( /<p>\[+col (.*)\]<\/p>/gmi, '[col $1]');
+			content = content.replace(/<p>\[+row (.*)\]<\/p>/gmi, '[row $1]');
+			content = content.replace(/<p>\[+col (.*)\]<\/p>/gmi, '[col $1]');
 
-			content = content.replace( /<p>\[+row (.*)\]/gmi, '[row $1]');
-			content = content.replace( /<p>\[+col (.*)\]/gmi, '[col $1]');
+			content = content.replace(/<p>\[+row (.*)\]/gmi, '[row $1]');
+			content = content.replace(/<p>\[+col (.*)\]/gmi, '[col $1]');
 
 			// you cannot start a column with a closing </p>
-			content = content.replace( /\[+row (.*)\]<\/p>/gmi, '[row $1]');
-			content = content.replace( /\[+col (.*)\]<\/p>/gmi, '[col $1]');
+			content = content.replace(/\[+row (.*)\]<\/p>/gmi, '[row $1]');
+			content = content.replace(/\[+col (.*)\]<\/p>/gmi, '[col $1]');
 
 			/** Ending shortcodes **/
-			content = content.replace( /<p>\[\/+row\]<\/p>/gmi, '[/row]');
-			content = content.replace( /<p>\[\/+col\]<\/p>/gmi, '[/col]');
+			content = content.replace(/<p>\[\/+row\]<\/p>/gmi, '[/row]');
+			content = content.replace(/<p>\[\/+col\]<\/p>/gmi, '[/col]');
 
-			content = content.replace( /\[\/+row\]<\/p>/gmi, '[/row]');
-			content = content.replace( /\[\/+col\]<\/p>/gmi, '[/col]');
+			content = content.replace(/\[\/+row\]<\/p>/gmi, '[/row]');
+			content = content.replace(/\[\/+col\]<\/p>/gmi, '[/col]');
 
-			content = content.replace( /<p>\[\/+row\]/gmi, '[/row]');
-			content = content.replace( /<p>\[\/+col\]/gmi, '[/col]');
+			content = content.replace(/<p>\[\/+row\]/gmi, '[/row]');
+			content = content.replace(/<p>\[\/+col\]/gmi, '[/col]');
 
 			return content;
 		};
@@ -414,8 +395,7 @@
 		 * @param content
 		 * @returns {*}
 		 */
-		function maybe_replace_rows (content) {
-
+		function maybe_replace_rows( content ) {
 			var next = wp.shortcode.next('row', content);
 
 			if ( typeof next !== "undefined" ) {
@@ -433,7 +413,6 @@
 
 				return new_content;
 			}
-
 			return content;
 		}
 
@@ -442,7 +421,7 @@
 		 * @param content
 		 * @returns {*}
 		 */
-		function maybe_replace_columns (content) {
+		function maybe_replace_columns( content ) {
 
 			content = remove_p_around_shortcodes(content);
 
@@ -457,7 +436,7 @@
 					attrs: next.shortcode.attrs
 				});
 
-				var new_content = content.replace( next.content, col );
+				var new_content = content.replace(next.content, col);
 
 				// in case of inner columns, try again
 				new_content = maybe_replace_columns(new_content);
@@ -528,7 +507,7 @@
 		 * @param content
 		 * @returns {*}
 		 */
-		function wpAutoP ( content ) {
+		function wpAutoP( content ) {
 			if ( switchEditors && switchEditors.wpautop ) {
 				content = switchEditors.wpautop(content);
 			}
@@ -543,7 +522,7 @@
 		 * @param {string} content Content with `<p>` and `<br>` tags inserted
 		 * @return {string}
 		 */
-		function removeAutoP ( content ) {
+		function removeAutoP( content ) {
 			if ( switchEditors && switchEditors.pre_wpautop ) {
 				content = switchEditors.pre_wpautop(content);
 			}

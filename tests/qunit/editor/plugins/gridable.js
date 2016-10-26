@@ -61,6 +61,7 @@
 		Utils.setSelection('p:nth-child(2)', 4);
 
 		Utils.pressEnter();
+
 		equal(editor.getContent(), '<p>[col size="6"]</p><p>Cont</p><p>ent</p><p>[/col]</p>');
 
 		editor.setContent('<div class="col gridable-mceItem  " data-sh-col-attr-size="6" data-mce-placeholder="1"><p>Content</p></div>');
