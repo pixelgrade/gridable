@@ -170,12 +170,13 @@
 		 * Here we replace the shortcodes like [row] with <div class="row">
 		 */
 		editor.on('SetContent', function ( event ) {
-			console.group('GetContent');
-			if ( !event.content || 'raw' === event.format || 'savecontent' === event.type ) {
+			// console.group('GetContent');
+			if ( !event.content || 'raw' === event.format || 'savecontent' === event.type || event.selection === true ) {
 				return;
 			}
+
 			editor.execCommand('gridableRender');
-			console.groupEnd('GetContent');
+			// console.groupEnd('GetContent');
 		});
 
 		/**
@@ -207,16 +208,14 @@
 		 * @returns {*}
 		 */
 		editor.addCommand('gridableRender', function () {
-			console.group('gridableRender');
+			// console.group('gridableRender');
 			var content = this.dom.doc.body.innerHTML;
 
 			if ( typeof content === "undefined" ) {
 				return;
 			}
-
 			// first we need to strip grid shortcodes from p's
 			// content = remove_p_around_shortcodes( content );
-
 			// same for cols
 			content = maybe_replace_columns(content);
 
@@ -224,9 +223,8 @@
 			content = maybe_replace_rows(content);
 
 			// event.content = content;
-
 			this.dom.doc.body.innerHTML = content;
-			console.groupEnd('gridableRender');
+			// console.groupEnd('gridableRender');
 		});
 
 		/**
@@ -240,7 +238,7 @@
 		 * @returns {*|string}
 		 */
 		editor.addCommand('gridableRestore', function () {
-			console.group('gridableRestore');
+			// console.group('gridableRestore');
 
 			// hold all the content inside a HTML element.This way we keep it safe
 			// var content_process = this.dom.create('DIV', {}, event.content);
@@ -292,7 +290,7 @@
 				// this.setContent(content_process.innerHTML, { no_events: true});
 				content_process = this.dom.doc.body.innerHTML = content_process.innerHTML;
 			}
-			console.groupEnd('gridableRestore');
+			// console.groupEnd('gridableRestore');
 		});
 
 		/**
