@@ -215,7 +215,7 @@
 				return;
 			}
 			// first we need to strip grid shortcodes from p's
-			// content = remove_p_around_shortcodes( content );
+			content = remove_p_around_shortcodes( content );
 			// same for cols
 			content = maybe_replace_columns(content);
 
@@ -366,30 +366,37 @@
 		var remove_p_around_shortcodes = function ( content ) {
 			/** Starting shortcodes **/
 
-			// This catches anything like <p>[row] [col]</p> or <p>[row]</p> or <p>[col]</p>
-			content = content.replace(/<p[^>]*>\s*(\[\s*row[^\]]*\])?\s*(\[\s*col[^\]]*\])?\s*<\s*\/p\s*>/gmi, '$1$2');
+			// This catches anything like <p>[row] [col]</p> or <p>[row]</p>
+			content = content.replace(/<p[^>]*>\s*(\[\s*row[^\]]*\])\s*(\[\s*col[^\]]*\])?\s*<\s*\/p\s*>/gmi, '$1$2');
 
-			// This is a fail safe in case there is a stranded </p>
-			// This catches anything like [row]</p> or [row] [col]</p>
-			content = content.replace(/(\[\s*row[^\]]*\])\s*(\[\s*col[^\]]*\])?\s*<\s*\/p\s*>/gmi, '$1$2');
-			// This catches anything like [col]</p>
-			content = content.replace(/(\[\s*col[^\]]*\])\s*<\s*\/p\s*>/gmi, '$1');
+			// This catches anything like <p>[row] [col] some text </p> or <p>[row] some text</p> and replaces it with [row][col]<p>some text</p> or [row]<p>some text</p>
+			content = content.replace(/<p[^>]*>\s*(\[\s*row[^\]]*\])\s*(\[\s*col[^\]]*\])?(.*?)<\s*\/p\s*>/gmi, '$1$2<p>$3</p>');
+
+			// This catches anything like <p>[col] some text </p> and replaces it with [col]<p> some text</p>
+			content = content.replace(/<p[^>]*>\s*(\[\s*col[^\]]*\])(.*?)<\s*\/p\s*>/gmi, '$1<p>$2</p>');
 
 			/** Ending shortcodes or Ending and Opening **/
 
 			// This catches anything like <p>[/col] [/row]<p> or <p>[/col</p> or <p>[/row]</p>
 			content = content.replace(/<p[^>]*>\s*(\[\s*\/col[^\]]*\])?\s*(\[\s*\/row[^\]]*\])?\s*<\s*\/p\s*>/gmi, '$1$2');
 
-			// This catches anything like [col]sometext</p> and replaces it with [col]</p><p>sometext</p>
-			// This allows the next replace to work as it should no matter what
-			content = content.replace(/(\[\s*col[^\]]*\])\s*([^<]+)<\s*\/p\s*>/gmi, '$1</p><p>$2</p>');
-
 			// This catches anything like <p>[/col] [col]<p>
 			content = content.replace(/<p[^>]*>\s*(\[\s*\/col[^\]]*\])\s*(\[\s*col[^\]]*\])\s*<\s*\/p\s*>/gmi, '$1$2');
+
+			// This catches anything like <p>[/col] [col] some text<p> and replaces it with [/col][col]<p>some text</p>
+			content = content.replace(/<p[^>]*>\s*(\[\s*\/col[^\]]*\])\s*(\[\s*col[^\]]*\])(.*?)<\s*\/p\s*>/gmi, '$1$2<p>$3</p>');
 
 			// This catches anything like <p>[/row] [row]<p>
 			content = content.replace(/<p[^>]*>\s*(\[\s*\/row[^\]]*\])\s*(\[\s*row[^\]]*\])\s*<\s*\/p\s*>/gmi, '$1$2');
 
+			// This catches anything like <p>[/row] [row] some text<p> and replaces it with [/row] [row]<p>some text</p>
+			content = content.replace(/<p[^>]*>\s*(\[\s*\/row[^\]]*\])\s*(\[\s*row[^\]]*\])(.*?)<\s*\/p\s*>/gmi, '$1$2');
+
+			// This is a fail safe in case there is a stranded </p>
+			// This catches anything like [row]</p> or [row] [col]</p>
+			content = content.replace(/(\[\s*row[^\]]*\])\s*(\[\s*col[^\]]*\])?\s*<\s*\/p\s*>/gmi, '$1$2');
+			// This catches anything like [col]</p>
+			content = content.replace(/(\[\s*col[^\]]*\])\s*<\s*\/p\s*>/gmi, '$1');
 
 			return content;
 		};
@@ -427,7 +434,7 @@
 		 */
 		function maybe_replace_columns( content ) {
 
-			content = remove_p_around_shortcodes(content);
+			//content = remove_p_around_shortcodes(content);
 
 			var next = wp.shortcode.next('col', content);
 
