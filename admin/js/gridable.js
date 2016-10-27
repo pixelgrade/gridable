@@ -10,7 +10,7 @@
 			l10n = gridable_params.l10n,
 			debug = true
 
-		// The bix X button that removes the entre row shortcode
+		// The bix X button that removes the entire row shortcode
 		editor.addButton('gridable_row_remove', {
 			tooltip: l10n.remove_row,
 			icon: 'dashicon dashicons-no',
@@ -140,7 +140,7 @@
 			}
 
 			/**
-			 * While pressing enter in editor the cursor should not be allowd the leave the column
+			 * While pressing enter in editor the cursor should not be allowed the leave the column
 			 */
 			if ( evt.keyCode == 13 ) { // if Enter is pressed
 				var dom = editor.dom,
@@ -365,25 +365,31 @@
 		 */
 		var remove_p_around_shortcodes = function ( content ) {
 			/** Starting shortcodes **/
-			content = content.replace(/<p>\[+row (.*)\]<\/p>/gmi, '[row $1]');
-			content = content.replace(/<p>\[+col (.*)\]<\/p>/gmi, '[col $1]');
 
-			content = content.replace(/<p>\[+row (.*)\]/gmi, '[row $1]');
-			content = content.replace(/<p>\[+col (.*)\]/gmi, '[col $1]');
+			// This catches anything like <p>[row] [col]</p> or <p>[row]</p> or <p>[col]</p>
+			content = content.replace(/<p[^>]*>\s*(\[\s*row[^\]]*\])?\s*(\[\s*col[^\]]*\])?\s*<\s*\/p\s*>/gmi, '$1$2');
 
-			// you cannot start a column with a closing </p>
-			content = content.replace(/\[+row (.*)\]<\/p>/gmi, '[row $1]');
-			content = content.replace(/\[+col (.*)\]<\/p>/gmi, '[col $1]');
+			// This is a fail safe in case there is a stranded </p>
+			// This catches anything like [row]</p> or [row] [col]</p>
+			content = content.replace(/(\[\s*row[^\]]*\])\s*(\[\s*col[^\]]*\])?\s*<\s*\/p\s*>/gmi, '$1$2');
+			// This catches anything like [col]</p>
+			content = content.replace(/(\[\s*col[^\]]*\])\s*<\s*\/p\s*>/gmi, '$1');
 
-			/** Ending shortcodes **/
-			content = content.replace(/<p>\[\/+row\]<\/p>/gmi, '[/row]');
-			content = content.replace(/<p>\[\/+col\]<\/p>/gmi, '[/col]');
+			/** Ending shortcodes or Ending and Opening **/
 
-			content = content.replace(/\[\/+row\]<\/p>/gmi, '[/row]');
-			content = content.replace(/\[\/+col\]<\/p>/gmi, '[/col]');
+			// This catches anything like <p>[/col] [/row]<p> or <p>[/col</p> or <p>[/row]</p>
+			content = content.replace(/<p[^>]*>\s*(\[\s*\/col[^\]]*\])?\s*(\[\s*\/row[^\]]*\])?\s*<\s*\/p\s*>/gmi, '$1$2');
 
-			content = content.replace(/<p>\[\/+row\]/gmi, '[/row]');
-			content = content.replace(/<p>\[\/+col\]/gmi, '[/col]');
+			// This catches anything like [col]sometext</p> and replaces it with [col]</p><p>sometext</p>
+			// This allows the next replace to work as it should no matter what
+			content = content.replace(/(\[\s*col[^\]]*\])\s*([^<]+)<\s*\/p\s*>/gmi, '$1</p><p>$2</p>');
+
+			// This catches anything like <p>[/col] [col]<p>
+			content = content.replace(/<p[^>]*>\s*(\[\s*\/col[^\]]*\])\s*(\[\s*col[^\]]*\])\s*<\s*\/p\s*>/gmi, '$1$2');
+
+			// This catches anything like <p>[/row] [row]<p>
+			content = content.replace(/<p[^>]*>\s*(\[\s*\/row[^\]]*\])\s*(\[\s*row[^\]]*\])\s*<\s*\/p\s*>/gmi, '$1$2');
+
 
 			return content;
 		};
