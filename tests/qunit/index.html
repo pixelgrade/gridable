@@ -1,57 +1,67 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>WordPress QUnit Test Suite</title>
+<head>
+	<meta charset="UTF-8" />
+	<title>TinyMCE QUnit tests</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0" />
+	<link rel="stylesheet" href="js/qunit/qunit.css" type="text/css" />
+	<link rel="stylesheet" href="../../../../../wp-includes/js/tinymce/skins/lightgray/skin.min.css" type="text/css" />
+	<link rel="stylesheet" href="tinymce/ui/css/ui-overrides.css" type="text/css" />
+	<style>
+		#qunit-modulefilter-container { float: none; }
+	</style>
 
-		<!-- Dependencies -->
-		<script src="../../../../../wp-includes/js/jquery/jquery.js"></script>
-		<script src="../../../../../wp-includes/js/jquery/ui/core.js"></script>
-		<script src="../../../../../wp-includes/js/underscore.min.js"></script>
-		<script src="../../../../../wp-includes/js/backbone.min.js"></script>
-		<script src="../../../../../wp-includes/js/wp-backbone.js"></script>
-		<script src="../../../../../wp-includes/js/zxcvbn.min.js"></script>
-		<script>
-			window._wpUtilSettings = {
-				'ajax': {
-					'url': '\/wp-admin\/admin-ajax.php'
-				}
-			};
-		</script>
-		<script src="../../../../../wp-includes/js/wp-util.js"></script>
-		<script src="../../../../../wp-includes/js/wp-a11y.js"></script>
+</head>
+<body>
+	<div id="qunit"></div>
+	<div id="qunit-fixture"></div>
+	<div id="view" style="position: absolute; right: 0; top: 0"></div>
 
-		<!-- QUnit -->
-		<link rel="stylesheet" href="vendor/qunit.css" type="text/css" media="screen" />
-		<script src="vendor/qunit.js"></script>
-		<script src="vendor/sinon.js"></script>
-		<script src="vendor/sinon-qunit.js"></script>
-		<script>QUnit.config.hidepassed = false;</script>
-	</head>
-	<body>
-		<div id="qunit"></div>
-		<p><a href="editor">TinyMCE tests</a></p>
+	<!-- Dependencies -->
 
-		<!-- Tested files -->
-		<script src="../../../../../wp-admin/js/password-strength-meter.js"></script>
-		<script src="../../../../../wp-includes/js/shortcode.js"></script>
+	<script src="../../../../../wp-includes/js/jquery/jquery.js"></script>
+	<script src="../../../../../wp-includes/js/jquery/ui/core.js"></script>
+	<script src="../../../../../wp-includes/js/underscore.min.js"></script>
+	<script src="../../../../../wp-includes/js/backbone.min.js"></script>
+	<script src="../../../../../wp-includes/js/wp-backbone.js"></script>
+	<script src="../../../../../wp-includes/js/zxcvbn.min.js"></script>
+	<script>
+		window._wpUtilSettings = {
+			'ajax': {
+				'url': '\/wp-admin\/admin-ajax.php'
+			}
+		};
+	</script>
 
-		<script type='text/javascript' src='../../../../../wp-includes/js/jquery/ui/core.js'></script>
-		<script type='text/javascript' src='../../../../../wp-includes/js/jquery/ui/widget.js'></script>
-		<script type='text/javascript' src='../../../../../wp-includes/js/jquery/ui/mouse.js'></script>
-		<script type='text/javascript' src='../../../../../wp-includes/js/jquery/ui/sortable.js'></script>
-		<script type='text/javascript' src='../../../../../wp-includes/js/jquery/ui/draggable.js'></script>
-		<script type='text/javascript' src='../../../../../wp-includes/js/jquery/ui/droppable.js'></script>
+	<script src="../../../../../wp-includes/js/wp-util.js"></script>
+	<script src="../../../../../wp-includes/js/wp-a11y.js"></script>
 
-		<script src="../../../../../wp-admin/js/word-count.js"></script>
+	<script src="../../../../../wp-includes/js/shortcode.js"></script>
+	<script src="js/module_loader.js"></script>
+	<script src="js/qunit/qunit.js"></script>
+	<script src="js/tinymce_loader.js"></script>
 
-		<!-- Unit tests -->
-		<script src="wp-admin/js/password-strength-meter.js"></script>
-		<script src="wp-includes/js/shortcode.js"></script>
-		<script src="wp-admin/js/word-count.js"></script>
+	<script src="../../../../../wp-includes/js/tinymce/plugins/paste/plugin.js"></script>
+	<script src="js/utils.js"></script>
+	<script src="js/init.js"></script>
 
+	<script>QUnit.config.hidepassed = false;</script>
 
-		<script src="../../../../../wp-includes/js/tinymce/tinymce.js"></script>
-		<script src="editor/js/utils.js"></script>
-		<script src="wp-includes/js/tinymce/plugins/wptextpattern/plugin.js"></script>
-	</body>
+	<script src="../../admin/js/gridable.js"></script>
+
+	<script type="application/javascript">
+		var gridable_params = {
+			l10n: {
+				remove_row: "Remove row"
+			}
+		}
+	</script>
+	<!--<script src="plugins/table.js"></script>-->
+	<script src="plugins/gridable.js"></script>
+
+	<script type="text/html" id="tmpl-gridable-grider-row"><div class="{{data.classes}} " {{data.atts}} data-gridable-row="1" data-mce-placeholder="1">{{{data.content}}}</div></script>
+	<script type="text/html" id="tmpl-gridable-grider-col"><div class="{{data.classes}} " {{data.atts}} data-mce-placeholder="1">{{{data.content}}}</div></script>
+
+</body>
 </html>

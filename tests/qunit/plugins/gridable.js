@@ -29,9 +29,11 @@
 	 */
 	test("Test column render command", function() {
 		editor.setContent('[col size="6"]<p>Content</p>[/col]');
-		equal(editor.getContent(), '<p>[col size="6"]</p><p>Content</p><p>[/col]</p>');
 		editor.execCommand('gridableRender');
-		equal(editor.getContent(), '<div class="col gridable-mceItem  " data-sh-col-attr-size="6" data-mce-placeholder="1"><p>Content</p></div>');
+
+		var result = tinyMCE.activeEditor.getContent({format : 'raw'});
+
+		equal(result, '<div class="col gridable-mceItem  " data-sh-col-attr-size="6" data-mce-placeholder="1"><p>Content</p></div>');
 	});
 
 	/**
@@ -58,7 +60,7 @@
 		editor.setContent('[col size="6"]<p>Content</p>[/col]');
 
 		// select the second p tag
-		Utils.setSelection('p:nth-child(2)', 4);
+		Utils.setSelection('p:nth-child(1)', 4);
 
 		Utils.pressEnter();
 
@@ -69,20 +71,29 @@
 
 		Utils.pressEnter();
 
-		equal(editor.getContent(), '<div class="col gridable-mceItem  " data-sh-col-attr-size="6" data-mce-placeholder="1"><p>Cont</p><p>ent</p></div>');
+		equal(tinyMCE.activeEditor.getContent({format : 'raw'}), '<div class="col gridable-mceItem  " data-sh-col-attr-size="6" data-mce-placeholder="1"><p>Cont</p><p>ent</p></div>');
 		editor.execCommand('gridableRestore');
 
-		equal(editor.getContent(), '<p>[col size="6"]</p><p>Cont</p><p>ent</p><p>[/col]</p>');
+		equal(tinyMCE.activeEditor.getContent({format : 'raw'}), '<p>[col size="6"]</p><p>Cont</p><p>ent</p><p>[/col]</p>');
 	});
 
 
 	test("Test row render command", function() {
 		editor.setContent('[row cols_nr="2"][col size="6"]<p>Content</p>[/col][col size="6"]<p>Content</p>[/col][/row]');
 
-		equal(editor.getContent(), '<p>[row cols_nr=\"2\"][col size=\"6\"]</p><p>Content</p><p>[/col][col size=\"6\"]</p><p>Content</p><p>[/col][/row]</p>');
+		var content = editor.getContent();
+
+		content = content.replace(/<div class=\"gridable__handle\">&nbsp;<\/div>/gm, '');
+
+		equal(content, '<p>[row cols_nr=\"2\"][col size=\"6\"]</p><p>Content</p><p>[/col][col size=\"6\"]</p><p>Content</p><p>[/col][/row]</p>');
 
 		editor.execCommand('gridableRender');
-		equal(editor.getContent(), '<div class=\"row gridable-mceItem \" data-sh-row-attr-cols_nr=\"2\" data-gridable-row=\"1\" data-mce-placeholder=\"1\"><div class=\"col gridable-mceItem  \" data-sh-col-attr-size=\"6\" data-mce-placeholder=\"1\"><p>Content</p></div><div class=\"col gridable-mceItem  \" data-sh-col-attr-size=\"6\" data-mce-placeholder=\"1\"><p>Content</p></div></div>');
+		var result = tinyMCE.activeEditor.getContent({format : 'raw'});
+
+		result = result.replace('/<div class=\"gridable__handle\">&nbsp;</div>/', '');
+		result = result.replace('/<div class=\"gridable__handle\"></div>/', '');
+
+		equal(result, '<div class=\"row gridable-mceItem \" data-sh-row-attr-cols_nr=\"2\" data-gridable-row=\"1\" data-mce-placeholder=\"1\"><div class=\"col gridable-mceItem  \" data-sh-col-attr-size=\"6\" data-mce-placeholder=\"1\"><p>Content</p></div><div class=\"col gridable-mceItem  \" data-sh-col-attr-size=\"6\" data-mce-placeholder=\"1\"><p>Content</p></div></div>');
 	});
 
 	test("Test row restore command", function() {

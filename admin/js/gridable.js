@@ -184,7 +184,7 @@
 		 */
 		editor.on('SaveContent', function ( event ) {
 			// we must ensure we don't forget any handlers in front-end
-			event.content = event.content.replace('/<div class="gridable__handle"></div>/', '');
+			event.content = event.content.replace(/<div class=\"gridable__handle\"><\/div>/gm, '');
 		});
 
 		/**
