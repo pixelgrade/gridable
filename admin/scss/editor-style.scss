@@ -7,7 +7,6 @@
 // The Grid
 [data-gridable-row] {
 	display: flex;
-	flex-flow: row wrap;
 }
 
 [data-sh-col-attr-size] {
@@ -59,6 +58,7 @@
 
 	font-size: 24px;
 
+
 	&:before {
 		content: "";
 
@@ -77,14 +77,18 @@
 		opacity: 0;
 		transition: opacity .2s ease-out;
 
-		.gridable:hover > .col > & {
+		.gridable.has-handlers:hover > .col > & {
 			opacity: 1;
 		}
 	}
 
-	.col:first-child & {
+	.col:first-child > & {
 		display: none;
 	}
+}
+
+.gridable__content {
+	overflow: hidden;
 }
 
 .gridable.grabbing {

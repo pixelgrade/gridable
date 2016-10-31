@@ -1,6 +1,6 @@
 .gridable, .gridable *, .gridable *:before, .gridable *:after { box-sizing: border-box; }
 
-[data-gridable-row] { display: -ms-flexbox; display: flex; -ms-flex-flow: row wrap; flex-flow: row wrap; }
+[data-gridable-row] { display: -ms-flexbox; display: flex; }
 
 [data-sh-col-attr-size] { -ms-flex: 0 0 100%; flex: 0 0 100%; }
 
@@ -23,7 +23,9 @@
 
 .gridable__handle { /* autoprefixer: off */ position: absolute; top: 0; left: -0.5em; width: 1em; height: 100%; cursor: -webkit-grab; cursor: -moz-grab; cursor: grab; font-size: 24px; }
 .gridable__handle:before { content: ""; position: absolute; top: 50%; left: 0; display: block; width: 1em; height: 1em; margin-top: -0.5em; background: url("../images/resize-column.svg") center center no-repeat; background-size: 100% 100%; opacity: 0; transition: opacity .2s ease-out; }
-.gridable:hover > .col > .gridable__handle:before { opacity: 1; }
-.col:first-child .gridable__handle { display: none; }
+.gridable.has-handlers:hover > .col > .gridable__handle:before { opacity: 1; }
+.col:first-child > .gridable__handle { display: none; }
+
+.gridable__content { overflow: hidden; }
 
 .gridable.grabbing { /* autoprefixer: off */ cursor: -webkit-grabbing; cursor: -moz-grabbing; cursor: grabbing; }
