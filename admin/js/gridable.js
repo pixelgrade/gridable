@@ -8,7 +8,18 @@
 	tinymce.PluginManager.add('gridable', function ( editor, url ) {
 		var toolbar,
 			l10n = gridable_params.l10n,
-			debug = true
+			gridable_resizing = false,
+			xStart,
+			xLast,
+			xEnd,
+			nextWidth,
+			prevWidth,
+			gridStyle,
+			gridWidth,
+			colWidth,
+			debug = true,
+			$next,
+			$prev;
 
 		// The bix X button that removes the entire row shortcode
 		editor.addButton('gridable_row_remove', {
@@ -126,11 +137,12 @@
 				return;
 			}
 			var wrap = editor.dom.$(event.element).closest('.row.gridable-mceItem');
+
 			// if the parent is a column: Add resize handlers
+			editor.execCommand('gridableRemoveResize');
+
 			if ( wrap.length > 0 ) {
-				editor.execCommand('gridableAddResize');
-			} else { // remove the resize handlers
-				editor.execCommand('gridableRemoveResize');
+				addResize(wrap);
 			}
 		});
 
@@ -296,61 +308,136 @@
 		/**
 		 * Function to add Column Resize Handlers and bound events
 		 */
-		editor.addCommand('gridableAddResize', function () {
-			var $body = this.dom.doc.body;
-			// if the handlers are already here we quit
-			if ( $body.className.indexOf('gridable--resize-handlers-on') !== -1 ) {
+		function addResize($grid) {
+			if ( typeof $grid.attr('data-gridable-bound') !== "undefined" ) {
 				return;
-			}
+			};
 
-			var $columns = editor.dom.$('.col.gridable-mceItem'),
-				handle = wp.html.string({
-					tag: 'div',
-					attrs: {
-						class: "gridable__handle"
-						// unselectable: "true"
-					}
-				});
+			$grid.attr('data-gridable-bound', true).addClass('has-handlers');
 
-			if ( $columns.length > 0 ) {
-				$columns.each(function ( i, col ) {
-					var current_handler = editor.$(this).children('.gridable__handle');
+			$grid.on('mousedown .gridable__handle', onMouseDown);
+			$grid.on('mousemove', onMouseMove);
+			$grid.on('mouseup mouseleave', onMouseUp);
+		};
 
-					if ( current_handler.length < 1 ) {
-						editor.$(col).append(handle);
-					}
-				});
-				$body.classList.add('gridable--resize-handlers-on');
-			}
+		editor.addCommand( 'gridableRemoveResize', function() {
 
-			var handlers = editor.dom.$('.gridable__handle');
+			var $grids = editor.dom.$('.gridable');
 
-			handlers.on('mousedown', function ( e ) {
-				console.log('handler mouse down');
-				e.preventDefault();
+			editor.dom.$.each($grids, function(i, grid) {
+				var $grid = editor.dom.$(grid).removeClass('has-handlers');
+
+				if ( typeof $grid.attr('data-gridable-bound') == "undefined" ) {
+					return;
+				}
+
+				$grid.removeAttr('data-gridable-bound');
+
+				$grid.off('mousedown .gridable__handle', onMouseDown);
+				$grid.off('mousemove', onMouseMove);
+				$grid.off('mouseup mouseleave', onMouseUp);
 			});
 
-			handlers.on('mousemove', function ( e ) {
-				console.log('handler mousemove');
-				e.preventDefault();
-			});
-
-			handlers.on('mouseup mouseleave', function ( e ) {
-				console.log('handler mouse out');
-			});
 		});
 
-		editor.addCommand('gridableRemoveResize', function () {
-			var $body = this.dom.doc.body,
-				resize_handlers = this.dom.$('.gridable__handle');
+		function getGridStyle(grid) {
+			var gridStyle = getComputedStyle( grid ),
+				gridWidth = grid.clientWidth - parseFloat(gridStyle.paddingLeft) - parseFloat(gridStyle.paddingRight),
+				colWidth = gridWidth / 12;
 
-			if ( resize_handlers.length < 1 ) {
-				return;
+			return {
+				gridStyle: gridStyle,
+				gridWidth: gridWidth,
+				colWidth: colWidth
+			}
+		}
+
+		function onMouseDown(e) {
+			console.log('handler mouse down');
+			xStart = e.clientX;
+			xLast = xStart;
+
+			if ( typeof e.target.className !== "undefined" && e.target.className.indexOf('gridable__handle') !== -1 ) {
+				e.preventDefault();
+
+				var grid = e.target.closest('.grid'),
+					$grid = editor.$( grid );
+
+				var gstyle = getGridStyle( grid );
+
+				gridStyle = gstyle.gridStyle;
+				gridWidth = gstyle.gridWidth;
+				colWidth = gstyle.colWidth;
+
+				$grid.addClass('grabbing');
+
+				$next = editor.dom.$( e.target ).parent();
+				$prev = $next.prev('.col');
+
+				gridable_resizing = true;
+				updateLoop();
+
+				var width = parseInt( $next[0].offsetWidth, 10 ),
+					colNo = Math.round( width / colWidth );
+			}
+		}
+
+		function onMouseMove(e) {
+
+			if ( gridable_resizing ) {
+			console.log('handler mousemove');
+				e.preventDefault();
+				xLast = e.clientX;
+			}
+		};
+
+		function onMouseUp(e) {
+			console.log('handler mouse out');
+
+			var grid = editor.dom.$(e.target).closest('.grid'),
+				$grid = editor.dom.$( grid );
+
+			$grid.removeClass('grabbing');
+
+			xEnd = e.clientX;
+			gridable_resizing = false;
+		};
+
+		function updateLoop() {
+
+			if ( ! gridable_resizing || ! xLast || ! xStart ) {
+				return false;
 			}
 
-			this.dom.remove(resize_handlers);
-			$body.classList.remove('gridable--resize-handlers-on');
-		});
+			// console.log(xLast - xStart, colWidth);
+
+			if ( $next.length && $prev.length && typeof xStart !== "unedfined" ) {
+
+				if ( xLast - xStart >= colWidth ) {
+					var nextSpan = parseInt( $next[0].getAttribute('data-sh-col-attr-size'), 10 ),
+						prevSpan = parseInt( $prev[0].getAttribute('data-sh-col-attr-size'), 10 );
+
+					if ( nextSpan != 2 ) {
+						$next[0].setAttribute('data-sh-col-attr-size', nextSpan - 2);
+						$prev[0].setAttribute('data-sh-col-attr-size', prevSpan + 2);
+
+						xStart += 2 * colWidth;
+					}
+				} else if ( xStart - xLast >= colWidth ) {
+					var nextSpan = parseInt( $next[0].getAttribute('data-sh-col-attr-size'), 10 ),
+						prevSpan = parseInt( $prev[0].getAttribute('data-sh-col-attr-size'), 10 );
+
+					if ( prevSpan != 2 ) {
+						$next[0].setAttribute('data-sh-col-attr-size', nextSpan + 2);
+						$prev[0].setAttribute('data-sh-col-attr-size', prevSpan - 2);
+
+						xStart -= 2 * colWidth;
+					}
+				}
+			}
+
+			requestAnimationFrame(updateLoop);
+		}
 
 		/** === Helper functions ==== **/
 
