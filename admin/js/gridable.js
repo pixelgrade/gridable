@@ -109,7 +109,8 @@
 		 */
 		editor.on('wptoolbar', function ( args ) {
 			var column = editor.dom.$(args.element).closest('div.row.gridable-mceItem');
-			if ( column.length > 0 ) {
+
+			if ( args.element.tagName === "P" && column.length > 0 ) {
 				args.toolbar = toolbar;
 				args.selection = column[0];
 			}
@@ -325,19 +326,18 @@
 			var $grids = editor.dom.$('.gridable');
 
 			editor.dom.$.each($grids, function(i, grid) {
-				var $grid = editor.dom.$(grid).removeClass('has-handlers');
+				var $grid = editor.dom.$(grid);
 
 				if ( typeof $grid.attr('data-gridable-bound') == "undefined" ) {
 					return;
 				}
 
-				$grid.removeAttr('data-gridable-bound');
+				// $grid.removeAttr('data-gridable-bound');
 
 				$grid.off('mousedown .gridable__handle', onMouseDown);
 				$grid.off('mousemove', onMouseMove);
 				$grid.off('mouseup mouseleave', onMouseUp);
 			});
-
 		});
 
 		function getGridStyle(grid) {
