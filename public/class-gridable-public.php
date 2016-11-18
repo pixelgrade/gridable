@@ -66,13 +66,38 @@ class Gridable_Public {
 	 */
 	public function add_row_shortcode( $atts, $content ) {
 		$tag = 'row';
+
 		$atts = shortcode_atts( array(
-			'cols_nr' => ''
+			'cols_nr' => '',
+			'spacing_top' => '',
+			'spacing_bottom' => '',
+			'spacing_gutter' => '',
+			'bg-color' => ''
 		), $atts );
 
 		$cols_nr = 1;
 		if ( ! empty( $atts['cols_nr'] ) ) {
 			$cols_nr = (int) $atts['cols_nr'];
+		}
+
+		$spacing_top = 'large';
+		if ( ! empty( $atts['spacing_top'] ) ) {
+			$spacing_top = (int) $atts['spacing_top'];
+		}
+
+		$spacing_bottom = 'large';
+		if ( ! empty( $atts['spacing_bottom'] ) ) {
+			$spacing_bottom = (int) $atts['spacing_bottom'];
+		}
+
+		$spacing_gutter = 'medium';
+		if ( ! empty( $atts['spacing_gutter'] ) ) {
+			$spacing_gutter = (int) $atts['spacing_gutter'];
+		}
+
+		$bg_color = '#eef1f2';
+		if ( ! empty( $atts['bg_color'] ) ) {
+			$bg_color = (int) $atts['bg_color'];
 		}
 
 		$class = apply_filters( "gridable_sh_{$tag}_attr_size", "gridable gridable--row" );
@@ -100,13 +125,18 @@ class Gridable_Public {
 		$tag = 'col';
 
 		$atts = shortcode_atts( array(
-			'size' => ''
+			'size' => '',
+			'spacing_column' => ''
 		), $atts );
 
 		$size = 1;
-
 		if ( ! empty( $atts['size'] ) ) {
 			$size = (int) $atts['size'];
+		}
+
+		$spacing_column = 'none';
+		if ( ! empty( $atts['spacing_column'] ) ) {
+			$spacing_column = (int) $atts['spacing_column'];
 		}
 
 		$size = apply_filters( "gridable_sh_{$tag}_attr_size", $size );
