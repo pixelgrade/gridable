@@ -126,7 +126,8 @@ class Gridable_Public {
 
 		$atts = shortcode_atts( array(
 			'size' => '',
-			'spacing_column' => ''
+			'spacing_column' => '',
+			'bg_color' => ''
 		), $atts );
 
 		$size = 1;
@@ -137,6 +138,11 @@ class Gridable_Public {
 		$spacing_column = 'none';
 		if ( ! empty( $atts['spacing_column'] ) ) {
 			$spacing_column = $atts['spacing_column'];
+		}
+
+		$bg_color = '#ffffff';
+		if ( ! empty( $atts['bg_color'] ) ) {
+			$bg_color = $atts['bg_color'];
 		}
 
 		$size = apply_filters( "gridable_sh_{$tag}_attr_size", $size );
