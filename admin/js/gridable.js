@@ -307,9 +307,7 @@
 				// @TODO find a better way to save the restored content without rendering it
 				// this.setContent(content_process.innerHTML, { no_events: true});
 				content_process = this.dom.doc.body.innerHTML = content_process.innerHTML;
-				console.debug( content_process );
-
-				console.debug( content_process.indexOf("\n") );
+				// console.debug( content_process );
 			}
 			// console.groupEnd('gridableRestore');
 		});
