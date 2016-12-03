@@ -23,4 +23,9 @@
 	overflow: hidden;
 	box-sizing: border-box;
 	padding: 10px;
+
+	p:empty:first-child, p:empty:last-child {
+		display: none;
+	}
 }
+
