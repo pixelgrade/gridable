@@ -273,8 +273,11 @@
 				var columnReplacement = wp.shortcode.string({
 					tag: 'col',
 					attrs: {size: columns[columnIndex].getAttribute('data-sh-col-attr-size')},
-					content: columns[columnIndex].innerHTML
+					content: columns[columnIndex].innerHTML.trim()
 				});
+
+				// console.debug(columns[columnIndex].outerHTML);
+				// console.debug(columnReplacement);
 
 				// now replace the column html with the [col] shortcode
 				content_process.innerHTML = content_process.innerHTML.replace(columns[columnIndex].outerHTML, columnReplacement);
@@ -290,8 +293,10 @@
 				var rowReplacement = wp.shortcode.string({
 					tag: 'row',
 					attrs: {cols_nr: rows[rowIndex].getAttribute('data-sh-row-attr-cols_nr')},
-					content: rows[rowIndex].innerHTML
+					content: rows[rowIndex].innerHTML.trim()
 				});
+
+				// console.debug(rows[rowIndex].outerHTML);x
 
 				// replace the row html with the shortcode
 				content_process.innerHTML = content_process.innerHTML.replace(rows[rowIndex].outerHTML, rowReplacement);
@@ -302,6 +307,9 @@
 				// @TODO find a better way to save the restored content without rendering it
 				// this.setContent(content_process.innerHTML, { no_events: true});
 				content_process = this.dom.doc.body.innerHTML = content_process.innerHTML;
+				console.debug( content_process );
+
+				console.debug( content_process.indexOf("\n") );
 			}
 			// console.groupEnd('gridableRestore');
 		});
@@ -332,7 +340,7 @@
 					return;
 				}
 
-				// $grid.removeAttr('data-gridable-bound');
+				$grid.removeAttr('data-gridable-bound');
 
 				$grid.off('mousedown .gridable__handle', onMouseDown);
 				$grid.off('mousemove', onMouseMove);
@@ -353,7 +361,7 @@
 		}
 
 		function onMouseDown(e) {
-			console.log('handler mouse down');
+			// console.log('handler mouse down');
 			xStart = e.clientX;
 			xLast = xStart;
 
@@ -385,14 +393,14 @@
 		function onMouseMove(e) {
 
 			if ( gridable_resizing ) {
-			console.log('handler mousemove');
+			// console.log('handler mousemove');
 				e.preventDefault();
 				xLast = e.clientX;
 			}
 		};
 
 		function onMouseUp(e) {
-			console.log('handler mouse out');
+			// console.log('handler mouse out');
 
 			var grid = editor.dom.$(e.target).closest('.grid'),
 				$grid = editor.dom.$( grid );

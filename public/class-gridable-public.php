@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The public-facing functionality of the plugin.
  *
@@ -75,7 +74,7 @@ class Gridable_Public {
 			$cols_nr = (int) $atts['cols_nr'];
 		}
 
-		$class = apply_filters( "gridable_sh_{$tag}_attr_size", "gridable gridable--row" );
+		$class = apply_filters( "gridable_sh_{$tag}_classes", "gridable gridable--row", $cols_nr );
 
 		// get sh template
 		$template = $this->get_localed_sh_templated( $tag );
@@ -111,7 +110,7 @@ class Gridable_Public {
 
 		$size = apply_filters( "gridable_sh_{$tag}_attr_size", $size );
 
-		$classes = apply_filters( "gridable_sh_{$tag}_attr_size", array( 'gridable--col', 'hand-span-' . $size ), $size );
+		$classes = apply_filters( "gridable_sh_{$tag}_classes", array( 'gridable--col', 'hand-span-' . $size ), $size );
 
 		if ( ! empty( $classes ) ) {
 			$class = 'class="' . join( ' ', $classes) . '"';
@@ -145,31 +144,12 @@ class Gridable_Public {
 		$theme_path = apply_filters( 'gridable_theme_templates_path_filter', "template-parts/gridable/", $tag );
 		$theme_path = $theme_path . $tag . '.php';
 		$located    = locate_template( $theme_path, false, false );
+
 		if ( ! $located ) {
 			$located =  dirname( __FILE__ ) . '/partials/' . $tag . '.php';
 		}
 
 		return $located;
-	}
-
-	function mce_sh_col_size_classes( $classes ) {
-
-		$classes = array(
-			1  => 'lap-one-twelfth',
-			2  => 'lap-two-twelfths',
-			3  => 'lap-three-twelfths',
-			4  => 'lap-four-twelfths',
-			5  => 'lap-five-twelfths',
-			6  => 'lap-six-twelfths',
-			7  => 'lap-seven-twelfths',
-			8  => 'lap-eight-twelfths',
-			9  => 'lap-nine-twelfths',
-			10 => 'lap-ten-twelfths',
-			11 => 'lap-eleven-twelfths',
-			12 => 'lap-one-whole',
-		);
-
-		return $classes;
 	}
 
 	/**
@@ -178,6 +158,10 @@ class Gridable_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
+		// @TODO Write documentation for this
+		if ( ! apply_filters( 'girdable_load_public_style', '__return_true' ) ) {
+			return;
+		}
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -192,7 +176,6 @@ class Gridable_Public {
 		 */
 
 		wp_enqueue_style( $this->gridable, plugin_dir_url( __FILE__ ) . 'css/gridable-style.css', array(), $this->version, 'all' );
-
 	}
 //
 //	/**

@@ -171,8 +171,6 @@ class Gridable {
 
 		$plugin_public = new Gridable_Public( $this->get_gridable(), $this->get_version() );
 
-//		add_filter( 'gridable_sh_col_attr_size', array( $plugin_public, 'mce_sh_col_size_classes' ) );
-
 		add_action( 'wp_enqueue_scripts', array( $plugin_public, 'enqueue_styles' ) );
 		add_shortcode( 'row', array( $plugin_public, 'add_row_shortcode' ) );
 		add_shortcode( 'col', array( $plugin_public, 'add_column_shortcode' ) );
