@@ -19,7 +19,7 @@
  *
  * @package    Gridable
  * @subpackage Gridable/includes
- * @author     PixelGrade <contact@pixelgrade.com>
+ * @author     Pixelgrade <contact@pixelgrade.com>
  */
 class Gridable_Loader {
 

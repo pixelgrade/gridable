@@ -16,7 +16,7 @@
  * Plugin URI:        https://pixelgrade.com/
  * Description:       The Missed Grid Content Editor
  * Version:           0.5.0
- * Author:            PixelGrade
+ * Author:            Pixelgrade
  * Author URI:        https://pixelgrade.com/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt

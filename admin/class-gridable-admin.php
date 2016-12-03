@@ -18,7 +18,7 @@
  *
  * @package    Gridable
  * @subpackage Gridable/admin
- * @author     PixelGrade <contact@pixelgrade.com>
+ * @author     Pixelgrade <contact@pixelgrade.com>
  */
 class Gridable_Admin {
 
