@@ -1,8 +1,8 @@
 === Griddable ===
 Contributors: pixelgrade, euthelup, babbardel, razvanonofrei
-Tags: grid, preview, render, row, column
+Tags: grid, preview, render, row, column, inline-edit
 Requires at least: 4.6.1
-Tested up to: 4.6.1
+Tested up to: 4.7.0
 Stable tag: 0.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
