@@ -61,14 +61,20 @@
 		var cursor_position = tinyMCE.activeEditor.selection.getNode();
 
 		// get the last added row based on the last cursor position
-		var last_added_row = tinyMCE.activeEditor.$(cursor_position).closest('.row.gridable-mceItem');
+		var new_added_row = tinyMCE.activeEditor.$(cursor_position).closest('.row.gridable-mceItem');
 
 		// now if this row does not have an element after it, we need to add a ghost <p> so we can click on it
-		if ( last_added_row[0].nextElementSibling === null ) {
-			var bogus_node = tinyMCE.activeEditor.dom.create('p', {}, '<br data-mce-bogus="1">');
-			last_added_row[0].parentNode.insertBefore(bogus_node, last_added_row[0].nextElementSibling);
-
+		if ( new_added_row[0].nextElementSibling === null ) {
+			var last_bogus_node = tinyMCE.activeEditor.dom.create('p', {}, '<br class="last" data-mce-bogus="1">');
+			new_added_row[0].parentNode.insertBefore(last_bogus_node, new_added_row[0].nextElementSibling);
 		}
+
+		// now if this row does not have an element before it, we need to add a ghost <p> so we can click on it
+		// if ( new_added_row[0].previousElementSibling === null ) {
+		// 	var first_bogus_node = tinyMCE.activeEditor.dom.create('p', {}, '<br class="first" data-mce-bogus="1">');
+		// 	new_added_row[0].parentNode.insertBefore(first_bogus_node.children[0], new_added_row[0].parentNode.firstChild);
+		// }
+
 
 		function wpAutoP( content ) {
 			if ( switchEditors && switchEditors.wpautop ) {

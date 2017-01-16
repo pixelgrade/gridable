@@ -5,7 +5,7 @@
 	 * Manager: https://www.tinymce.com/docs/api/tinymce/tinymce.editormanager
 	 * Events: https://www.tinymce.com/docs/api/tinymce/tinymce.editor/#events
 	 */
-	tinymce.PluginManager.add('gridable', function ( editor, url ) {
+	tinymce.PluginManager.add('gridable', function (editor, url) {
 		var toolbar,
 			l10n = gridable_params.l10n,
 			gridable_resizing = false,
@@ -25,16 +25,16 @@
 		editor.addButton('gridable_row_remove', {
 			tooltip: l10n.remove_row,
 			icon: 'dashicon dashicons-no',
-			onclick: function ( event ) {
+			onclick: function (event) {
 				// first get the current selected node and search for his "row" parent
 				var node = editor.selection.getNode(),
 					wrap = editor.$(node).closest('.row.gridable-mceItem');
 
 				// now if there is a parent row, also remove the surrounding <p> tags
-				if ( wrap ) {
-					if ( wrap.nextSibling ) {
+				if (wrap) {
+					if (wrap.nextSibling) {
 						editor.selection.select(wrap.nextSibling);
-					} else if ( wrap.previousSibling ) {
+					} else if (wrap.previousSibling) {
 						editor.selection.select(wrap.previousSibling);
 					} else {
 						editor.selection.select(wrap.parentNode);
@@ -52,7 +52,7 @@
 		editor.addButton('gridable_edit_row', {
 			tooltip: l10n.edit_row,
 			icon: 'dashicon dashicons-edit',
-			onclick: function ( i ) {
+			onclick: function (i) {
 				var node = editor.selection.getNode(),
 					wrap = editor.$(node).parents('.row.gridable-mceItem');
 			}
@@ -68,24 +68,24 @@
 		editor.addButton('gridable_add_col', {
 			tooltip: l10n.add_column,
 			icon: 'dashicon dashicons-plus',
-			onclick: function ( event ) {
+			onclick: function (event) {
 				var node = editor.selection.getNode(),
 					wrap = editor.$(node).closest('.row.gridable-mceItem'),
 					columns = wrap.find('.col.gridable-mceItem'),
 					new_size = 0;
 
-				if ( columns.length > 0 ) {
-					columns.each(function ( i, el ) {
+				if (columns.length > 0) {
+					columns.each(function (i, el) {
 						var current_size = editor.$(el).attr('data-sh-col-attr-size');
 
-						if ( current_size > 2 ) {
+						if (current_size > 2) {
 							editor.$(el).attr('data-sh-col-attr-size', current_size - 2);
 							new_size += 2;
 						}
 					});
 				}
 
-				if ( new_size === 0 ) {
+				if (new_size === 0) {
 					new_size = 12; // asta e
 				}
 
@@ -107,23 +107,44 @@
 		editor.addButton('gridable_remove_col', {
 			tooltip: 'Remove column',
 			icon: 'dashicon dashicons-minus',
-			onclick: function ( event ) {
+			onclick: function (event) {
 				var node = editor.selection.getNode(),
 					column = editor.$(node).closest('.col.gridable-mceItem');
 
 				if (window.confirm('Are you sure you want to remove this column?')) {
+					var column_size = editor.$(column).attr('data-sh-col-attr-size');
+
+					if (column[0].previousElementSibling !== null) {
+						increase_column_size_with(column_size, column[0].previousElementSibling);
+					} else if ( column[0].nextElementSibling !== null ) {
+						increase_column_size_with(column_size, column[0].nextElementSibling);
+					} else {
+						editor.$(node).closest('.row.gridable-mceItem').remove();
+					}
 					column.remove();
 				}
 			}
 		});
 
 		/**
+		 * Incresease the column size based on a given number
+		 * @TODO maybe decrese the number of columns since we already know that 1 column will be deleted
+		 * @param column_size
+		 * @param node
+		 */
+		function increase_column_size_with(column_size, node) {
+			var current_size = editor.$(node).attr('data-sh-col-attr-size');
+
+			editor.$(node).attr('data-sh-col-attr-size', (parseInt(current_size) + parseInt(column_size)));
+		}
+
+		/**
 		 * Create the toolbar with the controls for row
 		 */
-		editor.on('wptoolbar', function ( args ) {
+		editor.on('wptoolbar', function (args) {
 			var column = editor.dom.$(args.element).closest('div.row.gridable-mceItem');
-
-			if ( args.element.tagName === "P" && column.length > 0 ) {
+console.log(args.element);
+			if ( ( args.element.tagName === "P" || args.element.className.indexOf('gridable-mceItem') !== -1 ) && column.length > 0) {
 				args.toolbar = toolbar;
 				args.selection = column[0];
 			}
@@ -134,7 +155,7 @@
 		 * When the editor is initialized, we need to bind the resize events for every resize handler that may appear
 		 */
 		editor.once('preinit', function () {
-			if ( editor.wp && editor.wp._createToolbar ) {
+			if (editor.wp && editor.wp._createToolbar) {
 				toolbar = editor.wp._createToolbar([
 					'gridable_add_col',
 					'gridable_remove_col',
@@ -146,29 +167,29 @@
 		/**
 		 * Whenever the cursor changes it's position the parent may be a grid column, then we need to add handlers
 		 */
-		editor.on('NodeChange', function ( event ) {
+		editor.on('NodeChange', function (event) {
 
-			if ( 'html' === window.getUserSetting('editor') ) {
+			if ('html' === window.getUserSetting('editor')) {
 				return;
 			}
 
 			var wrap = editor.dom.$(event.element).closest('.row.gridable-mceItem');
 
 			// if the parent is a column: Add resize handlers
-			if ( wrap.length > 0 ) {
+			if (wrap.length > 0) {
 				addResize(wrap);
 			}
 		});
 
-		editor.on('keydown', function ( evt ) {
-			if ( 'html' === window.getUserSetting('editor') ) {
+		editor.on('keydown', function (evt) {
+			if ('html' === window.getUserSetting('editor')) {
 				return;
 			}
 
 			/**
 			 * While pressing enter in editor the cursor should not be allowed the leave the column
 			 */
-			if ( evt.keyCode == 13 ) { // if Enter is pressed
+			if (evt.keyCode == 13) { // if Enter is pressed
 				var dom = editor.dom,
 					selection = editor.selection,
 					settings = editor.settings,
@@ -178,12 +199,12 @@
 					containerBlock = parentBlock ? dom.getParent(parentBlock.parentNode, dom.isBlock) : null;
 
 				// Handle enter in column item
-				if ( typeof parentBlock !== "null"
+				if (typeof parentBlock !== "null"
 					&& dom.isEmpty(parentBlock)
 					&& containerBlock !== null
 					&& typeof containerBlock.tagName !== "undefined"
 					&& "DIV" === containerBlock.tagName
-					&& containerBlock.className.indexOf("col gridable-mceItem") !== -1 ) {
+					&& containerBlock.className.indexOf("col gridable-mceItem") !== -1) {
 					editor.execCommand("InsertLineBreak", false, evt);
 					evt.preventDefault();
 					return false;
@@ -195,9 +216,9 @@
 		 * Event triggered when the content is set
 		 * Here we replace the shortcodes like [row] with <div class="row">
 		 */
-		editor.on('SetContent', function ( event ) {
+		editor.on('SetContent', function (event) {
 			// console.group('GetContent');
-			if ( !event.content || 'raw' === event.format || 'savecontent' === event.type || event.selection === true ) {
+			if (!event.content || 'raw' === event.format || 'savecontent' === event.type || event.selection === true) {
 				return;
 			}
 
@@ -208,7 +229,7 @@
 		/**
 		 * When the content is saved we need en ensure that we don't forget resize handlers and rendered shortcodes
 		 */
-		editor.on('SaveContent', function ( event ) {
+		editor.on('SaveContent', function (event) {
 			// we must ensure we don't forget any handlers in front-end
 			event.content = event.content.replace(/<div class=\"gridable__handle\"><\/div>/gm, '');
 		});
@@ -217,8 +238,8 @@
 		 * After we save the content ensure that the shortcodes are rendered back
 		 */
 
-		editor.on('PreProcess', function ( event ) {
-			if ( 'html' === window.getUserSetting('editor') ) {
+		editor.on('PreProcess', function (event) {
+			if ('html' === window.getUserSetting('editor')) {
 				return;
 			}
 
@@ -237,11 +258,11 @@
 			// console.group('gridableRender');
 			var content = this.dom.doc.body.innerHTML;
 
-			if ( typeof content === "undefined" ) {
+			if (typeof content === "undefined") {
 				return;
 			}
 			// first we need to strip grid shortcodes from p's
-			content = remove_p_around_shortcodes( content );
+			content = remove_p_around_shortcodes(content);
 			// same for cols
 			content = maybe_replace_columns(content);
 
@@ -271,7 +292,7 @@
 			var content_process = this.dom.doc.body,
 				restore_needed = false;
 
-			if ( content_process.className.indexOf('gridable--resize-handlers-on') !== -1 ) {
+			if (content_process.className.indexOf('gridable--resize-handlers-on') !== -1) {
 				editor.execCommand('gridableRemoveResize');
 			}
 
@@ -281,7 +302,7 @@
 			var columns = content_process.querySelectorAll('.col.gridable-mceItem'),
 				columnReplacement = '';
 
-			for ( var columnIndex = 0; columnIndex < columns.length; columnIndex++ ) {
+			for (var columnIndex = 0; columnIndex < columns.length; columnIndex++) {
 				// create a new shortcode string like [col size="6"]
 				var columnReplacement = wp.shortcode.string({
 					tag: 'col',
@@ -301,7 +322,7 @@
 			var rows = content_process.querySelectorAll('.row.gridable-mceItem'),
 				rowReplacement = '';
 
-			for ( var rowIndex = 0; rowIndex < rows.length; rowIndex++ ) {
+			for (var rowIndex = 0; rowIndex < rows.length; rowIndex++) {
 				// this is the shortcode representation of the row
 				var rowReplacement = wp.shortcode.string({
 					tag: 'row',
@@ -316,7 +337,7 @@
 				restore_needed = true;
 			}
 
-			if ( restore_needed ) {
+			if (restore_needed) {
 				// @TODO find a better way to save the restored content without rendering it
 				// this.setContent(content_process.innerHTML, { no_events: true});
 				content_process = this.dom.doc.body.innerHTML = content_process.innerHTML;
@@ -329,9 +350,10 @@
 		 * Function to add Column Resize Handlers and bound events
 		 */
 		function addResize($grid) {
-			if ( typeof $grid.attr('data-gridable-bound') !== "undefined" ) {
+			if (typeof $grid.attr('data-gridable-bound') !== "undefined") {
 				return;
-			};
+			}
+			;
 
 			$grid.attr('data-gridable-bound', true).addClass('has-handlers');
 
@@ -340,14 +362,14 @@
 			$grid.on('mouseup mouseleave', onMouseUp);
 		};
 
-		editor.addCommand( 'gridableRemoveResize', function() {
+		editor.addCommand('gridableRemoveResize', function () {
 
 			var $grids = editor.dom.$('.gridable');
 
-			editor.dom.$.each($grids, function(i, grid) {
+			editor.dom.$.each($grids, function (i, grid) {
 				var $grid = editor.dom.$(grid);
 
-				if ( typeof $grid.attr('data-gridable-bound') == "undefined" ) {
+				if (typeof $grid.attr('data-gridable-bound') == "undefined") {
 					return;
 				}
 
@@ -360,7 +382,7 @@
 		});
 
 		function getGridStyle(grid) {
-			var gridStyle = getComputedStyle( grid ),
+			var gridStyle = getComputedStyle(grid),
 				gridWidth = grid.clientWidth - parseFloat(gridStyle.paddingLeft) - parseFloat(gridStyle.paddingRight),
 				colWidth = gridWidth / 12;
 
@@ -376,13 +398,13 @@
 			xStart = e.clientX;
 			xLast = xStart;
 
-			if ( typeof e.target.className !== "undefined" && e.target.className.indexOf('gridable__handle') !== -1 ) {
+			if (typeof e.target.className !== "undefined" && e.target.className.indexOf('gridable__handle') !== -1) {
 				e.preventDefault();
 
 				var grid = e.target.closest('.grid'),
-					$grid = editor.$( grid );
+					$grid = editor.$(grid);
 
-				var gstyle = getGridStyle( grid );
+				var gstyle = getGridStyle(grid);
 
 				gridStyle = gstyle.gridStyle;
 				gridWidth = gstyle.gridWidth;
@@ -390,21 +412,21 @@
 
 				$grid.addClass('grabbing');
 
-				$next = editor.dom.$( e.target ).parent();
+				$next = editor.dom.$(e.target).parent();
 				$prev = $next.prev('.col');
 
 				gridable_resizing = true;
 				updateLoop();
 
-				var width = parseInt( $next[0].offsetWidth, 10 ),
-					colNo = Math.round( width / colWidth );
+				var width = parseInt($next[0].offsetWidth, 10),
+					colNo = Math.round(width / colWidth);
 			}
 		}
 
 		function onMouseMove(e) {
 
-			if ( gridable_resizing ) {
-			// console.log('handler mousemove');
+			if (gridable_resizing) {
+				// console.log('handler mousemove');
 				e.preventDefault();
 				xLast = e.clientX;
 			}
@@ -414,7 +436,7 @@
 			// console.log('handler mouse out');
 
 			var grid = editor.dom.$(e.target).closest('.grid'),
-				$grid = editor.dom.$( grid );
+				$grid = editor.dom.$(grid);
 
 			$grid.removeClass('grabbing');
 
@@ -424,29 +446,29 @@
 
 		function updateLoop() {
 
-			if ( ! gridable_resizing || ! xLast || ! xStart ) {
+			if (!gridable_resizing || !xLast || !xStart) {
 				return false;
 			}
 
 			// console.log(xLast - xStart, colWidth);
 
-			if ( $next.length && $prev.length && typeof xStart !== "unedfined" ) {
+			if ($next.length && $prev.length && typeof xStart !== "unedfined") {
 
-				if ( xLast - xStart >= colWidth ) {
-					var nextSpan = parseInt( $next[0].getAttribute('data-sh-col-attr-size'), 10 ),
-						prevSpan = parseInt( $prev[0].getAttribute('data-sh-col-attr-size'), 10 );
+				if (xLast - xStart >= colWidth) {
+					var nextSpan = parseInt($next[0].getAttribute('data-sh-col-attr-size'), 10),
+						prevSpan = parseInt($prev[0].getAttribute('data-sh-col-attr-size'), 10);
 
-					if ( nextSpan != 2 ) {
+					if (nextSpan != 2) {
 						$next[0].setAttribute('data-sh-col-attr-size', nextSpan - 2);
 						$prev[0].setAttribute('data-sh-col-attr-size', prevSpan + 2);
 
 						xStart += 2 * colWidth;
 					}
-				} else if ( xStart - xLast >= colWidth ) {
-					var nextSpan = parseInt( $next[0].getAttribute('data-sh-col-attr-size'), 10 ),
-						prevSpan = parseInt( $prev[0].getAttribute('data-sh-col-attr-size'), 10 );
+				} else if (xStart - xLast >= colWidth) {
+					var nextSpan = parseInt($next[0].getAttribute('data-sh-col-attr-size'), 10),
+						prevSpan = parseInt($prev[0].getAttribute('data-sh-col-attr-size'), 10);
 
-					if ( prevSpan != 2 ) {
+					if (prevSpan != 2) {
 						$next[0].setAttribute('data-sh-col-attr-size', nextSpan + 2);
 						$prev[0].setAttribute('data-sh-col-attr-size', prevSpan - 2);
 
@@ -469,7 +491,7 @@
 		 * @param content
 		 * @returns {*}
 		 */
-		var remove_p_around_shortcodes = function ( content ) {
+		var remove_p_around_shortcodes = function (content) {
 			/** Starting shortcodes **/
 
 			// This catches anything like <p>[row] [col]</p> or <p>[row]</p>
@@ -512,10 +534,10 @@
 		 * @param content
 		 * @returns {*}
 		 */
-		function maybe_replace_rows( content ) {
+		function maybe_replace_rows(content) {
 			var next = wp.shortcode.next('row', content);
 
-			if ( typeof next !== "undefined" ) {
+			if (typeof next !== "undefined") {
 
 				var row = getRowTemplate({
 					tag: "row",
@@ -538,13 +560,13 @@
 		 * @param content
 		 * @returns {*}
 		 */
-		function maybe_replace_columns( content ) {
+		function maybe_replace_columns(content) {
 
 			//content = remove_p_around_shortcodes(content);
 
 			var next = wp.shortcode.next('col', content);
 
-			if ( typeof next !== "undefined" ) {
+			if (typeof next !== "undefined") {
 
 				// get the HTML template of a column
 				var col = getColTemplate({
@@ -570,7 +592,7 @@
 		 * @param args
 		 * @returns {*}
 		 */
-		function getRowTemplate( args ) {
+		function getRowTemplate(args) {
 
 			var rowSh = wp.template("gridable-grider-row"),
 				atts = get_attrs_string('row', args);
@@ -588,7 +610,7 @@
 		 * @param args
 		 * @returns {*}
 		 */
-		function getColTemplate( args ) {
+		function getColTemplate(args) {
 			var atts = get_attrs_string('col', args),
 				colSh = wp.template("gridable-grider-col");
 
@@ -606,11 +628,11 @@
 		 * @param atts
 		 * @returns {string}
 		 */
-		function get_attrs_string( tag, atts ) {
+		function get_attrs_string(tag, atts) {
 			var atts_string = '';
 
-			if ( typeof atts.attrs.named !== "undefined" && Object.keys(atts.attrs.named).length > 0 ) {
-				Object.keys(atts.attrs.named).forEach(function ( key, index ) {
+			if (typeof atts.attrs.named !== "undefined" && Object.keys(atts.attrs.named).length > 0) {
+				Object.keys(atts.attrs.named).forEach(function (key, index) {
 					atts_string += 'data-sh-' + tag + '-attr-' + key + '=' + atts.attrs.named[key] + '';
 				});
 			}
@@ -624,8 +646,8 @@
 		 * @param content
 		 * @returns {*}
 		 */
-		function wpAutoP( content ) {
-			if ( switchEditors && switchEditors.wpautop ) {
+		function wpAutoP(content) {
+			if (switchEditors && switchEditors.wpautop) {
 				content = switchEditors.wpautop(content);
 			}
 			return content;
@@ -639,8 +661,8 @@
 		 * @param {string} content Content with `<p>` and `<br>` tags inserted
 		 * @return {string}
 		 */
-		function removeAutoP( content ) {
-			if ( switchEditors && switchEditors.pre_wpautop ) {
+		function removeAutoP(content) {
+			if (switchEditors && switchEditors.pre_wpautop) {
 				content = switchEditors.pre_wpautop(content);
 			}
 			return content;
