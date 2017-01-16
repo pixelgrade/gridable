@@ -67,7 +67,7 @@
 		 */
 		editor.addButton('gridable_add_col', {
 			tooltip: l10n.add_column,
-			icon: 'dashicon dashicons-welcome-add-page',
+			icon: 'dashicon dashicons-plus',
 			onclick: function ( event ) {
 				var node = editor.selection.getNode(),
 					wrap = editor.$(node).closest('.row.gridable-mceItem'),
@@ -104,6 +104,19 @@
 			}
 		});
 
+		editor.addButton('gridable_remove_col', {
+			tooltip: 'Remove column',
+			icon: 'dashicon dashicons-minus',
+			onclick: function ( event ) {
+				var node = editor.selection.getNode(),
+					column = editor.$(node).closest('.col.gridable-mceItem');
+
+				if (window.confirm('Are you sure you want to remove this column?')) {
+					column.remove();
+				}
+			}
+		});
+
 		/**
 		 * Create the toolbar with the controls for row
 		 */
@@ -124,7 +137,7 @@
 			if ( editor.wp && editor.wp._createToolbar ) {
 				toolbar = editor.wp._createToolbar([
 					'gridable_add_col',
-					// 'gridable_edit_row',
+					'gridable_remove_col',
 					'gridable_row_remove'
 				]);
 			}
@@ -134,14 +147,14 @@
 		 * Whenever the cursor changes it's position the parent may be a grid column, then we need to add handlers
 		 */
 		editor.on('NodeChange', function ( event ) {
+
 			if ( 'html' === window.getUserSetting('editor') ) {
 				return;
 			}
+
 			var wrap = editor.dom.$(event.element).closest('.row.gridable-mceItem');
 
 			// if the parent is a column: Add resize handlers
-			editor.execCommand('gridableRemoveResize');
-
 			if ( wrap.length > 0 ) {
 				addResize(wrap);
 			}
