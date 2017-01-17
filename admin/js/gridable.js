@@ -1,4 +1,4 @@
-(function () {
+(function ($, exports) {
 	/**
 	 * A TinyMCE plugin which handles the rendering of grid shortcodes
 	 * Docs to consider:
@@ -126,6 +126,18 @@
 			}
 		});
 
+		editor.addButton('gridable_row_options', {
+			tooltip: 'Row Options',
+			icon: 'dashicon dashicons-editor-kitchensink',
+			onclick: function (event) {
+
+				var node = editor.selection.getNode(),
+					column = editor.$(node).closest('.row.gridable-mceItem');
+
+				gridable_row_options_open( column );
+			}
+		});
+
 		/**
 		 * Create the toolbar with the controls for row
 		 */
@@ -154,6 +166,7 @@
 				toolbar = editor.wp._createToolbar([
 					'gridable_add_col',
 					'gridable_remove_col',
+					'gridable_row_options',
 					'gridable_row_remove'
 				]);
 			}
@@ -407,7 +420,7 @@
 
 			if (typeof e.target.className !== "undefined" && e.target.className.indexOf('gridable__handle') !== -1) {
 				e.preventDefault();
-
+				e.stopImmediatePropagation();
 				var grid = e.target.closest('.grid'),
 					$grid = editor.$(grid);
 
@@ -435,7 +448,9 @@
 			if (gridable_resizing) {
 				// console.log('handler mousemove');
 				e.preventDefault();
+				e.stopImmediatePropagation();
 				xLast = e.clientX;
+				return false;
 			}
 		};
 
@@ -696,5 +711,155 @@
 			switchEditors.go('content', 'html');
 			switchEditors.go('content', 'tmce');
 		};
+
+		var gridable_row_options_open = function ( column) {
+
+			var wp_gridable_frame = wp.media.frames.wp_gridable_frame = wp.media({
+				frame : "post",
+				state : 'gridable-ui',
+				title : 'Wazaaaa'
+			});
+
+			wp_gridable_frame.open();
+
+		};
 	});
-})();
+
+	/**
+	 * WordPress modal logic
+	 */
+
+
+	$(document).ready(function () {
+		var MediaFrame = wp.media.view.MediaFrame;
+
+		// first we need to create a state-controller
+		var GridableRowController = wp.media.controller.State.extend({
+
+			initialize: function(){
+
+				this.props = new Backbone.Model({
+					currentShortcode: null,
+					action: 'select',
+					search: null
+				});
+
+				this.props.on( 'change:action', this.refresh, this );
+			},
+
+			// refresh: function() {
+			// 	if ( this.frame && this.frame.toolbar ) {
+			// 		this.frame.toolbar.get().refresh();
+			// 	}
+			// },
+
+			insert: function() {
+				var shortcode = this.props.get('currentShortcode');
+				if ( shortcode ) {
+					send_to_editor( shortcode.formatShortcode() );
+					this.reset();
+					this.frame.close();
+				}
+			},
+
+			reset: function() {
+				this.props.set( 'action', 'select' );
+				this.props.set( 'currentShortcode', null );
+				this.props.set( 'search', null );
+			},
+		});
+
+		wp.media.wp_gridable_frame = MediaFrame.Post.extend( {
+
+			initialize: function() {
+
+				postMediaFrame.prototype.initialize.apply( this, arguments );
+
+				var opts = {
+					id      : 'gridable-ui',
+					search  : false,
+					router  : false,
+					toolbar : 'gridable-ui-toolbar',
+					menu    : 'default',
+					title   : 'Row Options',
+					tabs    : [ 'update' ],
+					priority:  66,
+					content : 'gridable-ui-content-insert',
+				};
+
+				this.gridableController = new GridableRowController( opts );
+
+				this.states.add([ this.gridableController ]);
+
+				this.on( 'content:render:gridable-ui-content-insert', _.bind( this.contentRender, this, 'gridable-ui', 'update' ) );
+
+				this.on( 'toolbar:create:' + id + '-toolbar', this.toolbarCreate, this );
+				this.on( 'toolbar:render:' + id + '-toolbar', this.toolbarRender, this );
+				this.on( 'menu:render:default', this.renderShortcodeUIMenu );
+
+			},
+
+			contentRender: function( id, tab ) {
+
+				this.content.set(
+					new wp.media.View({
+						controller: this,
+						className: 'clearfix gridable-ui-content gridable-ui-content-' + tab
+					})
+				);
+			},
+
+			renderShortcodeUIMenu: function( view ) {
+
+				// Add a menu separator link.
+				view.set({
+					'shortcode-ui-separator': new wp.media.View({
+						className: 'separator',
+						priority: 65
+					})
+				});
+			},
+
+			toolbarRender: function( toolbar ) {},
+
+			toolbarCreate : function( toolbar ) {
+				var text = shortcodeUIData.strings.media_frame_toolbar_insert_label;
+				if ( 'currentShortcode' in this.options ) {
+					text = shortcodeUIData.strings.media_frame_toolbar_update_label;
+				}
+
+				toolbar.view = new  Toolbar( {
+					controller : this,
+					items: {
+						insert: {
+							text: text,
+							style: 'primary',
+							priority: 80,
+							requires: false,
+							click: this.insertAction,
+						}
+					}
+				} );
+			},
+
+			insertAction: function() {
+				/* Trigger render_destroy */
+				/*
+				 * Action run before the shortcode overlay is destroyed.
+				 *
+				 * Called as `shortcode-ui.render_destroy`.
+				 *
+				 * @param shortcodeModel (object)
+				 *           Reference to the shortcode model used in this overlay.
+				 */
+				var hookName = 'gridable-ui.render_destroy';
+				var shortcodeModel = this.controller.state().props.get( 'currentShortcode' );
+				wp.shortcake.hooks.doAction( hookName, shortcodeModel );
+
+				this.controller.state().insert();
+
+			},
+		});
+	});
+
+})(jQuery, window);
