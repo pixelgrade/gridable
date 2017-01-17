@@ -98,8 +98,8 @@ class Gridable_Admin {
 		$col_classes = array(
 			'grid__item'
 		); ?>
-		<script type="text/html" id="tmpl-gridable-grider-row"><div class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_row_classes', $row_classes ) ); ?>" {{data.atts}} data-gridable-row="1" data-mce-resize="false" data-mce-placeholder="1">{{{data.content}}}</div></script>
-		<script type="text/html" id="tmpl-gridable-grider-col"><div class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_col_classes', $col_classes ) ); ?>" {{data.atts}} data-mce-resize="false" data-mce-placeholder="1"><div class="gridable__handle"></div>{{{data.content}}}</div></script>
+		<script type="text/html" id="tmpl-gridable-grider-row"><div contenteditable="false" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_row_classes', $row_classes ) ); ?>" {{data.atts}} data-gridable-row="1" data-mce-resize="false" data-mce-placeholder="1">{{{data.content}}}</div></script>
+		<script type="text/html" id="tmpl-gridable-grider-col"><div contenteditable="true" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_col_classes', $col_classes ) ); ?>" {{data.atts}} data-mce-resize="false" data-mce-placeholder="1"><div class="gridable__handle"></div>{{{data.content}}}</div></script>
 	<?php }
 
 	function add_grider_tinymce_plugin( $plugin_array ) {
