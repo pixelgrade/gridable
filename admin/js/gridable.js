@@ -127,26 +127,21 @@
 		});
 
 		/**
-		 * Incresease the column size based on a given number
-		 * @TODO maybe decrese the number of columns since we already know that 1 column will be deleted
-		 * @param column_size
-		 * @param node
-		 */
-		function increase_column_size_with(column_size, node) {
-			var current_size = editor.$(node).attr('data-sh-col-attr-size');
-
-			editor.$(node).attr('data-sh-col-attr-size', (parseInt(current_size) + parseInt(column_size)));
-		}
-
-		/**
 		 * Create the toolbar with the controls for row
 		 */
 		editor.on('wptoolbar', function (args) {
-			var column = editor.dom.$(args.element).closest('div.row.gridable-mceItem');
-console.log(args.element);
-			if ( ( args.element.tagName === "P" || args.element.className.indexOf('gridable-mceItem') !== -1 ) && column.length > 0) {
+			var selected_row = editor.dom.$(args.element).closest('div.row.gridable-mceItem');
+
+			// if a row is focused we display the toolbar and add a CSS class
+			if ( ( args.element.tagName === "P" || args.element.className.indexOf('gridable-mceItem') !== -1 ) && selected_row.length > 0) {
 				args.toolbar = toolbar;
-				args.selection = column[0];
+				args.selection = selected_row[0];
+				selected_row.addClass('is-focused');
+			} else { // we need to ensure that the focused class is removed
+				var $rows = editor.dom.$('div.row.gridable-mceItem.is-focused');
+				if ( $rows.length > 0 ) {
+					$rows = $rows.removeClass('is-focused');
+				}
 			}
 		});
 
@@ -346,6 +341,18 @@ console.log(args.element);
 			// console.groupEnd('gridableRestore');
 		});
 
+
+		// if this is not enough, you are free to hook this
+		// GridableCallbacks.executeCallbacks = function(data) {
+		//
+		// 	$.each(GridableCallbacks.callbacks, function(key, callback) {
+		// 		if ($.isFunction(callback)) {
+		// 			console.log('you go ' + key );
+		// 			callback(data, editor);
+		// 		}
+		// 	});
+		// }
+
 		/**
 		 * Function to add Column Resize Handlers and bound events
 		 */
@@ -528,6 +535,18 @@ console.log(args.element);
 
 			return content;
 		};
+
+		/**
+		 * Incresease the column size based on a given number
+		 * @TODO maybe decrese the number of columns since we already know that 1 column will be deleted
+		 * @param column_size
+		 * @param node
+		 */
+		function increase_column_size_with(column_size, node) {
+			var current_size = editor.$(node).attr('data-sh-col-attr-size');
+
+			editor.$(node).attr('data-sh-col-attr-size', (parseInt(current_size) + parseInt(column_size)));
+		}
 
 		/**
 		 * Render [row] shortcodes

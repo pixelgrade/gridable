@@ -75,7 +75,6 @@
 		// 	new_added_row[0].parentNode.insertBefore(first_bogus_node.children[0], new_added_row[0].parentNode.firstChild);
 		// }
 
-
 		function wpAutoP( content ) {
 			if ( switchEditors && switchEditors.wpautop ) {
 				content = switchEditors.wpautop(content);

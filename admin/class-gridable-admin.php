@@ -75,6 +75,8 @@ class Gridable_Admin {
 			'new_column_content' => esc_html__( 'Content', 'gridable' )
 		) );
 
+		wp_localize_script( 'gridable-editor', 'GridableCallbacks', null );
+
 		global $editor_styles;
 		if ( ! empty( $editor_styles ) && is_array($editor_styles) ) {
 			$editor_styles = array_merge( $editor_styles, array(

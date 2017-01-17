@@ -36,7 +36,7 @@
 		}
 	}
 
-	&:hover {
+	&:hover, &.is-focused {
 		&, > .col {
 			border-color: #E6E6E6;
 		}
