@@ -79,9 +79,21 @@ class Gridable_Admin {
 
 		wp_localize_script( 'gridable-editor', 'gridable_addons', apply_filters('gridable_addons', array() ) );
 
-		wp_localize_script( 'gridable-editor', 'gridable_row_options', apply_filters('gridable_row_options', array() ) );
+		wp_localize_script( 'gridable-editor', 'gridable_row_options', apply_filters('gridable_row_options', array(
+			'cols_nr' => array(
+				'default' => 2
+			)
+		) ) );
 
-		wp_localize_script( 'gridable-editor', 'gridable_colummn_options', apply_filters('gridable_colummn_options', array() ) );
+		// @todo load only when needed
+		wp_enqueue_script( 'wp-color-picker' );
+		wp_enqueue_style( 'wp-color-picker' );
+
+		wp_localize_script( 'gridable-editor', 'gridable_column_options', apply_filters('gridable_column_options', array(
+			'size' => array(
+				'default' => 6
+			)
+		) ) );
 
 		global $editor_styles;
 		if ( ! empty( $editor_styles ) && is_array($editor_styles) ) {

@@ -330,12 +330,10 @@
 					// create a new shortcode string like [col size="6"]
 					var columnReplacement = wp.shortcode.string({
 						tag: 'col',
-						attrs: {size: columns[columnIndex].getAttribute('data-sh-col-attr-size')},
+						// attrs: {size: columns[columnIndex].getAttribute('data-sh-col-attr-size')},
+						attrs: get_valid_column_attrs( columns[columnIndex] ),
 						content: columns[columnIndex].innerHTML.trim()
 					});
-
-					// console.debug(columns[columnIndex].outerHTML);
-					// console.debug(columnReplacement);
 
 					// now replace the column html with the [col] shortcode
 					content_process.innerHTML = content_process.innerHTML.replace(columns[columnIndex].outerHTML, columnReplacement);
@@ -350,11 +348,9 @@
 					// this is the shortcode representation of the row
 					var rowReplacement = wp.shortcode.string({
 						tag: 'row',
-						attrs: {cols_nr: rows[rowIndex].getAttribute('data-sh-row-attr-cols_nr')},
+						attrs: get_valid_row_attrs( rows[rowIndex] ),
 						content: rows[rowIndex].innerHTML.trim()
 					});
-
-					// console.debug(rows[rowIndex].outerHTML);x
 
 					// replace the row html with the shortcode
 					content_process.innerHTML = content_process.innerHTML.replace(rows[rowIndex].outerHTML, rowReplacement);
@@ -369,6 +365,52 @@
 				}
 				// console.groupEnd('gridableRestore');
 			});
+
+
+			function get_valid_row_attrs( el ) {
+				var to_return = {};
+
+				var needle = 'data-sh-row-attr-';
+
+				Array.prototype.slice.call( el.attributes ).forEach(function(item) {
+					var attr_name = item.name.replace(needle, '' );
+
+					if ( item.name.indexOf( needle ) !== -1 && attr_name in gridable_row_options ) {
+
+						if ( item.value !== '' ) {
+							to_return[ attr_name ] = item.value;
+						} else if ( typeof gridable_row_options[ attr_name ].default !== 'undefined' ) {
+							to_return[ attr_name ] = gridable_row_options[ attr_name ].default;
+						}
+					}
+				});
+
+				return to_return;
+			}
+
+
+			function get_valid_column_attrs( el ) {
+
+				var to_return = {};
+				var needle = 'data-sh-col-attr-';
+
+				Array.prototype.slice.call( el.attributes ).forEach(function(item) {
+
+					var attr_name = item.name.replace(needle, '' );
+
+					if ( item.name.indexOf( needle ) !== -1 && attr_name in gridable_column_options ) {
+
+						if ( item.value !== '' ) {
+							to_return[ attr_name ] = item.value;
+						} else if ( typeof gridable_column_options[ attr_name ].default !== 'undefined' ) {
+							to_return[ attr_name ] = gridable_column_options[ attr_name ].default;
+						}
+					}
+				});
+
+				return to_return;
+			}
+
 
 			/**
 			 * Function to add Column Resize Handlers and bound events
@@ -575,10 +617,12 @@
 
 				if (typeof next !== "undefined") {
 
+					// console.log( next.shortcode.attrs.named );
+
 					var row = getRowTemplate({
 						tag: "row",
 						content: next.shortcode.content,
-						attrs: next.shortcode.attrs
+						atts: next.shortcode.attrs.named
 					});
 
 					var new_content = content.replace(next.content, row);
@@ -608,7 +652,7 @@
 					var col = getColTemplate({
 						tag: "col",
 						content: next.shortcode.content,
-						atts: next.shortcode.attrs
+						atts: next.shortcode.attrs.named
 					});
 
 					var new_content = content.replace(next.content, col);
@@ -630,7 +674,7 @@
 			 */
 			function getRowTemplate(args) {
 				var rowSh = wp.template("gridable-grider-row"),
-					atts = get_attrs_string('row', args);
+					atts = get_attrs_string('row', args.atts);
 
 				return rowSh({
 					content: args.content, //wpAutoP(args.content),
@@ -646,9 +690,8 @@
 			 * @returns {*}
 			 */
 			function getColTemplate(args) {
-				var atts = get_attrs_string('col', args),
+				var atts = get_attrs_string('col', args.atts),
 					colSh = wp.template("gridable-grider-col");
-
 				return colSh({
 					content: args.content,
 					classes: 'col gridable-mceItem ',
@@ -666,9 +709,10 @@
 			function get_attrs_string(tag, atts) {
 				var atts_string = '';
 
-				if (typeof atts.named !== "undefined" && Object.keys(atts.named).length > 0 ) {
-					Object.keys(atts.named).forEach(function (key, index) {
-						atts_string += 'data-sh-' + tag + '-attr-' + key + '=' + atts.named[key] + '';
+				if (typeof atts !== "undefined" && Object.keys(atts).length > 0 ) {
+					Object.keys(atts).forEach(function (key, index) {
+						// console.debug( key );
+						atts_string += ' data-sh-' + tag + '-attr-' + key + '=' + atts[key] + ' ';
 					});
 				}
 
@@ -741,6 +785,7 @@
 					},
 
 					insert: function() {
+						debugger;
 						var shortcode = this.props.get('currentShortcode');
 						if ( shortcode ) {
 							send_to_editor( shortcode.formatShortcode() );
@@ -798,18 +843,30 @@
 					},
 
 					render: function() {
-						// this.$el.html('');
 
-						// console.log( this.$el );
-						//
-						//
-						// return ;
+						switch( this.controller.frame.options.type ) {
+							case 'row' :
+								this.renderRowOptions();
+								break;
+							case 'column' :
+								this.renderColumnOptions();
+								break;
+							default:
+								console.log( 'render what?');
+								break;
+						}
+					},
+
+					renderRowOptions() {
 						var atts = this.controller.frame.options.atts,
 							$modal = this.$el;
-
 						if ( typeof gridable_row_options !== "undefined" ) {
 
 							_.each( gridable_row_options, function ( config, key ) {
+
+								if ( 'cols_nr' === key || 'size' === key ) {
+									return true;
+								}
 
 								if ( typeof config.type === 'undefined' ) {
 									config.type = 'text';
@@ -828,17 +885,34 @@
 								$modal.append( el );
 							});
 						}
+					},
 
-						return true;
-						if ( typeof gridable_addons !== "undefined" ) {
+					renderColumnOptions() {
+						var atts = this.controller.frame.options.atts,
+							$modal = this.$el;
+						if ( typeof gridable_column_options !== "undefined" ) {
 
-							_.each( gridable_addons, function ( key ) {
-								var tmpl_key = 'gridable-row-option-' + key;
+							_.each( gridable_column_options, function ( config, key ) {
+
+								if ( 'cols_nr' === key || 'size' === key ) {
+									return true;
+								}
+
+								if ( typeof config.type === 'undefined' ) {
+									config.type = 'text';
+								}
+
+								if ( typeof config.default === 'undefined' ) {
+									config.default = 'Default';
+								}
+
+								var tmpl_key = 'gridable-row-option-' + config.type;
+
 								var templ = wp.media.template( tmpl_key );
 
-								var el = templ(atts);
+								var el = templ({ key: key, label: config.label, value: config.default });
 
-
+								$modal.append( el );
 							});
 						}
 					},
@@ -881,7 +955,6 @@
 					},
 
 				});
-
 
 				var mediaFrame = postMediaFrame.extend( {
 
@@ -977,13 +1050,12 @@
 						 * @param shortcodeModel (object)
 						 *           Reference to the shortcode model used in this overlay.
 						 */
-						var hookName = 'shortcode-ui.render_destroy';
-						var shortcodeModel = this.controller.state().props.get( 'currentShortcode' );
-						wp.shortcake.hooks.doAction( hookName, shortcodeModel );
+						// var hookName = 'shortcode-ui.render_destroy';
+						// var shortcodeModel = this.controller.state().props.get( 'currentShortcode' );
+						// wp.shortcake.hooks.doAction( hookName, shortcodeModel );
 
 						this.controller.state().insert();
 					},
-
 				} );
 
 				function open( type, editor, element ) {
@@ -1009,7 +1081,6 @@
 					var all_atts = el.attributes,
 						sh_atts = {};
 
-
 					var needle = 'data-sh-col-attr-';
 
 					if ( needle === 'row' ) {
@@ -1018,7 +1089,6 @@
 
 
 					Array.prototype.slice.call( el.attributes ).forEach(function(item) {
-
 						if ( item.name.indexOf( needle ) !== -1 ) {
 							sh_atts[ item.name.replace(needle, '') ] = item.value;
 						}
