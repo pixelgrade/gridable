@@ -77,6 +77,12 @@ class Gridable_Admin {
 
 		wp_localize_script( 'gridable-editor', 'GridableCallbacks', null );
 
+		wp_localize_script( 'gridable-editor', 'gridable_addons', apply_filters('gridable_addons', array() ) );
+
+		wp_localize_script( 'gridable-editor', 'gridable_row_options', apply_filters('gridable_row_options', array() ) );
+
+		wp_localize_script( 'gridable-editor', 'gridable_colummn_options', apply_filters('gridable_colummn_options', array() ) );
+
 		global $editor_styles;
 		if ( ! empty( $editor_styles ) && is_array($editor_styles) ) {
 			$editor_styles = array_merge( $editor_styles, array(
@@ -98,8 +104,8 @@ class Gridable_Admin {
 		$col_classes = array(
 			'grid__item'
 		); ?>
-		<script type="text/html" id="tmpl-gridable-grider-row"><div contenteditable="false" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_row_classes', $row_classes ) ); ?>" {{data.atts}} data-gridable-row="1" data-mce-resize="false" data-mce-placeholder="1">{{{data.content}}}</div></script>
-		<script type="text/html" id="tmpl-gridable-grider-col"><div contenteditable="true" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_col_classes', $col_classes ) ); ?>" {{data.atts}} data-mce-resize="false" data-mce-placeholder="1"><div class="gridable__handle"></div>{{{data.content}}}</div></script>
+<script type="text/html" id="tmpl-gridable-grider-row"><div contenteditable="false" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_row_classes', $row_classes ) ); ?>" {{data.atts}} data-gridable-row="1" data-mce-resize="false" data-mce-placeholder="1">{{{data.content}}}</div></script>
+<script type="text/html" id="tmpl-gridable-grider-col"><div contenteditable="true" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_col_classes', $col_classes ) ); ?>" {{data.atts}} data-mce-resize="false" data-mce-placeholder="1"><div class="gridable__handle"></div>{{{data.content}}}</div></script>
 	<?php
 		do_action( 'gridable_print_row_options_templates' );
 		do_action( 'gridable_print_column_options_templates' );

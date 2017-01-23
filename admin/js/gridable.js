@@ -137,7 +137,7 @@
 					var node = editor.selection.getNode(),
 						row = editor.$(node).closest('.row.gridable-mceItem');
 
-					GridableOptionsModal.open( 'row', editor, row );
+					GridableOptionsModal.open( 'row', editor, row[0] );
 				}
 			});
 
@@ -149,7 +149,7 @@
 					var node = editor.selection.getNode(),
 						column = editor.$(node).closest('.col.gridable-mceItem');
 
-					GridableOptionsModal.open( 'column', editor, column );
+					GridableOptionsModal.open( 'column', editor, column[0] );
 				}
 			});
 
@@ -608,7 +608,7 @@
 					var col = getColTemplate({
 						tag: "col",
 						content: next.shortcode.content,
-						attrs: next.shortcode.attrs
+						atts: next.shortcode.attrs
 					});
 
 					var new_content = content.replace(next.content, col);
@@ -629,7 +629,6 @@
 			 * @returns {*}
 			 */
 			function getRowTemplate(args) {
-
 				var rowSh = wp.template("gridable-grider-row"),
 					atts = get_attrs_string('row', args);
 
@@ -667,9 +666,9 @@
 			function get_attrs_string(tag, atts) {
 				var atts_string = '';
 
-				if (typeof atts.attrs.named !== "undefined" && Object.keys(atts.attrs.named).length > 0) {
-					Object.keys(atts.attrs.named).forEach(function (key, index) {
-						atts_string += 'data-sh-' + tag + '-attr-' + key + '=' + atts.attrs.named[key] + '';
+				if (typeof atts.named !== "undefined" && Object.keys(atts.named).length > 0 ) {
+					Object.keys(atts.named).forEach(function (key, index) {
+						atts_string += 'data-sh-' + tag + '-attr-' + key + '=' + atts.named[key] + '';
 					});
 				}
 
@@ -723,12 +722,12 @@
 
 				var MediaController = wp.media.controller.State.extend({
 
-					initialize: function(){
+					initialize: function( opts ){
 
 						this.props = new Backbone.Model({
 							currentShortcode: null,
 							action: 'update',
-							search: null
+							sh_atts: null
 						});
 
 						this.props.on( 'change:action', this.refresh, this );
@@ -739,15 +738,6 @@
 						if ( this.frame && this.frame.toolbar ) {
 							this.frame.toolbar.get().refresh();
 						}
-					},
-
-					search: function( searchTerm ) {
-						var pattern = new RegExp( searchTerm, "gi" );
-						var filteredModels = sui.shortcodes.filter( function( model ) {
-							pattern.lastIndex = 0;
-							return pattern.test( model.get( "label" ) );
-						});
-						return filteredModels;
 					},
 
 					insert: function() {
@@ -762,9 +752,28 @@
 					reset: function() {
 						this.props.set( 'action', 'select' );
 						this.props.set( 'currentShortcode', null );
-						this.props.set( 'search', null );
+					},
+				});
+
+				var Toolbar = wp.media.view.Toolbar.extend({
+					initialize : function() {
+						_.defaults(this.options, {
+							requires : false
+						});
+						// Call 'initialize' directly on the parent class.
+						wp.media.view.Toolbar.prototype.initialize.apply(this, arguments);
 					},
 
+					refresh : function() {
+						var action = this.controller.state().props.get('action');
+						if( this.get('insert') ) {
+							this.get('insert').model.set('disabled', action == 'select');
+						}
+						/**
+						 * call 'refresh' directly on the parent class
+						 */
+						wp.media.view.Toolbar.prototype.refresh.apply(this, arguments);
+					}
 				});
 
 				var Gridable_UI = wp.Backbone.View.extend({
@@ -789,7 +798,49 @@
 					},
 
 					render: function() {
-						this.$el.html('');
+						// this.$el.html('');
+
+						// console.log( this.$el );
+						//
+						//
+						// return ;
+						var atts = this.controller.frame.options.atts,
+							$modal = this.$el;
+
+						if ( typeof gridable_row_options !== "undefined" ) {
+
+							_.each( gridable_row_options, function ( config, key ) {
+
+								if ( typeof config.type === 'undefined' ) {
+									config.type = 'text';
+								}
+
+								if ( typeof config.default === 'undefined' ) {
+									config.default = 'Default';
+								}
+
+								var tmpl_key = 'gridable-row-option-' + config.type;
+
+								var templ = wp.media.template( tmpl_key );
+
+								var el = templ({ key: key, label: config.label, value: config.default });
+
+								$modal.append( el );
+							});
+						}
+
+						return true;
+						if ( typeof gridable_addons !== "undefined" ) {
+
+							_.each( gridable_addons, function ( key ) {
+								var tmpl_key = 'gridable-row-option-' + key;
+								var templ = wp.media.template( tmpl_key );
+
+								var el = templ(atts);
+
+
+							});
+						}
 					},
 
 					cancelSelect: function( e ) {
@@ -802,7 +853,8 @@
 
 					select: function(e) {
 						this.controller.props.set( 'action', 'update' );
-						var target    = $(e.currentTarget).closest( '.shortcode-list-item' );
+
+						var target    = $(e.currentTarget).closest( '.row' );
 						var shortcode = sui.shortcodes.findWhere( { shortcode_tag: target.attr( 'data-shortcode' ) } );
 
 						if ( ! shortcode ) {
@@ -830,26 +882,6 @@
 
 				});
 
-				var Toolbar = wp.media.view.Toolbar.extend({
-					initialize : function() {
-						_.defaults(this.options, {
-							requires : false
-						});
-						// Call 'initialize' directly on the parent class.
-						wp.media.view.Toolbar.prototype.initialize.apply(this, arguments);
-					},
-
-					refresh : function() {
-						var action = this.controller.state().props.get('action');
-						if( this.get('insert') ) {
-							this.get('insert').model.set('disabled', action == 'select');
-						}
-						/**
-						 * call 'refresh' directly on the parent class
-						 */
-						wp.media.view.Toolbar.prototype.refresh.apply(this, arguments);
-					}
-				});
 
 				var mediaFrame = postMediaFrame.extend( {
 
@@ -958,15 +990,41 @@
 
 					wp.media.view.MediaFrame.Post = mediaFrame;
 
+					var atts = get_shortcode_atts( type, element );
+					
 					// @TODO process shortcode
 					var options = {
 						frame: 'post',
 						state: 'gridable-ui',
-						type: type
+						type: type,
+						atts: atts
 					};
 
 					wp.media.editor.remove( editor );
 					wp.media.editor.open( editor, options );
+				}
+				
+				function get_shortcode_atts( type, el ) {
+
+					var all_atts = el.attributes,
+						sh_atts = {};
+
+
+					var needle = 'data-sh-col-attr-';
+
+					if ( needle === 'row' ) {
+						needle = 'data-sh-row-attr-';
+					}
+
+
+					Array.prototype.slice.call( el.attributes ).forEach(function(item) {
+
+						if ( item.name.indexOf( needle ) !== -1 ) {
+							sh_atts[ item.name.replace(needle, '') ] = item.value;
+						}
+					});
+
+					return sh_atts;
 				}
 
 				return {
