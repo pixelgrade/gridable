@@ -33,7 +33,7 @@
 
 		var result = tinyMCE.activeEditor.getContent({format : 'raw'});
 
-		equal(result, '<div class="col gridable-mceItem  " data-sh-col-attr-size="6" data-mce-placeholder="1"><p>Content</p></div>');
+		equal(result, '<div class="col gridable-mceItem  " data-sh-column-attr-size="6" data-mce-placeholder="1"><p>Content</p></div>');
 	});
 
 	/**
@@ -43,7 +43,7 @@
 	 * Check if the result is a correct shortcode
 	 */
 	test("Test column restore command", function() {
-		editor.setContent('<div class="col gridable-mceItem  " data-sh-col-attr-size="6" data-mce-placeholder="1"><p>Content</p></div>');
+		editor.setContent('<div class="col gridable-mceItem  " data-sh-column-attr-size="6" data-mce-placeholder="1"><p>Content</p></div>');
 		editor.execCommand('gridableRestore');
 		equal(editor.getContent(), '<p>[col size=\"6\"]</p><p>Content</p><p>[/col]</p>');
 	});
@@ -66,12 +66,12 @@
 
 		equal(editor.getContent(), '<p>[col size="6"]</p><p>Cont</p><p>ent</p><p>[/col]</p>');
 
-		editor.setContent('<div class="col gridable-mceItem  " data-sh-col-attr-size="6" data-mce-placeholder="1"><p>Content</p></div>');
+		editor.setContent('<div class="col gridable-mceItem  " data-sh-column-attr-size="6" data-mce-placeholder="1"><p>Content</p></div>');
 		Utils.setSelection('p', 4);
 
 		Utils.pressEnter();
 
-		equal(tinyMCE.activeEditor.getContent({format : 'raw'}), '<div class="col gridable-mceItem  " data-sh-col-attr-size="6" data-mce-placeholder="1"><p>Cont</p><p>ent</p></div>');
+		equal(tinyMCE.activeEditor.getContent({format : 'raw'}), '<div class="col gridable-mceItem  " data-sh-column-attr-size="6" data-mce-placeholder="1"><p>Cont</p><p>ent</p></div>');
 		editor.execCommand('gridableRestore');
 
 		equal(tinyMCE.activeEditor.getContent({format : 'raw'}), '<p>[col size="6"]</p><p>Cont</p><p>ent</p><p>[/col]</p>');
@@ -93,11 +93,11 @@
 		result = result.replace('/<div class=\"gridable__handle\">&nbsp;</div>/', '');
 		result = result.replace('/<div class=\"gridable__handle\"></div>/', '');
 
-		equal(result, '<div class=\"row gridable-mceItem \" data-sh-row-attr-cols_nr=\"2\" data-gridable-row=\"1\" data-mce-placeholder=\"1\"><div class=\"col gridable-mceItem  \" data-sh-col-attr-size=\"6\" data-mce-placeholder=\"1\"><p>Content</p></div><div class=\"col gridable-mceItem  \" data-sh-col-attr-size=\"6\" data-mce-placeholder=\"1\"><p>Content</p></div></div>');
+		equal(result, '<div class=\"row gridable-mceItem \" data-sh-row-attr-cols_nr=\"2\" data-gridable-row=\"1\" data-mce-placeholder=\"1\"><div class=\"col gridable-mceItem  \" data-sh-column-attr-size=\"6\" data-mce-placeholder=\"1\"><p>Content</p></div><div class=\"col gridable-mceItem  \" data-sh-column-attr-size=\"6\" data-mce-placeholder=\"1\"><p>Content</p></div></div>');
 	});
 
 	test("Test row restore command", function() {
-		editor.setContent('<div class=\"row gridable-mceItem \" data-sh-row-attr-cols_nr=\"2\" data-gridable-row=\"1\" data-mce-placeholder=\"1\"><div class=\"col gridable-mceItem  \" data-sh-col-attr-size=\"6\" data-mce-placeholder=\"1\"><p>Content</p></div><div class=\"col gridable-mceItem  \" data-sh-col-attr-size=\"6\" data-mce-placeholder=\"1\"><p>Content</p></div></div>');
+		editor.setContent('<div class=\"row gridable-mceItem \" data-sh-row-attr-cols_nr=\"2\" data-gridable-row=\"1\" data-mce-placeholder=\"1\"><div class=\"col gridable-mceItem  \" data-sh-column-attr-size=\"6\" data-mce-placeholder=\"1\"><p>Content</p></div><div class=\"col gridable-mceItem  \" data-sh-column-attr-size=\"6\" data-mce-placeholder=\"1\"><p>Content</p></div></div>');
 		editor.execCommand('gridableRestore');
 		equal(editor.getContent(), '<p>[row cols_nr=\"2\"][col size=\"6\"]</p><p>Content</p><p>[/col][col size=\"6\"]</p><p>Content</p><p>[/col][/row]</p>');
 	});

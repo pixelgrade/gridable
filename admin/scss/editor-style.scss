@@ -9,12 +9,12 @@
 	display: flex;
 }
 
-[data-sh-col-attr-size] {
+[data-sh-column-attr-size] {
 	flex: 0 0 100%;
 }
 
 @for $i from 1 through 6 {
-	[data-sh-col-attr-size="#{2*$i}"] {
+	[data-sh-column-attr-size="#{2*$i}"] {
 		flex-basis: percentage($i/6)
 	}
 }

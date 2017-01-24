@@ -79,10 +79,10 @@
 
 					if (columns.length > 0) {
 						columns.each(function (i, el) {
-							var current_size = editor.$(el).attr('data-sh-col-attr-size');
+							var current_size = editor.$(el).attr('data-sh-column-attr-size');
 
 							if (current_size > 2) {
-								editor.$(el).attr('data-sh-col-attr-size', current_size - 2);
+								editor.$(el).attr('data-sh-column-attr-size', current_size - 2);
 								new_size += 2;
 							}
 						});
@@ -115,7 +115,7 @@
 						column = editor.$(node).closest('.col.gridable-mceItem');
 
 					if (window.confirm('Are you sure you want to remove this column?')) {
-						var column_size = editor.$(column).attr('data-sh-col-attr-size');
+						var column_size = editor.$(column).attr('data-sh-column-attr-size');
 
 						if (column[0].previousElementSibling !== null) {
 							increase_column_size_with(column_size, column[0].previousElementSibling);
@@ -330,7 +330,7 @@
 					// create a new shortcode string like [col size="6"]
 					var columnReplacement = wp.shortcode.string({
 						tag: 'col',
-						// attrs: {size: columns[columnIndex].getAttribute('data-sh-col-attr-size')},
+						// attrs: {size: columns[columnIndex].getAttribute('data-sh-column-attr-size')},
 						attrs: get_valid_column_attrs( columns[columnIndex] ),
 						content: columns[columnIndex].innerHTML.trim()
 					});
@@ -392,7 +392,7 @@
 			function get_valid_column_attrs( el ) {
 
 				var to_return = {};
-				var needle = 'data-sh-col-attr-';
+				var needle = 'data-sh-column-attr-';
 
 				Array.prototype.slice.call( el.attributes ).forEach(function(item) {
 
@@ -521,22 +521,22 @@
 				if ($next.length && $prev.length && typeof xStart !== "unedfined") {
 
 					if (xLast - xStart >= colWidth) {
-						var nextSpan = parseInt($next[0].getAttribute('data-sh-col-attr-size'), 10),
-							prevSpan = parseInt($prev[0].getAttribute('data-sh-col-attr-size'), 10);
+						var nextSpan = parseInt($next[0].getAttribute('data-sh-column-attr-size'), 10),
+							prevSpan = parseInt($prev[0].getAttribute('data-sh-column-attr-size'), 10);
 
 						if (nextSpan != 2) {
-							$next[0].setAttribute('data-sh-col-attr-size', nextSpan - 2);
-							$prev[0].setAttribute('data-sh-col-attr-size', prevSpan + 2);
+							$next[0].setAttribute('data-sh-column-attr-size', nextSpan - 2);
+							$prev[0].setAttribute('data-sh-column-attr-size', prevSpan + 2);
 
 							xStart += 2 * colWidth;
 						}
 					} else if (xStart - xLast >= colWidth) {
-						var nextSpan = parseInt($next[0].getAttribute('data-sh-col-attr-size'), 10),
-							prevSpan = parseInt($prev[0].getAttribute('data-sh-col-attr-size'), 10);
+						var nextSpan = parseInt($next[0].getAttribute('data-sh-column-attr-size'), 10),
+							prevSpan = parseInt($prev[0].getAttribute('data-sh-column-attr-size'), 10);
 
 						if (prevSpan != 2) {
-							$next[0].setAttribute('data-sh-col-attr-size', nextSpan + 2);
-							$prev[0].setAttribute('data-sh-col-attr-size', prevSpan - 2);
+							$next[0].setAttribute('data-sh-column-attr-size', nextSpan + 2);
+							$prev[0].setAttribute('data-sh-column-attr-size', prevSpan - 2);
 
 							xStart -= 2 * colWidth;
 						}
@@ -602,9 +602,9 @@
 			 * @param node
 			 */
 			function increase_column_size_with(column_size, node) {
-				var current_size = editor.$(node).attr('data-sh-col-attr-size');
+				var current_size = editor.$(node).attr('data-sh-column-attr-size');
 
-				editor.$(node).attr('data-sh-col-attr-size', (parseInt(current_size) + parseInt(column_size)));
+				editor.$(node).attr('data-sh-column-attr-size', (parseInt(current_size) + parseInt(column_size)));
 			}
 
 			/**
@@ -690,7 +690,7 @@
 			 * @returns {*}
 			 */
 			function getColTemplate(args) {
-				var atts = get_attrs_string('col', args.atts),
+				var atts = get_attrs_string('column', args.atts),
 					colSh = wp.template("gridable-grider-col");
 				return colSh({
 					content: args.content,
@@ -767,13 +767,7 @@
 				var MediaController = wp.media.controller.State.extend({
 
 					initialize: function( opts ){
-
-						this.props = new Backbone.Model({
-							currentShortcode: null,
-							action: 'update',
-							sh_atts: null
-						});
-
+						this.props = new Backbone.Model({});
 						this.props.on( 'change:action', this.refresh, this );
 
 					},
@@ -785,11 +779,20 @@
 					},
 
 					insert: function() {
-						debugger;
-						var shortcode = this.props.get('currentShortcode');
-						if ( shortcode ) {
-							send_to_editor( shortcode.formatShortcode() );
-							this.reset();
+
+						if ( typeof this.frame.options.$shortcode !== "undefined" && typeof this.props.changed !== {} ) {
+
+							var $sh = this.frame.options.$shortcode;
+							var tag = this.frame.options.type;
+
+							console.log( this.props );
+
+							_.each( this.props.attributes, function( value, key ) {
+								$sh.setAttribute( 'data-sh-' + tag + '-attr-' + key, value);
+							});
+
+							// send_to_editor( shortcode.formatShortcode() );
+							// this.reset();
 							this.frame.close();
 						}
 					},
@@ -821,12 +824,81 @@
 					}
 				});
 
-				var Gridable_UI = wp.Backbone.View.extend({
+				var editGridableAttributeField = wp.media.View.extend({
 
-					// events: {
-					// 	"click .add-shortcode-list li":      "select",
-					// 	"click .edit-shortcode-form-cancel": "cancelSelect"
-					// },
+					type: 'text',
+
+					config: {},
+
+					tagName: "div",
+
+					events: {
+						'input  input':                  'inputChanged',
+						'input  textarea':               'inputChanged',
+						'change select':                 'inputChanged',
+						'change input[type="radio"]':    'inputChanged',
+						'change input[type="checkbox"]': 'inputChanged'
+					},
+
+					initialize() {
+						this.config = this.options.config;
+						this.type = this.options.config.type;
+					},
+
+					render: function() {
+						var tmpl_key = 'gridable-row-option-' + this.type;
+
+						var template = wp.template( tmpl_key );
+
+						config = jQuery.extend( {
+							id: 'gridable-ui-' + this.options.key,
+							label: 'Text'
+						}, this.config );
+
+						var element = template({ key: this.options.key, label: this.config.label, value: this.config.default });
+
+						this.$el.html( element );
+
+						// if there is a colorpicker left behind, init it now
+						if ( 'color' === this.type ) {
+							this.$el.find('.colorpicker input:not(.wp-color-picker)').wpColorPicker({
+								hide: false,
+								change: function(event, ui) {
+									// event = standard jQuery event, produced by whichever control was changed.
+									// ui = standard jQuery UI object, with a color member containing a Color.js object
+									jQuery(this).parents('.gridable-ui-content').css('backgroundColor', ui.color.toString() );
+									jQuery(this).val( ui.color.toString() );
+									jQuery(this).trigger('input');
+									// change the bg color
+								}
+							});
+						}
+
+						return this;
+					},
+
+					/**
+					 * Input Changed Update Callback.
+					 *
+					 * If the input field that has changed is for content or a valid attribute,
+					 * then it should update the model. If a callback function is registered
+					 * for this attribute, it should be called as well.
+					 */
+					inputChanged: function( e ) {
+						var $input = this.$el.find('.value_to_parse');
+						this.setValue( $input.attr('name'), $input.val() );
+					},
+
+					getValue: function() {
+						return this.model.get( 'value' );
+					},
+
+					setValue: function( key, val ) {
+						this.model.set( key, val );
+					},
+				});
+
+				var Gridable_UI = wp.Backbone.View.extend({
 
 					initialize: function(options) {
 						this.controller = options.controller.state();
@@ -859,7 +931,9 @@
 
 					renderRowOptions() {
 						var atts = this.controller.frame.options.atts,
-							$modal = this.$el;
+							$modal = this.$el,
+							values = this.controller.props;
+
 						if ( typeof gridable_row_options !== "undefined" ) {
 
 							_.each( gridable_row_options, function ( config, key ) {
@@ -876,20 +950,17 @@
 									config.default = 'Default';
 								}
 
-								var tmpl_key = 'gridable-row-option-' + config.type;
-
-								var templ = wp.media.template( tmpl_key );
-
-								var el = templ({ key: key, label: config.label, value: config.default });
-
-								$modal.append( el );
+								var view = new editGridableAttributeField( { key: key, config: config, model: values } );
+								$modal.append( view.render().el );
 							});
 						}
 					},
 
 					renderColumnOptions() {
 						var atts = this.controller.frame.options.atts,
-							$modal = this.$el;
+							$modal = this.$el,
+							values = this.controller.props;
+
 						if ( typeof gridable_column_options !== "undefined" ) {
 
 							_.each( gridable_column_options, function ( config, key ) {
@@ -906,52 +977,10 @@
 									config.default = 'Default';
 								}
 
-								var tmpl_key = 'gridable-row-option-' + config.type;
-
-								var templ = wp.media.template( tmpl_key );
-
-								var el = templ({ key: key, label: config.label, value: config.default });
-
-								$modal.append( el );
+								var view = new editGridableAttributeField( { key: key, config: config, model: values } );
+								$modal.append( view.render().el );
 							});
 						}
-					},
-
-					cancelSelect: function( e ) {
-						e.preventDefault();
-
-						this.controller.props.set( 'action', 'select' );
-						this.controller.props.set( 'currentShortcode', null );
-						this.render();
-					},
-
-					select: function(e) {
-						this.controller.props.set( 'action', 'update' );
-
-						var target    = $(e.currentTarget).closest( '.row' );
-						var shortcode = sui.shortcodes.findWhere( { shortcode_tag: target.attr( 'data-shortcode' ) } );
-
-						if ( ! shortcode ) {
-							return;
-						}
-
-						this.controller.props.set( 'currentShortcode', shortcode.clone() );
-
-						this.render();
-
-						/* Trigger render_new */
-						/*
-						 * Action run after a new shortcode overlay is rendered.
-						 *
-						 * Called as `shortcode-ui.render_new`.
-						 *
-						 * @param shortcodeModel (object)
-						 *           Reference to the shortcode model used in this overlay.
-						 */
-						var hookName = 'shortcode-ui.render_new';
-						var shortcodeModel = this.controller.props.get( 'currentShortcode' );
-						wp.shortcake.hooks.doAction( hookName, shortcodeModel );
-
 					},
 
 				});
@@ -1058,18 +1087,19 @@
 					},
 				} );
 
-				function open( type, editor, element ) {
+				function open( type, editor, shortcode ) {
 
 					wp.media.view.MediaFrame.Post = mediaFrame;
 
-					var atts = get_shortcode_atts( type, element );
+					var atts = get_shortcode_atts( type, shortcode );
 					
 					// @TODO process shortcode
 					var options = {
 						frame: 'post',
 						state: 'gridable-ui',
 						type: type,
-						atts: atts
+						atts: atts,
+						$shortcode: shortcode
 					};
 
 					wp.media.editor.remove( editor );
@@ -1081,7 +1111,7 @@
 					var all_atts = el.attributes,
 						sh_atts = {};
 
-					var needle = 'data-sh-col-attr-';
+					var needle = 'data-sh-column-attr-';
 
 					if ( needle === 'row' ) {
 						needle = 'data-sh-row-attr-';

@@ -4,31 +4,43 @@
 // print option html
 function qac_add_modal_option_template() { ?>
 	<script type="text/html" id="tmpl-gridable-row-option-color">
-		<div class="colopicker">
-			<span>{{data.key}}</span>
-			<span>{{data.label}}</span>
-			<span>{{data.value}}</span>
-			<input type="hidden" class="wp-color-picker" value="{{data.value}}">
+		<div class="colorpicker">
+			<input type="text" class="value_to_parse" name="{{data.key}}" value="{{data.value}}">
 		</div>
 	</script>
 
 	<script type="text/html" id="tmpl-gridable-row-option-text">
 		<div class="text">
-			<p>––––––––––––––––––––––</p>
 			<label for="{{data.key}}">{{data.label}}
-				<input type="input" name="{{data.key}}" value="{{data.value}}">
+				<input type="input" class="value_to_parse" name="{{data.key}}" value="{{data.value}}">
 			</label>
-			<p>––––––––––––––––––––––</p>
 		</div>
 	</script>
 
 	<script type="text/html" id="tmpl-gridable-row-option-checkbox">
 		<div class="checkbox">
-			<p>––––––––––––––––––––––</p>
 			<label for="{{data.key}}">{{data.label}}
-				<input type="checkbox" name="{{data.key}}" value="{{data.value}}">
+				<input type="checkbox" class="value_to_parse" name="{{data.key}}" value="{{data.value}}">
 			</label>
-			<p>––––––––––––––––––––––</p>
+		</div>
+	</script>
+
+
+	<script type="text/html" id="tmpl-gridable-row-option-select">
+		<div class="select">
+			<label for="{{data.key}}">{{data.label}}
+				<select type="checkbox" class="value_to_parse" name="{{data.key}}" value="{{data.value}}">
+					{{data.select_options}}
+				</select>
+			</label>
+		</div>
+	</script>
+
+	<script type="text/html" id="tmpl-gridable-row-option-radio">
+		<div class="radio">
+			<label for="{{data.key}}">{{data.label}}
+				<input type="checkbox" class="value_to_parse" name="{{data.key}}" value="{{data.value}}">
+			</label>
 		</div>
 	</script>
 
@@ -50,7 +62,7 @@ add_filter( 'gridable_row_options', function ( $options ) {
 		'default' => 'transparent'
 	);
 
-	$options['streched'] = array(
+	$options['stretch'] = array(
 		'type' => 'checkbox',
 		'label' => 'Stretch',
 		'default' => 0
@@ -72,7 +84,7 @@ add_filter( 'gridable_column_options', function ( $options ) {
 		'default' => 'transparent'
 	);
 
-	$options['streched'] = array(
+	$options['stretch'] = array(
 		'type' => 'checkbox',
 		'label' => 'Stretch',
 		'default' => 0

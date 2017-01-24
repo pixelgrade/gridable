@@ -16,7 +16,7 @@
 			tag: 'div',
 			attrs: {
 				class: "col gridable-mceItem grid__item",
-				"data-sh-col-attr-size": "6",
+				"data-sh-column-attr-size": "6",
 				"data-mce-placeholder": "1",
 				"contenteditable": "true"
 			},
@@ -34,7 +34,7 @@
 			tag: 'div',
 			attrs: {
 				class: "col gridable-mceItem grid__item",
-				"data-sh-col-attr-size": "6",
+				"data-sh-column-attr-size": "6",
 				"data-mce-placeholder": "1",
 				"contenteditable": "true"
 			},

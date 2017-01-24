@@ -68,40 +68,15 @@ class Gridable_Public {
 
 		$atts = shortcode_atts( array(
 			'cols_nr' => '',
-			'spacing_top' => '',
-			'spacing_bottom' => '',
-			'spacing_gutter' => '',
-			'bg-color' => ''
 		), $atts );
 
 		$cols_nr = 1;
+
 		if ( ! empty( $atts['cols_nr'] ) ) {
 			$cols_nr = (int) $atts['cols_nr'];
 		}
 
 		$class = apply_filters( "gridable_sh_{$tag}_classes", "gridable gridable--row", $cols_nr );
-
-		$spacing_top = 'large';
-		if ( ! empty( $atts['spacing_top'] ) ) {
-			$spacing_top = $atts['spacing_top'];
-		}
-
-		$spacing_bottom = 'large';
-		if ( ! empty( $atts['spacing_bottom'] ) ) {
-			$spacing_bottom = $atts['spacing_bottom'];
-		}
-
-		$spacing_gutter = 'medium';
-		if ( ! empty( $atts['spacing_gutter'] ) ) {
-			$spacing_gutter = $atts['spacing_gutter'];
-		}
-
-		$bg_color = '#eef1f2';
-		if ( ! empty( $atts['bg_color'] ) ) {
-			$bg_color = $atts['bg_color'];
-		}
-
-//		$size = apply_filters( "gridable_sh_{$tag}_attr_size", "gridable gridable--row" );
 
 		// get sh template
 		$template = $this->get_localed_sh_templated( $tag );
@@ -127,8 +102,6 @@ class Gridable_Public {
 
 		$atts = shortcode_atts( array(
 			'size' => '',
-			'spacing_column' => '',
-			'bg_color' => ''
 		), $atts );
 
 		$size = 1;
@@ -136,22 +109,12 @@ class Gridable_Public {
 			$size = (int) $atts['size'];
 		}
 
-		$spacing_column = 'none';
-		if ( ! empty( $atts['spacing_column'] ) ) {
-			$spacing_column = $atts['spacing_column'];
-		}
-
-		$bg_color = '#ffffff';
-		if ( ! empty( $atts['bg_color'] ) ) {
-			$bg_color = $atts['bg_color'];
-		}
-
 		$size = apply_filters( "gridable_sh_{$tag}_attr_size", $size );
 
 		$classes = apply_filters( "gridable_sh_{$tag}_classes", array( 'gridable--col', 'hand-span-' . $size ), $size );
 
 		if ( ! empty( $classes ) ) {
-			$class = 'class="' . join( ' ', $classes) . '"';
+			$class = join( ' ', $classes);
 		}
 
 		// get sh template
@@ -215,6 +178,30 @@ class Gridable_Public {
 
 		wp_enqueue_style( $this->gridable, plugin_dir_url( __FILE__ ) . 'css/gridable-style.css', array(), $this->version, 'all' );
 	}
+
+	/**
+	 * This function  strips unclosed p tags at a beggining and at the end of a row
+	 * @param $content
+	 * @param $atts
+	 *
+	 * @return string
+	 */
+	function gridable_fix_lost_p_tags( $content, $atts ){
+		$first_4_chars = substr($content, 0, 4);
+
+		$last_3_chars = substr($content, -3, 4);
+
+		if ( '</p>' === $first_4_chars ) {
+			$content = substr($content, 5);
+		}
+
+		if ( '<p>' === $last_3_chars ) {
+			$content = substr($content, 0, -4);
+		}
+
+		return $content;
+	}
+
 //
 //	/**
 //	 * Register the JavaScript for the public-facing side of the site.

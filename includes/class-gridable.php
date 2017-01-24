@@ -176,6 +176,10 @@ class Gridable {
 		add_action( 'wp_enqueue_scripts', array( $plugin_public, 'enqueue_styles' ) );
 		add_shortcode( 'row', array( $plugin_public, 'add_row_shortcode' ) );
 		add_shortcode( 'col', array( $plugin_public, 'add_column_shortcode' ) );
+
+		// p fis
+
+		add_filter( 'gridable_the_column_content', array( $plugin_public, 'gridable_fix_lost_p_tags' ), 10, 2 );
 	}
 
 	/**
