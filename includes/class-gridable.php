@@ -177,9 +177,10 @@ class Gridable {
 		add_shortcode( 'row', array( $plugin_public, 'add_row_shortcode' ) );
 		add_shortcode( 'col', array( $plugin_public, 'add_column_shortcode' ) );
 
-		// p fis
-
-		add_filter( 'gridable_the_column_content', array( $plugin_public, 'gridable_fix_lost_p_tags' ), 10, 2 );
+		// clear lost p tags in front-end
+		if ( ! is_admin() ) {
+			add_filter( 'gridable_the_column_content', array( $plugin_public, 'gridable_fix_lost_p_tags' ), 10, 2 );
+		}
 	}
 
 	/**

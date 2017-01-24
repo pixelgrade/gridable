@@ -71,6 +71,9 @@ class Gridable_Admin {
 		 */
 		wp_enqueue_script( 'gridable-editor', plugin_dir_url( __FILE__ ) . 'js/admin-editor.js', array( 'jquery' ), $this->version, true );
 
+		wp_enqueue_style( 'gridable-admin-style', plugin_dir_url( __FILE__ ) . 'css/admin-style.css', array( 'wp-color-picker' ), $this->version, false );
+
+
 		wp_localize_script( 'gridable-editor', 'gridable_editor_params', array(
 			'new_column_content' => esc_html__( 'Content', 'gridable' )
 		) );

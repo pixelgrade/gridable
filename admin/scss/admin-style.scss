@@ -2,3 +2,16 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+
+.gridable-ui-content {
+  width: 600px;
+  left: 0;
+  margin: 0 auto;
+
+  .gridable-attribute-field {
+	padding: 20px;
+	position: relative;
+	max-width: 600px;
+	margin: 0 auto;
+  }
+}

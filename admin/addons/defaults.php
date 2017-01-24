@@ -4,44 +4,52 @@
 // print option html
 function qac_add_modal_option_template() { ?>
 	<script type="text/html" id="tmpl-gridable-row-option-color">
-		<div class="colorpicker">
+		<fieldset class="colorpicker">
+			<label class="setting" for="{{data.key}}">
+				<span class="name">{{data.label}}</span>
+			</label>
 			<input type="text" class="value_to_parse" name="{{data.key}}" value="{{data.value}}">
-		</div>
+		</fieldset>
 	</script>
 
 	<script type="text/html" id="tmpl-gridable-row-option-text">
-		<div class="text">
-			<label for="{{data.key}}">{{data.label}}
+		<fieldset class="text">
+			<label class="setting" for="{{data.key}}">
+				<span class="name">{{data.label}}</span>
 				<input type="input" class="value_to_parse" name="{{data.key}}" value="{{data.value}}">
 			</label>
-		</div>
+		</fieldset>
 	</script>
 
 	<script type="text/html" id="tmpl-gridable-row-option-checkbox">
-		<div class="checkbox">
-			<label for="{{data.key}}">{{data.label}}
+		<fieldset class="checkbox">
+			<label class="setting" for="{{data.key}}">
+				<span class="name">{{data.label}}</span>
 				<input type="checkbox" class="value_to_parse" name="{{data.key}}" value="{{data.value}}">
 			</label>
-		</div>
+		</fieldset>
 	</script>
 
 
 	<script type="text/html" id="tmpl-gridable-row-option-select">
-		<div class="select">
-			<label for="{{data.key}}">{{data.label}}
+		<fieldset class="select">
+			<label class="setting" for="{{data.key}}">
+				<span class="name">{{data.label}}</span>
 				<select type="checkbox" class="value_to_parse" name="{{data.key}}" value="{{data.value}}">
 					{{data.select_options}}
 				</select>
 			</label>
-		</div>
+
+		</fieldset>
 	</script>
 
 	<script type="text/html" id="tmpl-gridable-row-option-radio">
-		<div class="radio">
-			<label for="{{data.key}}">{{data.label}}
+		<fieldset class="radio">
+			<label class="setting" for="{{data.key}}">
+				<span class="name">{{data.label}}</span>
 				<input type="checkbox" class="value_to_parse" name="{{data.key}}" value="{{data.value}}">
 			</label>
-		</div>
+		</fieldset>
 	</script>
 
 <?php }

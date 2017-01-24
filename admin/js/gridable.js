@@ -830,7 +830,9 @@
 
 					config: {},
 
-					tagName: "div",
+					tagName: 'div',
+
+					className: 'gridable-attribute-field',
 
 					events: {
 						'input  input':                  'inputChanged',
@@ -866,7 +868,7 @@
 								change: function(event, ui) {
 									// event = standard jQuery event, produced by whichever control was changed.
 									// ui = standard jQuery UI object, with a color member containing a Color.js object
-									jQuery(this).parents('.gridable-ui-content').css('backgroundColor', ui.color.toString() );
+									jQuery(this).parents('.media-frame-content').css('backgroundColor', ui.color.toString() );
 									jQuery(this).val( ui.color.toString() );
 									jQuery(this).trigger('input');
 									// change the bg color
@@ -886,7 +888,11 @@
 					 */
 					inputChanged: function( e ) {
 						var $input = this.$el.find('.value_to_parse');
-						this.setValue( $input.attr('name'), $input.val() );
+						if ( this.options.type === 'checkbox' ) {
+							this.setValue( $input.attr('name'), $input[0].checked );
+						} else {
+							this.setValue( $input.attr('name'), $input.val() );
+						}
 					},
 
 					getValue: function() {
@@ -915,6 +921,8 @@
 					},
 
 					render: function() {
+
+						// this.$el.html('<div class="media-sidebar visible"></div>');
 
 						switch( this.controller.frame.options.type ) {
 							case 'row' :
@@ -949,6 +957,7 @@
 								if ( typeof config.default === 'undefined' ) {
 									config.default = 'Default';
 								}
+
 
 								var view = new editGridableAttributeField( { key: key, config: config, model: values } );
 								$modal.append( view.render().el );
@@ -1032,7 +1041,7 @@
 
 						var view  = new Gridable_UI( {
 							controller: this,
-							className:  'clearfix ' + id + '-content ' + id + '-content-' + tab
+							className:  'clearfix media-sidebar visible ' + id + '-content ' + id + '-content-' + tab
 						} );
 
 						this.content.set( view );
