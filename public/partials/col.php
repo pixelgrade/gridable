@@ -8,7 +8,7 @@
  *
  * - $size (int) The size of the columnsset by user as attribute in [col size="6"]
  *
- * - $classes (array) The CSS classes array and the result of the `gridable_sh_column_classes` filter, so we encourage you to use it
+ * - $classes (array) The CSS classes array and the result of the `gridable_sh_col_classes` filter, so we encourage you to use it
  *
  * - $class (string) The CSS class string based on the $classes array
  *
@@ -19,7 +19,7 @@
 do_action( 'gridable_before_column_render' ); ?>
 	<div class="<?php echo $class ?>" <?php echo apply_filters( 'gridable_column_attributes', '', $atts, $content ); ?>>
 		<?php
-		do_action( 'gridable_before_column_content_render' );
+		do_action( 'gridable_before_column_content_render', $atts );
 
 		$column_content = apply_filters( 'gridable_the_column_content', $content, $atts );
 

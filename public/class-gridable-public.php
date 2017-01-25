@@ -66,9 +66,9 @@ class Gridable_Public {
 	public function add_row_shortcode( $atts, $content ) {
 		$tag = 'row';
 
-		$atts = shortcode_atts( array(
+		$atts = shortcode_atts( $atts, array(
 			'cols_nr' => '',
-		), $atts );
+		) );
 
 		$cols_nr = 1;
 
@@ -76,7 +76,7 @@ class Gridable_Public {
 			$cols_nr = (int) $atts['cols_nr'];
 		}
 
-		$class = apply_filters( "gridable_sh_{$tag}_classes", "gridable gridable--row", $cols_nr );
+		$class = apply_filters( "gridable_sh_{$tag}_classes", "gridable gridable--row", $cols_nr, $atts );
 
 		// get sh template
 		$template = $this->get_localed_sh_templated( $tag );
@@ -99,10 +99,6 @@ class Gridable_Public {
 	 */
 	public function add_column_shortcode( $atts, $content ) {
 		$tag = 'col';
-
-		$atts = shortcode_atts( array(
-			'size' => '',
-		), $atts );
 
 		$size = 1;
 		if ( ! empty( $atts['size'] ) ) {
