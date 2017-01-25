@@ -1,3 +1,8 @@
 /** All of the CSS for your admin-specific functionality should be included in this file. */
 .gridable-ui-content { width: 600px; left: 0; margin: 0 auto; }
 .gridable-ui-content .gridable-attribute-field { padding: 20px; position: relative; max-width: 600px; margin: 0 auto; }
+
+.select2-container--gridable { z-index: 999999; }
+
+.gridable-ui-content .setting .select2-container--gridable { float: none; }
+.gridable-ui-content .setting .select2-container--gridable .select2-selection.select2-selection--single.gridable-select2 { background: #fff; border: 1px solid #333; border-radius: 4px; min-width: 170px; padding: 0; }

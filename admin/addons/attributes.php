@@ -1,8 +1,6 @@
 <?php
-
-
 // print option html
-function qac_add_modal_option_template() { ?>
+function gridable_default_attributes_modal_options_templates() { ?>
 	<script type="text/html" id="tmpl-gridable-row-option-color">
 		<fieldset class="colorpicker">
 			<label class="setting" for="{{data.key}}">
@@ -32,12 +30,10 @@ function qac_add_modal_option_template() { ?>
 
 
 	<script type="text/html" id="tmpl-gridable-row-option-select">
-		<fieldset class="select">
+		<fieldset class="selector">
 			<label class="setting" for="{{data.key}}">
 				<span class="name">{{data.label}}</span>
-				<select type="checkbox" class="value_to_parse" name="{{data.key}}" value="{{data.value}}">
-					{{data.select_options}}
-				</select>
+				<input type="text" class="value_to_parse select2" name="{{data.key}}" value="{{data.value}}" data-options="{{data.options}}" />
 			</label>
 
 		</fieldset>
@@ -53,54 +49,4 @@ function qac_add_modal_option_template() { ?>
 	</script>
 
 <?php }
-add_action( 'gridable_print_row_options_templates', 'qac_add_modal_option_template' );
-
-// register your addon
-add_filter( 'gridable_addons', function ( $addons ) {
-	$addons[] = 'colorpicker';
-	return $addons;
-});
-
-
-add_filter( 'gridable_row_options', function ( $options ) {
-
-	$options['bg_color'] = array(
-		'type' => 'color',
-		'label' => 'Row Background Color',
-		'default' => 'transparent'
-	);
-
-	$options['stretch'] = array(
-		'type' => 'checkbox',
-		'label' => 'Stretch',
-		'default' => 0
-	);
-
-	$options['ceva'] = array(
-		'label' => 'Ceva',
-	);
-
-	return $options;
-});
-
-
-add_filter( 'gridable_column_options', function ( $options ) {
-
-	$options['bg_color'] = array(
-		'type' => 'color',
-		'label' => 'Column Background Color',
-		'default' => 'transparent'
-	);
-
-	$options['stretch'] = array(
-		'type' => 'checkbox',
-		'label' => 'Stretch',
-		'default' => 0
-	);
-
-	$options['altceva'] = array(
-		'label' => 'Alt Ceva',
-	);
-
-	return $options;
-});
+add_action( 'gridable_print_row_options_templates', 'gridable_default_attributes_modal_options_templates' );

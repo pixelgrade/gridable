@@ -119,7 +119,7 @@ class Gridable {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-gridable-public.php';
 
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/addons/defaults.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/addons/attributes.php';
 
 		$this->loader = new Gridable_Loader();
 

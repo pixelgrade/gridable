@@ -137,7 +137,7 @@
 					var node = editor.selection.getNode(),
 						row = editor.$(node).closest('.row.gridable-mceItem');
 
-					GridableOptionsModal.open( 'row', editor, row[0] );
+					GridableOptionsModal.open('row', editor, row[0]);
 				}
 			});
 
@@ -149,7 +149,7 @@
 					var node = editor.selection.getNode(),
 						column = editor.$(node).closest('.col.gridable-mceItem');
 
-					GridableOptionsModal.open( 'column', editor, column[0] );
+					GridableOptionsModal.open('column', editor, column[0]);
 				}
 			});
 
@@ -331,7 +331,7 @@
 					var columnReplacement = wp.shortcode.string({
 						tag: 'col',
 						// attrs: {size: columns[columnIndex].getAttribute('data-sh-column-attr-size')},
-						attrs: get_valid_column_attrs( columns[columnIndex] ),
+						attrs: get_valid_column_attrs(columns[columnIndex]),
 						content: columns[columnIndex].innerHTML.trim()
 					});
 
@@ -348,7 +348,7 @@
 					// this is the shortcode representation of the row
 					var rowReplacement = wp.shortcode.string({
 						tag: 'row',
-						attrs: get_valid_row_attrs( rows[rowIndex] ),
+						attrs: get_valid_row_attrs(rows[rowIndex]),
 						content: rows[rowIndex].innerHTML.trim()
 					});
 
@@ -367,20 +367,20 @@
 			});
 
 
-			function get_valid_row_attrs( el ) {
+			function get_valid_row_attrs(el) {
 				var to_return = {};
 
 				var needle = 'data-sh-row-attr-';
 
-				Array.prototype.slice.call( el.attributes ).forEach(function(item) {
-					var attr_name = item.name.replace(needle, '' );
+				Array.prototype.slice.call(el.attributes).forEach(function (item) {
+					var attr_name = item.name.replace(needle, '');
 
-					if ( item.name.indexOf( needle ) !== -1 && attr_name in gridable_row_options ) {
+					if (item.name.indexOf(needle) !== -1 && attr_name in gridable_row_options) {
 
-						if ( item.value !== '' ) {
-							to_return[ attr_name ] = item.value;
-						} else if ( typeof gridable_row_options[ attr_name ].default !== 'undefined' ) {
-							to_return[ attr_name ] = gridable_row_options[ attr_name ].default;
+						if (item.value !== '') {
+							to_return[attr_name] = item.value;
+						} else if (typeof gridable_row_options[attr_name].default !== 'undefined') {
+							to_return[attr_name] = gridable_row_options[attr_name].default;
 						}
 					}
 				});
@@ -389,21 +389,21 @@
 			}
 
 
-			function get_valid_column_attrs( el ) {
+			function get_valid_column_attrs(el) {
 
 				var to_return = {};
 				var needle = 'data-sh-column-attr-';
 
-				Array.prototype.slice.call( el.attributes ).forEach(function(item) {
+				Array.prototype.slice.call(el.attributes).forEach(function (item) {
 
-					var attr_name = item.name.replace(needle, '' );
+					var attr_name = item.name.replace(needle, '');
 
-					if ( item.name.indexOf( needle ) !== -1 && attr_name in gridable_column_options ) {
+					if (item.name.indexOf(needle) !== -1 && attr_name in gridable_column_options) {
 
-						if ( item.value !== '' ) {
-							to_return[ attr_name ] = item.value;
-						} else if ( typeof gridable_column_options[ attr_name ].default !== 'undefined' ) {
-							to_return[ attr_name ] = gridable_column_options[ attr_name ].default;
+						if (item.value !== '') {
+							to_return[attr_name] = item.value;
+						} else if (typeof gridable_column_options[attr_name].default !== 'undefined') {
+							to_return[attr_name] = gridable_column_options[attr_name].default;
 						}
 					}
 				});
@@ -617,8 +617,6 @@
 
 				if (typeof next !== "undefined") {
 
-					// console.log( next.shortcode.attrs.named );
-
 					var row = getRowTemplate({
 						tag: "row",
 						content: next.shortcode.content,
@@ -675,7 +673,6 @@
 			function getRowTemplate(args) {
 				var rowSh = wp.template("gridable-grider-row"),
 					atts = get_attrs_string('row', args.atts);
-
 				return rowSh({
 					content: args.content, //wpAutoP(args.content),
 					classes: 'row gridable-mceItem',
@@ -709,10 +706,10 @@
 			function get_attrs_string(tag, atts) {
 				var atts_string = '';
 
-				if (typeof atts !== "undefined" && Object.keys(atts).length > 0 ) {
+				if (typeof atts !== "undefined" && Object.keys(atts).length > 0) {
 					Object.keys(atts).forEach(function (key, index) {
 						// console.debug( key );
-						atts_string += ' data-sh-' + tag + '-attr-' + key + '=' + atts[key] + ' ';
+						atts_string += ' data-sh-' + tag + '-attr-' + key + '="' + atts[key]  + '" ';
 					});
 				}
 
@@ -766,28 +763,26 @@
 
 				var MediaController = wp.media.controller.State.extend({
 
-					initialize: function( opts ){
+					initialize: function (opts) {
 						this.props = new Backbone.Model(opts.sh_atts);
-						this.props.on( 'change:action', this.refresh, this );
+						this.props.on('change:action', this.refresh, this);
 					},
 
-					refresh: function() {
-						if ( this.frame && this.frame.toolbar ) {
+					refresh: function () {
+						if (this.frame && this.frame.toolbar) {
 							this.frame.toolbar.get().refresh();
 						}
 					},
 
-					insert: function() {
+					insert: function () {
 
-						if ( typeof this.frame.options.$shortcode !== "undefined" && typeof this.props.changed !== {} ) {
+						if (typeof this.frame.options.$shortcode !== "undefined" && typeof this.props.changed !== {}) {
 
 							var $sh = this.frame.options.$shortcode;
 							var tag = this.frame.options.type;
 
-							console.log( this.props );
-
-							_.each( this.props.attributes, function( value, key ) {
-								$sh.setAttribute( 'data-sh-' + tag + '-attr-' + key, value);
+							_.each(this.props.attributes, function (value, key) {
+								$sh.setAttribute('data-sh-' + tag + '-attr-' + key, value);
 							});
 
 							// send_to_editor( shortcode.formatShortcode() );
@@ -796,24 +791,24 @@
 						}
 					},
 
-					reset: function() {
-						this.props.set( 'action', 'select' );
-						this.props.set( 'currentShortcode', null );
+					reset: function () {
+						this.props.set('action', 'select');
+						this.props.set('currentShortcode', null);
 					},
 				});
 
 				var Toolbar = wp.media.view.Toolbar.extend({
-					initialize : function() {
+					initialize: function () {
 						_.defaults(this.options, {
-							requires : false
+							requires: false
 						});
 						// Call 'initialize' directly on the parent class.
 						wp.media.view.Toolbar.prototype.initialize.apply(this, arguments);
 					},
 
-					refresh : function() {
+					refresh: function () {
 						var action = this.controller.state().props.get('action');
-						if( this.get('insert') ) {
+						if (this.get('insert')) {
 							this.get('insert').model.set('disabled', action == 'select');
 						}
 						/**
@@ -834,11 +829,12 @@
 					className: 'gridable-attribute-field',
 
 					events: {
-						'input  input':                  'inputChanged',
-						'input  textarea':               'inputChanged',
-						'change select':                 'inputChanged',
-						'change input[type="radio"]':    'inputChanged',
-						'change input[type="checkbox"]': 'inputChanged'
+						'input  input': 'inputChanged',
+						'input  textarea': 'inputChanged',
+						'change select': 'inputChanged',
+						'change input[type="radio"]': 'inputChanged',
+						'change input[type="checkbox"]': 'inputChanged',
+						'change input[type="text"].select2': 'inputChanged'
 					},
 
 					initialize() {
@@ -846,43 +842,61 @@
 						this.type = this.options.config.type;
 					},
 
-					render: function() {
+					render: function () {
 						var tmpl_key = 'gridable-row-option-' + this.type,
-							template = wp.template( tmpl_key );
+							template = wp.template(tmpl_key);
 
-						config = jQuery.extend( {
+						config = jQuery.extend({
 							id: 'gridable-ui-' + this.options.key,
 							label: 'Text'
-						}, this.config );
+						}, this.config);
 
-						var template_config = { key: this.options.key, label: this.config.label, value: this.config.default };
+						var template_config = {
+							key: this.options.key,
+							label: this.config.label,
+							value: this.config.default
+						};
 
-						if ( typeof this.options.model.attributes[this.options.key] !== "undefined" ) {
+						if (typeof this.options.model.attributes[this.options.key] !== "undefined") {
 							template_config.value = this.options.model.attributes[this.options.key];
 						}
 
-						if ( this.type === 'checkbox' ) {
+						if (this.type === 'checkbox') {
 							template_config.checked = template_config.value === 'true' ? 'checked="checked"' : '';
 						}
 
-						console.log(template_config);
-
 						var element = template(template_config);
 
-						this.$el.html( element );
+						this.$el.html(element);
 
 						// if there is a colorpicker left behind, init it now
-						if ( 'color' === this.type ) {
+						if ('color' === this.type) {
 							this.$el.find('.colorpicker input:not(.wp-color-picker)').wpColorPicker({
 								hide: false,
-								change: function(event, ui) {
+								change: function (event, ui) {
 									// event = standard jQuery event, produced by whichever control was changed.
 									// ui = standard jQuery UI object, with a color member containing a Color.js object
-									jQuery(this).parents('.media-frame-content').css('backgroundColor', ui.color.toString() );
-									jQuery(this).val( ui.color.toString() );
+									jQuery(this).parents('.media-frame-content').css('backgroundColor', ui.color.toString());
+									jQuery(this).val(ui.color.toString());
 									jQuery(this).trigger('input');
 									// change the bg color
 								}
+							});
+						}
+
+						if ('select' === this.type) {
+							var options = [];
+
+							_.each(this.config.options, function (value, key) {
+								options.push({id: key, text: value});
+							});
+
+							var $fieldSelect2 = this.$el.find('.selector input:not(.wp-color-picker)').select2({
+								placeholder: this.config.label || 'Search',
+								data: options,
+								containerCssClass: 'gridable-select2',
+								theme: 'gridable',
+								minimumResultsForSearch: -1
 							});
 						}
 
@@ -896,45 +910,43 @@
 					 * then it should update the model. If a callback function is registered
 					 * for this attribute, it should be called as well.
 					 */
-					inputChanged: function( e ) {
+					inputChanged: function (e) {
 						var $input = this.$el.find('.value_to_parse');
-						if ( this.type === 'checkbox' ) {
-							this.setValue( $input.attr('name'), $input[0].checked ? 'true' : 'false' );
+						if (this.type === 'checkbox') {
+							this.setValue($input.attr('name'), $input[0].checked ? 'true' : 'false');
 						} else {
-							this.setValue( $input.attr('name'), $input.val() );
+							this.setValue($input.attr('name'), $input.val());
 						}
 					},
 
-					getValue: function() {
-						return this.model.get( 'value' );
+					getValue: function () {
+						return this.model.get('value');
 					},
 
-					setValue: function( key, val ) {
-						this.model.set( key, val );
+					setValue: function (key, val) {
+						this.model.set(key, val);
 					},
 				});
 
 				var Gridable_UI = wp.Backbone.View.extend({
 
-					initialize: function(options) {
+					initialize: function (options) {
 						this.controller = options.controller.state();
 						//toolbar model looks for controller.state()
 						this.toolbar_controller = options.controller;
 					},
 
-					createToolbar: function(options) {
+					createToolbar: function (options) {
 						toolbarOptions = {
 							controller: this.toolbar_controller
 						};
-						this.toolbar = new Toolbar( toolbarOptions );
-						this.views.add( this.toolbar );
+						this.toolbar = new Toolbar(toolbarOptions);
+						this.views.add(this.toolbar);
 					},
 
-					render: function() {
+					render: function () {
 
-						// this.$el.html('<div class="media-sidebar visible"></div>');
-
-						switch( this.controller.frame.options.type ) {
+						switch (this.controller.frame.options.type) {
 							case 'row' :
 								this.renderRowOptions();
 								break;
@@ -942,7 +954,7 @@
 								this.renderColumnOptions();
 								break;
 							default:
-								console.log( 'render what?');
+								console.log('render what?');
 								break;
 						}
 					},
@@ -952,24 +964,25 @@
 							$modal = this.$el,
 							values = this.controller.props;
 
-						if ( typeof gridable_row_options !== "undefined" ) {
+						if (typeof gridable_row_options !== "undefined") {
 
-							_.each( gridable_row_options, function ( config, key ) {
+							_.each(gridable_row_options, function (config, key) {
 
-								if ( 'cols_nr' === key || 'size' === key ) {
+								if ('cols_nr' === key || 'size' === key) {
 									return true;
 								}
 
-								if ( typeof config.type === 'undefined' ) {
+								if (typeof config.type === 'undefined') {
 									config.type = 'text';
 								}
 
-								if ( typeof config.default === 'undefined' ) {
+								if (typeof config.default === 'undefined') {
 									config.default = 'Default';
 								}
 
-								var view = new editGridableAttributeField( { key: key, config: config, model: values } );
-								$modal.append( view.render().el );
+								// @TODO split this view object in multiple fields like select or ... etc
+								var view = new editGridableAttributeField({key: key, config: config, model: values});
+								$modal.append(view.render().el);
 							});
 						}
 					},
@@ -979,100 +992,101 @@
 							$modal = this.$el,
 							values = this.controller.props;
 
-						if ( typeof gridable_column_options !== "undefined" ) {
+						if (typeof gridable_column_options !== "undefined") {
 
-							_.each( gridable_column_options, function ( config, key ) {
+							_.each(gridable_column_options, function (config, key) {
 
-								if ( 'cols_nr' === key || 'size' === key ) {
+								if ('cols_nr' === key || 'size' === key) {
 									return true;
 								}
 
-								if ( typeof config.type === 'undefined' ) {
+								if (typeof config.type === 'undefined') {
 									config.type = 'text';
 								}
 
-								if ( typeof config.default === 'undefined' ) {
+								if (typeof config.default === 'undefined') {
 									config.default = 'Default';
 								}
 
-								var view = new editGridableAttributeField( { key: key, config: config, model: values } );
-								$modal.append( view.render().el );
+								var view = new editGridableAttributeField({key: key, config: config, model: values});
+								$modal.append(view.render().el);
 							});
 						}
 					},
 
 				});
 
-				var mediaFrame = postMediaFrame.extend( {
+				var mediaFrame = postMediaFrame.extend({
 
-					initialize: function() {
+					initialize: function () {
 
-						postMediaFrame.prototype.initialize.apply( this, arguments );
+						postMediaFrame.prototype.initialize.apply(this, arguments);
 
 						var id = 'gridable-ui',
 							title = 'Update ' + this.options.type + ' options',
 							sh_atts = {},
 							needle = 'data-sh-column-attr-';
 
-						if ( this.options.type === 'row' ) {
+						if (this.options.type === 'row') {
 							needle = 'data-sh-row-attr-';
 						}
 
-						Array.prototype.slice.call( this.options.$shortcode.attributes ).forEach(function(item) {
-							if ( item.name.indexOf( needle ) !== -1 ) {
-								sh_atts[ item.name.replace(needle, '') ] = item.value;
+						Array.prototype.slice.call(this.options.$shortcode.attributes).forEach(function (item) {
+							if (item.name.indexOf(needle) !== -1) {
+								sh_atts[item.name.replace(needle, '')] = item.value;
 							}
 						});
 
 						var opts = {
-							id      : id,
-							search  : false,
-							router  : false,
-							toolbar : id + '-toolbar',
-							menu    : 'default',
-							title   : title,
-							priority:  66,
-							content : id + '-content-update',
-							sh_atts  : sh_atts
+							id: id,
+							search: false,
+							router: false,
+							toolbar: id + '-toolbar',
+							menu: 'default',
+							title: title,
+							priority: 66,
+							content: id + '-content-update',
+							sh_atts: sh_atts
 						};
 
-						this.mediaController = new MediaController( opts );
-						this.states.add([ this.mediaController ]);
+						this.mediaController = new MediaController(opts);
+						this.states.add([this.mediaController]);
 
-						this.on( 'content:render:' + id + '-content-update', _.bind( this.contentRender, this, 'gridable-ui', 'update' ) );
-						this.on( 'toolbar:create:gridable-ui-toolbar', this.toolbarCreate, this );
-						this.on( 'toolbar:render:gridable-ui-toolbar', this.toolbarRender, this );
-						this.on( 'menu:render:default', this.renderShortcodeUIMenu );
+						this.on('content:render:' + id + '-content-update', _.bind(this.contentRender, this, 'gridable-ui', 'update'));
+						this.on('toolbar:create:gridable-ui-toolbar', this.toolbarCreate, this);
+						this.on('toolbar:render:gridable-ui-toolbar', this.toolbarRender, this);
+						this.on('menu:render:default', this.renderShortcodeUIMenu);
 					},
 
-					events: function() {
-						return _.extend( {}, postMediaFrame.prototype.events, {
-							'click .media-menu-item'    : 'resetMediaController',
-						} );
+					events: function () {
+						return _.extend({}, postMediaFrame.prototype.events, {
+							'click .media-menu-item': 'resetMediaController',
+						});
 					},
 
-					resetMediaController: function( event ) {
-						if ( this.state() && 'undefined' !== typeof this.state().props && this.state().props.get('currentShortcode') ) {
+					resetMediaController: function (event) {
+						if (this.state() && 'undefined' !== typeof this.state().props && this.state().props.get('currentShortcode')) {
 							//this.mediaController.reset();
-							this.contentRender( 'gridable-ui', 'update' );
+							this.contentRender('gridable-ui', 'update');
 						}
 					},
 
-					contentRender : function( id, tab ) {
+					contentRender: function (id, tab) {
 
-						var view  = new Gridable_UI( {
+						var view = new Gridable_UI({
 							controller: this,
-							className:  'clearfix media-sidebar visible ' + id + '-content ' + id + '-content-' + tab
-						} );
+							className: 'clearfix media-sidebar visible ' + id + '-content ' + id + '-content-' + tab
+						});
 
-						this.content.set( view );
+						this.content.set(view);
 					},
 
-					toolbarRender: function( toolbar ) {},
+					toolbarRender: function (toolbar) {
+					},
 
-					toolbarCreate : function( toolbar ) {
-						toolbar.view = new  Toolbar( {
-							controller : this,
+					toolbarCreate: function (toolbar) {
+						toolbar.view = new Toolbar({
+							controller: this,
 							items: {
 								insert: {
 									text: 'Update ' + this.options.type,
@@ -1082,24 +1096,24 @@
 									click: this.insertAction,
 								}
 							}
-						} );
+						});
 					},
 
-					renderShortcodeUIMenu: function( view ) {
+					renderShortcodeUIMenu: function (view) {
 
 						// Hide menu if editing.
 						// @todo - fix this.
 						// This is a hack.
 						// I just can't work out how to do it properly...
 						// if ( view.controller.state().props && view.controller.state().props.get( 'currentShortcode' ) ) {
-						window.setTimeout( function() {
-							view.controller.$el.addClass( 'hide-menu' );
-						} );
+						window.setTimeout(function () {
+							view.controller.$el.addClass('hide-menu');
+						});
 						// }
 
 					},
 
-					insertAction: function() {
+					insertAction: function () {
 						/* Trigger render_destroy */
 						/*
 						 * Action run before the shortcode overlay is destroyed.
@@ -1115,14 +1129,14 @@
 
 						this.controller.state().insert();
 					},
-				} );
+				});
 
-				function open( type, editor, shortcode ) {
+				function open(type, editor, shortcode) {
 
 					wp.media.view.MediaFrame.Post = mediaFrame;
 
-					var atts = get_shortcode_atts( type, shortcode );
-					
+					var atts = get_shortcode_atts(type, shortcode);
+
 					// @TODO process shortcode
 					var options = {
 						frame: 'post',
@@ -1132,24 +1146,24 @@
 						$shortcode: shortcode
 					};
 
-					wp.media.editor.remove( editor );
-					wp.media.editor.open( editor, options );
+					wp.media.editor.remove(editor);
+					wp.media.editor.open(editor, options);
 				}
-				
-				function get_shortcode_atts( type, el ) {
+
+				function get_shortcode_atts(type, el) {
 
 					var all_atts = el.attributes,
 						sh_atts = {};
 
 					var needle = 'data-sh-column-attr-';
 
-					if ( type === 'row' ) {
+					if (type === 'row') {
 						needle = 'data-sh-row-attr-';
 					}
 
-					Array.prototype.slice.call( el.attributes ).forEach(function(item) {
-						if ( item.name.indexOf( needle ) !== -1 ) {
-							sh_atts[ item.name.replace(needle, '') ] = item.value;
+					Array.prototype.slice.call(el.attributes).forEach(function (item) {
+						if (item.name.indexOf(needle) !== -1) {
+							sh_atts[item.name.replace(needle, '')] = item.value;
 						}
 					});
 

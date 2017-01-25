@@ -15,3 +15,21 @@
 	margin: 0 auto;
   }
 }
+
+.select2-container--gridable {
+  z-index: 999999;
+}
+
+.gridable-ui-content .setting {
+  .select2-container--gridable {
+	float: none;
+
+	.select2-selection.select2-selection--single.gridable-select2 {
+	  background: #fff;
+	  border: 1px solid #333;
+	  border-radius: 4px;
+	  min-width: 170px;
+	  padding: 0;
+	}
+  }
+}
