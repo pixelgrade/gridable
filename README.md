@@ -4,7 +4,7 @@ The Missed Grid Content Editor
 
 -------------------
 
-### Remove gridable style?
+## Remove gridable style?
 
 Gridable adds some CSS style in front-end to handle the grid, but if you want to use your grid system or something like Bootstrap you may want to disable this behavior by using this filter:
 
@@ -12,7 +12,7 @@ Gridable adds some CSS style in front-end to handle the grid, but if you want to
 
 Note: We may add an option for this feature, but this filter will always have the last say!
 
-### Row and Column templates
+## Row and Column templates
 
 Each row is represented by the `[row][/row]` shortcode and be sure that there is a template file which can be found in `gridable/public/partials/row.php`.
 
@@ -32,8 +32,8 @@ The right way would be to use the actions and filters available.
 
 * `gridable_the_row_content` - filter - In case you need to filter the content of a specific row
 
-### Need some grid attributes?
-This plugin adds a nice interface to edit row or column attributes
+## Need some grid attributes?
+This plugin adds a nice interface to edit row or column [custom attributes](https://gist.github.com/andreilupu/2ed88a589ece14a8a8afdb1170db9e43)
 
 ```
 add_filter( 'gridable_row_options', function ( $options ) {
