@@ -160,7 +160,7 @@ class Gridable_Public {
 	 */
 	public function enqueue_styles() {
 		// @TODO Write documentation for this
-		if ( ! apply_filters( 'girdable_load_public_style', '__return_true' ) ) {
+		if ( ! apply_filters( 'gridable_load_public_style', '__return_true' ) ) {
 			return;
 		}
 

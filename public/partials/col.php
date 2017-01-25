@@ -16,8 +16,6 @@
  *
  */
 
-// @todo doc this
-
 do_action( 'gridable_before_column_render' ); ?>
 	<div class="<?php echo $class ?>" <?php echo apply_filters( 'gridable_column_attributes', '', $atts, $content ); ?>>
 		<?php
@@ -25,7 +23,11 @@ do_action( 'gridable_before_column_render' ); ?>
 
 		$column_content = apply_filters( 'gridable_the_column_content', $content, $atts );
 
-		echo do_shortcode( $column_content );
+		if ( apply_filters( 'gridable_render_shortcodes_in_column', true, $content, $atts ) ) {
+			echo do_shortcode( $column_content );
+		} else {
+			echo $column_content;
+		}
 
 		do_action( 'gridable_after_column_content_render' ); ?>
 	</div>
