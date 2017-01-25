@@ -25,7 +25,7 @@ function qac_add_modal_option_template() { ?>
 		<fieldset class="checkbox">
 			<label class="setting" for="{{data.key}}">
 				<span class="name">{{data.label}}</span>
-				<input type="checkbox" class="value_to_parse" name="{{data.key}}" value="{{data.value}}">
+				<input type="checkbox" class="value_to_parse" name="{{data.key}}" {{data.checked}} value="{{data.value}}">
 			</label>
 		</fieldset>
 	</script>

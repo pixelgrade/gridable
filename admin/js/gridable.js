@@ -767,9 +767,8 @@
 				var MediaController = wp.media.controller.State.extend({
 
 					initialize: function( opts ){
-						this.props = new Backbone.Model({});
+						this.props = new Backbone.Model(opts.sh_atts);
 						this.props.on( 'change:action', this.refresh, this );
-
 					},
 
 					refresh: function() {
@@ -848,16 +847,27 @@
 					},
 
 					render: function() {
-						var tmpl_key = 'gridable-row-option-' + this.type;
-
-						var template = wp.template( tmpl_key );
+						var tmpl_key = 'gridable-row-option-' + this.type,
+							template = wp.template( tmpl_key );
 
 						config = jQuery.extend( {
 							id: 'gridable-ui-' + this.options.key,
 							label: 'Text'
 						}, this.config );
 
-						var element = template({ key: this.options.key, label: this.config.label, value: this.config.default });
+						var template_config = { key: this.options.key, label: this.config.label, value: this.config.default };
+
+						if ( typeof this.options.model.attributes[this.options.key] !== "undefined" ) {
+							template_config.value = this.options.model.attributes[this.options.key];
+						}
+
+						if ( this.type === 'checkbox' ) {
+							template_config.checked = template_config.value === 'true' ? 'checked="checked"' : '';
+						}
+
+						console.log(template_config);
+
+						var element = template(template_config);
 
 						this.$el.html( element );
 
@@ -888,8 +898,8 @@
 					 */
 					inputChanged: function( e ) {
 						var $input = this.$el.find('.value_to_parse');
-						if ( this.options.type === 'checkbox' ) {
-							this.setValue( $input.attr('name'), $input[0].checked );
+						if ( this.type === 'checkbox' ) {
+							this.setValue( $input.attr('name'), $input[0].checked ? 'true' : 'false' );
 						} else {
 							this.setValue( $input.attr('name'), $input.val() );
 						}
@@ -958,7 +968,6 @@
 									config.default = 'Default';
 								}
 
-
 								var view = new editGridableAttributeField( { key: key, config: config, model: values } );
 								$modal.append( view.render().el );
 							});
@@ -1001,8 +1010,19 @@
 						postMediaFrame.prototype.initialize.apply( this, arguments );
 
 						var id = 'gridable-ui',
-							title = 'Update ' + this.options.type + ' options'
+							title = 'Update ' + this.options.type + ' options',
+							sh_atts = {},
+							needle = 'data-sh-column-attr-';
 
+						if ( this.options.type === 'row' ) {
+							needle = 'data-sh-row-attr-';
+						}
+
+						Array.prototype.slice.call( this.options.$shortcode.attributes ).forEach(function(item) {
+							if ( item.name.indexOf( needle ) !== -1 ) {
+								sh_atts[ item.name.replace(needle, '') ] = item.value;
+							}
+						});
 
 						var opts = {
 							id      : id,
@@ -1013,6 +1033,7 @@
 							title   : title,
 							priority:  66,
 							content : id + '-content-update',
+							sh_atts  : sh_atts
 						};
 
 						this.mediaController = new MediaController( opts );
@@ -1122,10 +1143,9 @@
 
 					var needle = 'data-sh-column-attr-';
 
-					if ( needle === 'row' ) {
+					if ( type === 'row' ) {
 						needle = 'data-sh-row-attr-';
 					}
-
 
 					Array.prototype.slice.call( el.attributes ).forEach(function(item) {
 						if ( item.name.indexOf( needle ) !== -1 ) {
