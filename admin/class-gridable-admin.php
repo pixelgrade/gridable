@@ -58,7 +58,7 @@ class Gridable_Admin {
 		$icon = '<span class="wp-media-buttons-icon dashicons dashicons-layout" style="font-size:16px;margin-top:-2px;"></span>';
 
 		printf( '<a href="#" class="button gridable-insert-row-button" id="%s" data-editor="%s" title="%s">%s %s</a>',
-			'gradable-add-row-button',
+			'gridable-add-row-button-' . $editor_id,
 			esc_attr( $editor_id ),
 			esc_attr__( 'Add Row', 'gridable' ),
 			$icon,

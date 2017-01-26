@@ -2,7 +2,7 @@
 	'use strict';
 
 	// Insert shortcode into TinyMCE
-	$('#gradable-add-row-button').click(function(event) {
+	$('.gridable-insert-row-button').click(function(event) {
 		event.preventDefault();
 		/**
 		 * Create one row shortcode with one column inside
