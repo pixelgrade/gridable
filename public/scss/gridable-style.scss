@@ -13,9 +13,9 @@
 	flex: 0 0 100%;
 }
 
-@for $i from 1 through 6 {
-	[data-sh-column-attr-size="#{2*$i}"], .hand-span-#{2*$i} {
-		flex-basis: percentage($i/6)
+@for $i from 1 through 12 {
+	[data-sh-column-attr-size="#{$i}"], .hand-span-#{$i} {
+		flex-basis: percentage($i/12);
 	}
 }
 
