@@ -9,7 +9,7 @@
   margin: 0 auto;
 
   .gridable-attribute-field {
-	padding: 20px;
+	padding: 5px 10px;
 	position: relative;
 	max-width: 600px;
 	margin: 0 auto;
@@ -21,15 +21,72 @@
 }
 
 .gridable-ui-content .setting {
+  .name {
+	//line-height: 18px;
+	padding: 18px 0;
+  }
+
   .select2-container--gridable {
 	float: none;
+	height: 34px;
+
+	.selection {
+	  padding: 0;
+	}
 
 	.select2-selection.select2-selection--single.gridable-select2 {
 	  background: #fff;
-	  border: 1px solid #333;
+	  border: 1px solid #aaa;
 	  border-radius: 4px;
 	  min-width: 170px;
 	  padding: 0;
+	  outline:0;
+	  height: 34px;
+
+	  .select2-selection__rendered {
+		width: 100%;
+		text-align: left;
+		height: 32px;
+		display: block;
+	  }
 	}
   }
+}
+
+.media-sidebar .colorpicker {
+  .setting {
+	min-height: 40px;
+
+	.wp-picker-container {
+	  left: 35%;
+	  top: 25px;
+	  width: 260px;
+	  position: absolute;
+
+	  span {
+		float: none;
+		min-height: auto;
+		padding-top: 0;
+	  }
+
+	  .wp-color-result {
+		left:0;
+		right: auto;
+		border-bottom: 1px solid #ddd;
+
+		&:hover {
+		  border-bottom: 1px solid #999;
+		}
+	  }
+
+	  .wp-picker-input-wrap {
+		padding-left: 115px;
+	  }
+
+	}
+  }
+}
+
+.gridable-attribute-field .checkbox input[type=checkbox] {
+  margin-top: 17px;
 }

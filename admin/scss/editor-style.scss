@@ -15,7 +15,8 @@
 
 @for $i from 1 through 12 {
 	[data-sh-column-attr-size="#{$i}"] {
-		flex-basis: percentage($i/12)
+		flex-basis: percentage($i/12);
+		width: percentage($i/12);
 	}
 }
 

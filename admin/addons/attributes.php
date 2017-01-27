@@ -5,8 +5,8 @@ function gridable_default_attributes_modal_options_templates() { ?>
 		<fieldset class="colorpicker">
 			<label class="setting" for="{{data.key}}">
 				<span class="name">{{data.label}}</span>
+				<input type="text" class="value_to_parse" name="{{data.key}}" value="{{data.value}}">
 			</label>
-			<input type="text" class="value_to_parse" name="{{data.key}}" value="{{data.value}}">
 		</fieldset>
 	</script>
 

@@ -138,9 +138,13 @@ class Gridable_Admin {
 					sh_col_classes: JSON.parse('<?php echo json_encode( apply_filters( 'gridable_sh_col_attr_size', array() ) ) ?>'),
 					l10n: JSON.parse('<?php echo json_encode( apply_filters( 'gridable_editor_l10n_labels', array(
 						'remove_row'         => esc_html__( 'Remove Row', 'gridable' ),
-						'edit_row'           => esc_html__( 'Edit Row', 'gridable' ),
+						'remove_column'      => esc_html__( 'Remove Column', 'gridable' ),
+						'edit_row'           => esc_html__( 'Edit Row Options', 'gridable' ),
+						'edit_column'           => esc_html__( 'Edit Column Options', 'gridable' ),
 						'add_column'         => esc_html__( 'Add Column', 'gridable' ),
 						'new_column_content' => esc_html__( 'Content', 'gridable' ),
+						'column'         => esc_html__( 'Column', 'gridable' ),
+						'row'         => esc_html__( 'Row', 'gridable' ),
 					) ) ) ?>')
 				};
 			</script>

@@ -51,16 +51,6 @@
 				}
 			});
 
-			// @TODO the edit row button should open a modal with row attributes options
-			editor.addButton('gridable_edit_row', {
-				tooltip: l10n.edit_row,
-				icon: 'dashicon dashicons-edit',
-				onclick: function (i) {
-					var node = editor.selection.getNode(),
-						wrap = editor.$(node).parents('.row.gridable-mceItem');
-				}
-			});
-
 			/**
 			 * The Add Column button comes with a few rules:
 			 *
@@ -81,14 +71,14 @@
 						columns.each(function (i, el) {
 							var current_size = editor.$(el).attr('data-sh-column-attr-size');
 
-							if (current_size > 2) {
-								editor.$(el).attr('data-sh-column-attr-size', current_size - 2);
-								new_size += 2;
+							if ( current_size > 1 ) {
+								editor.$(el).attr('data-sh-column-attr-size', current_size - 1);
+								new_size += 1;
 							}
 						});
 					}
 
-					if (new_size === 0) {
+					if ( new_size === 0 ) {
 						new_size = 12; // asta e
 					}
 
@@ -96,7 +86,7 @@
 					 * Create a new html template with the new column and append it to the current editing row
 					 */
 					var tmp = getColTemplate({
-						attrs: {named: {size: new_size.toString()}},
+						atts: {size: new_size.toString()},
 						size: new_size.toString(),
 						content: l10n.new_column_content
 					});
@@ -108,13 +98,13 @@
 			});
 
 			editor.addButton('gridable_remove_col', {
-				tooltip: 'Remove column',
+				tooltip: l10n.remove_column,
 				icon: 'dashicon dashicons-minus',
 				onclick: function (event) {
 					var node = editor.selection.getNode(),
 						column = editor.$(node).closest('.col.gridable-mceItem');
 
-					if (window.confirm('Are you sure you want to remove this column?')) {
+					// if (window.confirm('Are you sure you want to remove this column?')) {
 						var column_size = editor.$(column).attr('data-sh-column-attr-size');
 
 						if (column[0].previousElementSibling !== null) {
@@ -125,13 +115,13 @@
 							editor.$(node).closest('.row.gridable-mceItem').remove();
 						}
 						column.remove();
-					}
+					// }
 				}
 			});
 
 			editor.addButton('gridable_row_options', {
-				tooltip: 'Row Options',
-				icon: 'dashicon dashicons-editor-kitchensink',
+				tooltip: l10n.edit_row,
+				icon: 'dashicon dashicons-edit',
 				onclick: function (event) {
 
 					var node = editor.selection.getNode(),
@@ -142,8 +132,8 @@
 			});
 
 			editor.addButton('gridable_col_options', {
-				tooltip: 'Column Options',
-				icon: 'dashicon dashicons-building',
+				tooltip: l10n.edit_column,
+				icon: 'dashicon dashicons-edit',
 				onclick: function (event) {
 
 					var node = editor.selection.getNode(),
@@ -151,6 +141,18 @@
 
 					GridableOptionsModal.open('column', editor, column[0]);
 				}
+			});
+
+			editor.addButton('gridable_col_label', {
+				text: l10n.column + ':',
+				disabled: true,
+				role: 'separator'
+			});
+
+			editor.addButton('gridable_row_label', {
+				text: l10n.row + ':',
+				disabled: true,
+				role: 'separator'
 			});
 
 			/**
@@ -178,13 +180,31 @@
 			 */
 			editor.once('preinit', function () {
 				if (editor.wp && editor.wp._createToolbar) {
-					toolbar = editor.wp._createToolbar([
+
+					// the fist two options must be the add / remove columns
+					var toolbar_buttons = [
+						'gridable_col_label',
 						'gridable_add_col',
 						'gridable_remove_col',
-						'gridable_col_options',
-						'gridable_row_options',
-						'gridable_row_remove'
-					]);
+					];
+
+					if ( typeof gridable_column_options !== 'undefined' && Object.keys( gridable_column_options ).length > 1 )  {
+						toolbar_buttons.push( 'gridable_col_options' );
+					}
+
+					toolbar_buttons.push('|');
+
+					toolbar_buttons.push('gridable_row_label');
+
+					if ( typeof gridable_row_options !== 'undefined' && Object.keys( gridable_row_options ).length > 1 )  {
+						// just a separator
+						toolbar_buttons.push( 'gridable_row_options' );
+					}
+
+					// the remove row button must be the last
+					toolbar_buttons.push('gridable_row_remove');
+
+					toolbar = editor.wp._createToolbar( toolbar_buttons );
 				}
 			});
 
@@ -689,6 +709,7 @@
 			function getColTemplate(args) {
 				var atts = get_attrs_string('column', args.atts),
 					colSh = wp.template("gridable-grider-col");
+
 				return colSh({
 					content: args.content,
 					classes: 'col gridable-mceItem ',
