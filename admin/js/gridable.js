@@ -524,21 +524,21 @@
 						var nextSpan = parseInt($next[0].getAttribute('data-sh-column-attr-size'), 10),
 							prevSpan = parseInt($prev[0].getAttribute('data-sh-column-attr-size'), 10);
 
-						if (nextSpan != 2) {
-							$next[0].setAttribute('data-sh-column-attr-size', nextSpan - 2);
-							$prev[0].setAttribute('data-sh-column-attr-size', prevSpan + 2);
+						if (nextSpan != 1) {
+							$next[0].setAttribute('data-sh-column-attr-size', nextSpan - 1);
+							$prev[0].setAttribute('data-sh-column-attr-size', prevSpan + 1);
 
-							xStart += 2 * colWidth;
+							xStart += 1 * colWidth;
 						}
 					} else if (xStart - xLast >= colWidth) {
 						var nextSpan = parseInt($next[0].getAttribute('data-sh-column-attr-size'), 10),
 							prevSpan = parseInt($prev[0].getAttribute('data-sh-column-attr-size'), 10);
 
-						if (prevSpan != 2) {
-							$next[0].setAttribute('data-sh-column-attr-size', nextSpan + 2);
-							$prev[0].setAttribute('data-sh-column-attr-size', prevSpan - 2);
+						if (prevSpan != 1) {
+							$next[0].setAttribute('data-sh-column-attr-size', nextSpan + 1);
+							$prev[0].setAttribute('data-sh-column-attr-size', prevSpan - 1);
 
-							xStart -= 2 * colWidth;
+							xStart -= 1 * colWidth;
 						}
 					}
 				}
@@ -837,7 +837,7 @@
 						'change input[type="text"].select2': 'inputChanged'
 					},
 
-					initialize() {
+					initialize: function () {
 						this.config = this.options.config;
 						this.type = this.options.config.type;
 					},
@@ -959,7 +959,7 @@
 						}
 					},
 
-					renderRowOptions() {
+					renderRowOptions: function () {
 						var atts = this.controller.frame.options.atts,
 							$modal = this.$el,
 							values = this.controller.props;
@@ -987,7 +987,7 @@
 						}
 					},
 
-					renderColumnOptions() {
+					renderColumnOptions: function () {
 						var atts = this.controller.frame.options.atts,
 							$modal = this.$el,
 							values = this.controller.props;
