@@ -1,21 +1,9 @@
 <?php
 /**
- * The plugin bootstrap file
- *
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
- *
- * @link              https://pixelgrade.com
- * @since             1.0.0
- * @package           Gridable
- *
- * @wordpress-plugin
  * Plugin Name:       Gridable
  * Plugin URI:        https://pixelgrade.com/
  * Description:       The Missed Grid Content Editor
- * Version:           0.5.0
+ * Version:           1.0.0
  * Author:            Pixelgrade
  * Author URI:        https://pixelgrade.com/
  * License:           GPL-2.0+

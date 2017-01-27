@@ -2,8 +2,8 @@
 Contributors: pixelgrade, euthelup, babbardel, razvanonofrei
 Tags: grid, preview, render, row, column, inline-edit
 Requires at least: 4.6.1
-Tested up to: 4.7.1
-Stable tag: 0.5.0
+Tested up to: 4.7.2
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,13 @@ Made with love by Pixelgrade!
 3. Enjoy the "Add Row" button
 
 == Changelog ==
+
+= 1.0.0 =
+* Improved the inline grid UI
+* We changed the grid system from 6 columns to 12 columns
+* We added the [attributes system](https://github.com/pixelgrade/gridable/tree/dev#need-some-grid-attributes) which supports fields like text, checkbox, select and colorpicker
+* Improved the row and column templates.
+* Small fixes
 
 = 0.5.0 =
 * Improved the resize UI
