@@ -3,16 +3,6 @@
 /**
  * The admin-specific functionality of the plugin.
  *
- * @link       https://pixelgrade.com
- * @since      1.0.0
- *
- * @package    Gridable
- * @subpackage Gridable/admin
- */
-
-/**
- * The admin-specific functionality of the plugin.
- *
  * Defines the plugin name, version, and two examples hooks for how to
  * enqueue the admin-specific stylesheet and JavaScript.
  *
@@ -53,6 +43,22 @@ class Gridable_Admin {
 		$this->version  = $version;
 	}
 
+	// Register a settings page
+	function add_admin_menu() {
+		$admin_page = add_submenu_page( 'settings.php', 'Gridable', 'Gridable', 'manage_options', 'gridable', array(
+			$this,
+			'gridable_options_page'
+		) );
+	}
+
+	function gridable_options_page() {
+		$state = $this->get_option( 'state' ); ?>
+		<div class="gridable-wrapper">
+			<div id="admin_options_dashboard"></div>
+		</div>
+		<?php
+	}
+	
 	function add_media_button( $editor_id ) {
 		// Setup the icon - currently using a dashicon
 		$icon = '<span class="wp-media-buttons-icon dashicons dashicons-layout" style="font-size:16px;margin-top:-2px;"></span>';
@@ -96,6 +102,7 @@ class Gridable_Admin {
 		) ) );
 
 		global $editor_styles;
+
 		if ( ! empty( $editor_styles ) && is_array($editor_styles) ) {
 			$editor_styles = array_merge( $editor_styles, array(
 				plugin_dir_url( __FILE__ ) . 'css/editor-style.css'
@@ -129,7 +136,7 @@ class Gridable_Admin {
 		return $plugin_array;
 	}
 
-	function my_add_styles_admin() {
+	function gridable_localize_editor_params() {
 		global $current_screen;
 
 		if ( is_admin() ) { ?>

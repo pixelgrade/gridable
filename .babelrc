@@ -1,0 +1,9 @@
+{
+  "plugins": ["transform-react-jsx"],
+  "presets": ["es2015", "stage-0", "react"],
+  "env": {
+    "production": {
+      "presets": ["babili", "react-optimize"]
+    }
+  }
+}

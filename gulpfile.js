@@ -122,10 +122,56 @@ gulp.task('default', ['styles'], function () {
 	// silence
 });
 
+
+var sourcemaps = require('gulp-sourcemaps');
+var source = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
+var browserify = require('browserify');
+var watchify = require('watchify');
+var react = require('react');
+var reactdom = require('react-dom');
+var babel = require('babelify');
+
+function compile_admin(watch) {
+	var bundler = watchify(browserify('./admin/src/admin-page.js', { debug: false }).transform(babel, { presets: ["es2015", "stage-0", "react"]}));
+
+	function rebundle_admin() {
+		bundler.bundle()
+			.on('error', function(err) { console.error(err); this.emit('end'); })
+			.pipe(source('admin-page.js'))
+			.pipe(buffer())
+			.pipe(sourcemaps.init({ loadMaps: false }))
+			.pipe(sourcemaps.write('./'))
+			.pipe(gulp.dest('./admin/js'));
+	}
+
+	if (watch) {
+		bundler.on('update', function() {
+			console.log('-> bundling admin dashboard...' + new Date().getTime() / 1000);
+			rebundle_admin();
+		});
+	}
+	rebundle_admin();
+}
+
+function watch_admin() {
+	return compile_admin(true);
+};
+
+gulp.task('react', function() { return compile(); });
+gulp.task('compile_admin', function() { return compile_admin(false); });
+gulp.task('compile_wizard', function() { return compile_setup_wizard(false); });
+gulp.task('watch_admin', function() { return watch_admin(true); });
+gulp.task('watch_wizard', function() { return watch_setup_wizard(true); });
+
+// Watch SCSS files and React files
+gulp.task('watch-all', ['watch_admin', 'watch_wizard']);
+
+gulp.task('default', ['watch-all']);
+
 /**
  * Short commands help
  */
-
 gulp.task('help', function () {
 
 	var $help = '\nCommands available : \n \n' +

@@ -113,6 +113,8 @@ class Gridable {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-gridable-admin.php';
 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-gridable-admin-settings.php';
+
 		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
@@ -122,7 +124,6 @@ class Gridable {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/addons/attributes.php';
 
 		$this->loader = new Gridable_Loader();
-
 	}
 
 	/**
@@ -159,7 +160,15 @@ class Gridable {
 		add_action( 'admin_footer', array( $plugin_admin, 'wp_print_grider_tinymce_templates' ) );
 
 		// also inside the wp-editor we cannot localize parameters, so we simply output the javascript code
-		add_action( 'admin_head', array( $plugin_admin, 'my_add_styles_admin' ) );
+		add_action( 'admin_head', array( $plugin_admin, 'gridable_localize_editor_params' ) );
+
+		$plugin_admin_page = new Gridable_Admin_Page( $this->get_gridable(), $this->get_version() );
+
+		add_action( 'admin_menu', array( $plugin_admin_page, 'add_admin_menu' ) );
+
+		add_action( 'admin_enqueue_scripts', array( $plugin_admin_page, 'enqueue_styles' ) );
+
+		add_action( 'admin_enqueue_scripts', array( $plugin_admin_page, 'enqueue_scripts' ) );
 	}
 
 	/**
