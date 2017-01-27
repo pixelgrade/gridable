@@ -1,31 +1,45 @@
-/**
- * All of the CSS for your public-facing functionality should be
- * included in this file.
- */
+@import "susy";
+//@include container; // establish a layout context
 
-// The Grid
-[data-gridable-row], .gridable--row {
-	display: flex;
-	flex-flow: row wrap;
-}
+$susy: (
+  //gutters: 1/4, // The size of a gutter in relation to a single column
+  columns: 12,
+  gutters: 1/4,
+  math: fluid,
+  output: float,
+  gutter-position: inside,
+  debug: (
+	image: show,
+	color: blue,
+	output: overlay,
+	toggle: top right,
+  ),
+  use-custom: (
+	background-image: true,
+	background-options: false,
+	box-sizing: true,
+	clearfix: false,
+	rem: true,
+  )
+);
 
-[data-sh-column-attr-size], .gridable--col {
-	flex: 0 0 100%;
+// Elastic grid as percentages
+$total-columns: 12;
+$column-width   : 5em;
+$gutter-width   : 2em;
+$grid-padding: 2em;
+
+$container-style: magic;
+$container-width: 50em;
+
+.gridable--row {
+  @include container();
 }
 
 @for $i from 1 through 12 {
-	[data-sh-column-attr-size="#{$i}"], .hand-span-#{$i} {
-		flex-basis: percentage($i/12);
+	.gridable--col.hand-span-#{$i} {
+		//flex-basis: percentage($i/12);
+		@include span( $i of 12 );
+	  overflow: hidden;
 	}
 }
-
-[data-sh-column-attr-size], .gridable--col {
-	overflow: hidden;
-	box-sizing: border-box;
-	padding: 10px;
-
-	p:empty:first-child, p:empty:last-child {
-		display: none;
-	}
-}
-

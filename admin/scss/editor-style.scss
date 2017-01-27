@@ -1,47 +1,96 @@
+@import "susy";
+//@include container; // establish a layout context
+
+$susy: (
+  //gutters: 1/4, // The size of a gutter in relation to a single column
+		columns: 12,
+		gutters: 1/4,
+		math: fluid,
+		output: float,
+		gutter-position: inside,
+		debug: (
+			image: show,
+			color: blue,
+			output: overlay,
+			toggle: top right,
+		),
+		use-custom: (
+			background-image: true,
+			background-options: false,
+			box-sizing: true,
+			clearfix: false,
+			rem: true,
+		)
+);
+
+// Elastic grid as percentages
+$total-columns: 12;
+$column-width   : 5em;
+$gutter-width   : 2em;
+$grid-padding: 2em;
+
+$container-style: magic;
+$container-width: 50em;
+
+[data-gridable-row], .gridable--row {
+  @include container();
+}
+
+@for $i from 1 through 12 {
+  [data-sh-column-attr-size="#{$i}"] {
+	//flex-basis: percentage($i/12);
+	@include span( $i of 12 );
+	overflow: hidden;
+  }
+}
+
 .gridable {
 	&, *, *:before, *:after {
 		box-sizing: border-box;
 	}
 }
 
+
+
+
 // The Grid
-[data-gridable-row] {
-	display: flex;
-}
-
-[data-sh-column-attr-size] {
-	flex: 0 0 100%;
-}
-
-@for $i from 1 through 12 {
-	[data-sh-column-attr-size="#{$i}"] {
-		flex-basis: percentage($i/12)
-	}
-}
-
-.gridable {
-	margin: 0 -1.5em;
-	border: 1px solid transparent;
-	transition: border-color .2s ease-out;
-
-	> .col {
-		border-left: 1px solid transparent;
-		position: relative;
-		padding: 1.5em;
-
-		transition: all .2s ease-out;
-
-		&:first-child {
-			border-left: 0;
-		}
-	}
-
-	&:hover, &.is-focused {
-		&, > .col {
-			border-color: #E6E6E6;
-		}
-	}
-}
+//[data-gridable-row] {
+//	display: flex;
+//}
+//
+//[data-sh-column-attr-size] {
+//	flex: 0 0 100%;
+//}
+//
+//@for $i from 1 through 12 {
+//	[data-sh-column-attr-size="#{$i}"] {
+//		flex-basis: percentage($i/12)
+//	}
+//}
+//
+//.gridable {
+//	margin: 0 -1.5em;
+//	border: 1px solid transparent;
+//	transition: border-color .2s ease-out;
+//
+//	> .col {
+//		border-left: 1px solid transparent;
+//		position: relative;
+//		padding: 1.5em;
+//
+//		transition: all .2s ease-out;
+//
+//		&:first-child {
+//			border-left: 0;
+//		}
+//	}
+//
+//	&:hover, &.is-focused {
+//		&, > .col {
+//			border-color: #E6E6E6;
+//		}
+//	}
+//}
 
 .gridable__handle {
 	/* autoprefixer: off */

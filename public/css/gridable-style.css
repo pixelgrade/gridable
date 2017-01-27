@@ -1,31 +1,163 @@
-/** All of the CSS for your public-facing functionality should be included in this file. */
-[data-gridable-row], .gridable--row { display: -ms-flexbox; display: flex; -ms-flex-flow: row wrap; flex-flow: row wrap; }
+.gridable--row {
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto; }
+  .gridable--row:after {
+    content: " ";
+    display: block;
+    clear: both; }
+  head {
+    display: block;
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    z-index: 999;
+    color: #333;
+    background: rgba(255, 255, 255, 0.25); }
+  head:before {
+    content: "|||";
+    display: block;
+    padding: 5px 10px;
+    font-family: sans-serif;
+    font-size: 16px;
+    font-weight: bold; }
+  head:hover {
+    background: rgba(255, 255, 255, 0.5);
+    color: red; }
+  head:hover ~ .gridable--row,
+  head:hover ~ body .gridable--row {
+    position: relative; }
+    head:hover ~ .gridable--row:before,
+    head:hover ~ body .gridable--row:before {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      content: " ";
+      z-index: 998;
+      background-image: linear-gradient(to right, blue, #4d4dff);
+      background-size: 8.33333%;
+      background-origin: content-box;
+      background-clip: content-box;
+      background-position: left top; }
 
-[data-sh-column-attr-size], .gridable--col { -ms-flex: 0 0 100%; flex: 0 0 100%; }
+.gridable--col.hand-span-1 {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 8.33333%;
+  float: left;
+  padding-left: 0.83333%;
+  padding-right: 0.83333%;
+  overflow: hidden; }
 
-[data-sh-column-attr-size="1"], .hand-span-1 { -ms-flex-preferred-size: 8.33333%; flex-basis: 8.33333%; }
+.gridable--col.hand-span-2 {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 16.66667%;
+  float: left;
+  padding-left: 0.83333%;
+  padding-right: 0.83333%;
+  overflow: hidden; }
 
-[data-sh-column-attr-size="2"], .hand-span-2 { -ms-flex-preferred-size: 16.66667%; flex-basis: 16.66667%; }
+.gridable--col.hand-span-3 {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 25%;
+  float: left;
+  padding-left: 0.83333%;
+  padding-right: 0.83333%;
+  overflow: hidden; }
 
-[data-sh-column-attr-size="3"], .hand-span-3 { -ms-flex-preferred-size: 25%; flex-basis: 25%; }
+.gridable--col.hand-span-4 {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 33.33333%;
+  float: left;
+  padding-left: 0.83333%;
+  padding-right: 0.83333%;
+  overflow: hidden; }
 
-[data-sh-column-attr-size="4"], .hand-span-4 { -ms-flex-preferred-size: 33.33333%; flex-basis: 33.33333%; }
+.gridable--col.hand-span-5 {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 41.66667%;
+  float: left;
+  padding-left: 0.83333%;
+  padding-right: 0.83333%;
+  overflow: hidden; }
 
-[data-sh-column-attr-size="5"], .hand-span-5 { -ms-flex-preferred-size: 41.66667%; flex-basis: 41.66667%; }
+.gridable--col.hand-span-6 {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 50%;
+  float: left;
+  padding-left: 0.83333%;
+  padding-right: 0.83333%;
+  overflow: hidden; }
 
-[data-sh-column-attr-size="6"], .hand-span-6 { -ms-flex-preferred-size: 50%; flex-basis: 50%; }
+.gridable--col.hand-span-7 {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 58.33333%;
+  float: left;
+  padding-left: 0.83333%;
+  padding-right: 0.83333%;
+  overflow: hidden; }
 
-[data-sh-column-attr-size="7"], .hand-span-7 { -ms-flex-preferred-size: 58.33333%; flex-basis: 58.33333%; }
+.gridable--col.hand-span-8 {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 66.66667%;
+  float: left;
+  padding-left: 0.83333%;
+  padding-right: 0.83333%;
+  overflow: hidden; }
 
-[data-sh-column-attr-size="8"], .hand-span-8 { -ms-flex-preferred-size: 66.66667%; flex-basis: 66.66667%; }
+.gridable--col.hand-span-9 {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 75%;
+  float: left;
+  padding-left: 0.83333%;
+  padding-right: 0.83333%;
+  overflow: hidden; }
 
-[data-sh-column-attr-size="9"], .hand-span-9 { -ms-flex-preferred-size: 75%; flex-basis: 75%; }
+.gridable--col.hand-span-10 {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 83.33333%;
+  float: left;
+  padding-left: 0.83333%;
+  padding-right: 0.83333%;
+  overflow: hidden; }
 
-[data-sh-column-attr-size="10"], .hand-span-10 { -ms-flex-preferred-size: 83.33333%; flex-basis: 83.33333%; }
+.gridable--col.hand-span-11 {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 91.66667%;
+  float: left;
+  padding-left: 0.83333%;
+  padding-right: 0.83333%;
+  overflow: hidden; }
 
-[data-sh-column-attr-size="11"], .hand-span-11 { -ms-flex-preferred-size: 91.66667%; flex-basis: 91.66667%; }
-
-[data-sh-column-attr-size="12"], .hand-span-12 { -ms-flex-preferred-size: 100%; flex-basis: 100%; }
-
-[data-sh-column-attr-size], .gridable--col { overflow: hidden; box-sizing: border-box; padding: 10px; }
-[data-sh-column-attr-size] p:empty:first-child, [data-sh-column-attr-size] p:empty:last-child, .gridable--col p:empty:first-child, .gridable--col p:empty:last-child { display: none; }
+.gridable--col.hand-span-12 {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  width: 100%;
+  float: left;
+  padding-left: 0.83333%;
+  padding-right: 0.83333%;
+  overflow: hidden; }

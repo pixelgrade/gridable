@@ -3,7 +3,7 @@ var plugin = 'gridable',
 	dest_CSS = { admin:'./admin/css/', public: './public/css/'},
 
 	gulp 		= require('gulp'),
-	sass 		= require('gulp-ruby-sass'),
+	sass 		= require('gulp-sass'),
 	prefix 		= require('gulp-autoprefixer'),
 	exec 		= require('gulp-exec'),
 	replace 	= require('gulp-replace'),
@@ -122,6 +122,23 @@ gulp.task('default', ['styles'], function () {
 	// silence
 });
 
+gulp.task('susy', function() {
+	return gulp.src('public/scss/*.scss')
+		.pipe(sass({
+			// outputStyle: 'compressed',
+			includePaths: ['node_modules/susy/sass']
+		}).on('error', sass.logError))
+		.pipe(gulp.dest('public/css'));
+});
+
+gulp.task('susy-admin', function() {
+	return gulp.src('admin/scss/*.scss')
+		.pipe(sass({
+			// outputStyle: 'compressed',
+			includePaths: ['node_modules/susy/sass']
+		}).on('error', sass.logError))
+		.pipe(gulp.dest('admin/css'));
+});
 
 var sourcemaps = require('gulp-sourcemaps');
 var source = require('vinyl-source-stream');
