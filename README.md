@@ -35,44 +35,4 @@ The right way would be to use the actions and filters available.
 ## Need some grid attributes?
 This plugin adds a nice interface to edit row or column [custom attributes](https://gist.github.com/andreilupu/2ed88a589ece14a8a8afdb1170db9e43)
 
-```
-add_filter( 'gridable_row_options', function ( $options ) {
-	$options['bg_color'] = array(
-		'type' => 'color',
-		'label' => 'Row Background Color',
-		'default' => 'transparent'
-	);
-	$options['stretch'] = array(
-		'type' => 'checkbox',
-		'label' => 'Is stretched?',
-		'default' => 0
-	);
-	$options['title'] = array(
-		'label' => 'Maybe a row title',
-	);
-	return $options;
-});
-add_filter( 'gridable_column_options', function ( $options ) {
-	$options['bg_color'] = array(
-		'type' => 'color',
-		'label' => 'Column Background Color',
-		'default' => 'transparent'
-	);
-	$options['custom_checked_attribute'] = array(
-		'type' => 'checkbox',
-		'label' => 'On or off?',
-		'default' => 0
-	);
-	$options['selector'] = array(
-		'label' => 'A Select attribute',
-		'type' => 'select',
-		'options' => array(
-			'option1' => 'First Option',
-			'option2' => 'Second',
-      'option3' => 'Enough'
-		),
-		'default' => 'option1'
-	);
-	return $options;
-});
-```
+<script src="https://gist.github.com/andreilupu/2ed88a589ece14a8a8afdb1170db9e43.js"></script>
