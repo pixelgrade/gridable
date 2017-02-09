@@ -69,13 +69,13 @@ class Gridable_Admin {
 		 * Enqueue the editor script only when there is an editor on page.
 		 * We ditch `admin_enqueue_scripts` intentionally since the editor can appear on non-edit pages like theme options
 		 */
-		wp_register_script( 'select2-full', plugin_dir_url( __FILE__ ) . 'js/select2.full.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'select2', plugin_dir_url( __FILE__ ) . 'js/select2.min.js', array( 'jquery' ), $this->version );
 
-		wp_enqueue_script( 'gridable-editor', plugin_dir_url( __FILE__ ) . 'js/admin-editor.js', array( 'jquery', 'wp-color-picker', 'select2-full' ), $this->version, true );
+		wp_enqueue_script( 'gridable-editor', plugin_dir_url( __FILE__ ) . 'js/admin-editor.js', array( 'jquery', 'wp-color-picker', 'select2' ), $this->version, true );
 
-		wp_register_style( 'select2-full', plugin_dir_url( __FILE__ ) . 'css/select2.css', array(), $this->version );
+		wp_register_style( 'select2', plugin_dir_url( __FILE__ ) . 'css/select2.css', array(), $this->version );
 
-		wp_enqueue_style( 'gridable-admin-style', plugin_dir_url( __FILE__ ) . 'css/admin-style.css', array( 'wp-color-picker', 'select2-full' ), $this->version, false );
+		wp_enqueue_style( 'gridable-admin-style', plugin_dir_url( __FILE__ ) . 'css/admin-style.css', array( 'wp-color-picker', 'select2' ), $this->version, false );
 
 		wp_localize_script( 'gridable-editor', 'gridable_editor_params', array(
 			'new_column_content' => esc_html__( 'Content', 'gridable' )
