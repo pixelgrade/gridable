@@ -24,7 +24,7 @@ The right way would be to use the actions and filters available.
 
 * \<div class="`row`" \> - `gridable_sh_row_classes` - filter
 
-* \<div class="row" `data-custom-attribute="value"` \> - `gridable_row_attributes` - filter - You know you can add [custom attributes](https://gist.github.com/andreilupu/2ed88a589ece14a8a8afdb1170db9e43)?
+* \<div class="row" `data-custom-attribute="value"` \> - `gridable_row_attributes` - filter - Did you know you can add [custom attributes](https://gist.github.com/andreilupu/2ed88a589ece14a8a8afdb1170db9e43)?
 
 * `gridable_before_row_content_render` and `gridable_after_row_content_render` - action - You can use them to add an inner wrapper
 
