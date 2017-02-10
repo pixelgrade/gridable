@@ -133,7 +133,6 @@ class Gridable_Admin {
 		if ( is_admin() ) { ?>
 			<script type="text/javascript">
 				var gridable_params = {
-					sh_col_classes: JSON.parse('<?php echo json_encode( apply_filters( 'gridable_sh_col_attr_size', array() ) ) ?>'),
 					l10n: JSON.parse('<?php echo json_encode( apply_filters( 'gridable_editor_l10n_labels', array(
 						'remove_row'         => esc_html__( 'Remove Row', 'gridable' ),
 						'remove_column'      => esc_html__( 'Remove Column', 'gridable' ),
