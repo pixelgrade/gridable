@@ -7,15 +7,27 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-The Missing WordPress Grid Content Editor
+Gridable — The Missing Grid Content Editor
 
 == Description ==
 
-This plugin is taking the griding in WordPress to the next level.
+Gridable is a witty solution for WordPress lovers who want to create flexible and reliable grids. Being smoothly integrated into the **WordPress's Editor** interface, our plugin becomes a suitable choice for everyone: from people with a technical background to those who are non-techy. It simplifies the entire process of building an extensive range of grids that fit perfectly into various environments.
 
-Currently it is stil a beta plugin until it touches the version 1.0.0. But it works as it should.
+Gridable allows you to create an adaptable and fully responsive grid in no time. Thanks to options such as row spacing top and bottom, row gutter and row background color everything comes in the right place without effort. Imagine playing around with bold approaches for different sections of your website through a grid system that puts convenience on top of the digital experience.
 
-Made with love by Pixelgrade!
+It has never been easier to create a dynamic grid with such ease and creative freedom.
+
+##Complete control
+
+You have a particular set of options that allow you to adjust the grid content editor to your unique brand's voice and personality. Mix and match colors, spacings, content with images, and make them yours.
+
+## No coding required
+
+Gridable is accessible for everyone who handles WordPress. Being so naturally integrated into the platform, every action is a very natural behavior and doesn't require any special skills.
+
+## Continuous improvement
+
+We invest a lot of time and energy into developing Gridable in a way that makes sense and brings real value to its users so that people make the most out of it.
 
 == Installation ==
 
