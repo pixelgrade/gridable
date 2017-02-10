@@ -284,10 +284,10 @@
 
 			editor.on('PreProcess', function (event) {
 				if ('html' === window.getUserSetting('editor')) {
-					return;
+					return false;
+				} else if ( editor.editorCommands.hasCustomCommand('gridableRestore' ) && event.save === true ) {
+					editor.editorCommands.execCommand('gridableRestore');
 				}
-
-				editor.execCommand('gridableRestore');
 			});
 
 			/**

@@ -71,25 +71,23 @@ class Gridable_Admin {
 		 */
 		wp_register_script( 'select2', plugin_dir_url( __FILE__ ) . 'js/select2.min.js', array( 'jquery' ), $this->version );
 
-		wp_enqueue_script( 'gridable-editor', plugin_dir_url( __FILE__ ) . 'js/admin-editor.js', array( 'jquery', 'wp-color-picker', 'select2' ), $this->version, true );
+		wp_enqueue_script( 'gridable-add-row-button', plugin_dir_url( __FILE__ ) . 'js/add-row-button.js', array( 'jquery', 'wp-color-picker', 'select2' ), $this->version, true );
 
 		wp_register_style( 'select2', plugin_dir_url( __FILE__ ) . 'css/select2.css', array(), $this->version );
 
 		wp_enqueue_style( 'gridable-admin-style', plugin_dir_url( __FILE__ ) . 'css/admin-style.css', array( 'wp-color-picker', 'select2' ), $this->version, false );
 
-		wp_localize_script( 'gridable-editor', 'gridable_editor_params', array(
+		wp_localize_script( 'gridable-add-row-button', 'gridable_editor_params', array(
 			'new_column_content' => esc_html__( 'Content', 'gridable' )
 		) );
 
-		wp_localize_script( 'gridable-editor', 'GridableCallbacks', null );
-
-		wp_localize_script( 'gridable-editor', 'gridable_row_options', apply_filters('gridable_row_options', array(
+		wp_localize_script( 'gridable-add-row-button', 'gridable_row_options', apply_filters('gridable_row_options', array(
 			'cols_nr' => array(
 				'default' => 2
 			)
 		) ) );
 
-		wp_localize_script( 'gridable-editor', 'gridable_column_options', apply_filters('gridable_column_options', array(
+		wp_localize_script( 'gridable-add-row-button', 'gridable_column_options', apply_filters('gridable_column_options', array(
 			'size' => array(
 				'default' => 6
 			)
