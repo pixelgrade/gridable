@@ -540,7 +540,7 @@
 
 				if ($next.length && $prev.length && typeof xStart !== "unedfined") {
 
-					if (xLast - xStart >= colWidth) {
+					if (xLast - xStart >= colWidth / 2) {
 						var nextSpan = parseInt($next[0].getAttribute('data-sh-column-attr-size'), 10),
 							prevSpan = parseInt($prev[0].getAttribute('data-sh-column-attr-size'), 10);
 
@@ -550,7 +550,7 @@
 
 							xStart += 1 * colWidth;
 						}
-					} else if (xStart - xLast >= colWidth) {
+					} else if (xStart - xLast >= colWidth / 2) {
 						var nextSpan = parseInt($next[0].getAttribute('data-sh-column-attr-size'), 10),
 							prevSpan = parseInt($prev[0].getAttribute('data-sh-column-attr-size'), 10);
 
