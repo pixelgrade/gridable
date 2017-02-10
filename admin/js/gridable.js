@@ -161,8 +161,11 @@
 			editor.on('wptoolbar', function (args) {
 				var selected_row = editor.dom.$(args.element).closest('div.row.gridable-mceItem');
 
+				console.log(args.element.tagName);
+
 				// if a row is focused we display the toolbar and add a CSS class
-				if (( args.element.tagName === "P" || args.element.className.indexOf('gridable-mceItem') !== -1 ) && selected_row.length > 0) {
+				// if ( selected_row.length > 0 && ( ["P", "H1", "H2"].indexOf(args.element.tagName) !== -1 || args.element.className.indexOf('gridable-mceItem') !== -1 ) ) {
+				if ( selected_row.length > 0 ) {
 					args.toolbar = toolbar;
 					args.selection = selected_row[0];
 					selected_row.addClass('is-focused');
