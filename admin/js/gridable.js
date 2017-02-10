@@ -912,10 +912,10 @@
 								options.push({id: key, text: value});
 							});
 
-							var $fieldSelect2 = this.$el.find('.selector input:not(.wp-color-picker)').select2({
+							var $fieldSelect2 = this.$el.find('.selector select').select2({
 								placeholder: this.config.label || 'Search',
 								data: options,
-								containerCssClass: 'gridable-select2',
+								// containerCssClass: 'gridable-select2',
 								theme: 'gridable',
 								minimumResultsForSearch: -1
 							});
