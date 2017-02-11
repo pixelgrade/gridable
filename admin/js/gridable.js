@@ -161,8 +161,6 @@
 			editor.on('wptoolbar', function (args) {
 				var selected_row = editor.dom.$(args.element).closest('div.row.gridable-mceItem');
 
-				console.log(args.element.tagName);
-
 				// if a row is focused we display the toolbar and add a CSS class
 				// if ( selected_row.length > 0 && ( ["P", "H1", "H2"].indexOf(args.element.tagName) !== -1 || args.element.className.indexOf('gridable-mceItem') !== -1 ) ) {
 				if ( selected_row.length > 0 ) {
@@ -732,7 +730,6 @@
 
 				if (typeof atts !== "undefined" && Object.keys(atts).length > 0) {
 					Object.keys(atts).forEach(function (key, index) {
-						// console.debug( key );
 						atts_string += ' data-sh-' + tag + '-attr-' + key + '="' + atts[key]  + '" ';
 					});
 				}
@@ -911,8 +908,13 @@
 						if ('select' === this.type) {
 							var options = [];
 
-							_.each(this.config.options, function (value, key) {
-								options.push({id: key, text: value});
+							_.each(this.config.options, function (label, value) {
+								var opt_conf = {id: value, text: label};
+								if ( value === template_config.value ) {
+									opt_conf.selected = true;
+								}
+
+								options.push(opt_conf);
 							});
 
 							var $fieldSelect2 = this.$el.find('.selector select').select2({
