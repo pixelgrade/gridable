@@ -71,9 +71,10 @@
 						columns.each(function (i, el) {
 							var current_size = editor.$(el).attr('data-sh-column-attr-size');
 
-							if ( current_size > 1 ) {
-								editor.$(el).attr('data-sh-column-attr-size', current_size - 1);
-								new_size += 1;
+							if ( current_size > 2 ) {
+								editor.$(el).attr('data-sh-column-attr-size', current_size - 2);
+								new_size += 2;
+								return false;
 							}
 						});
 					}
@@ -311,6 +312,10 @@
 			 * @returns {*}
 			 */
 			editor.addCommand('gridableRender', function () {
+
+				var $save_btn = jQuery('#publishing-action .button');
+				$save_btn.attr('disabled', 'disabled');
+
 				// console.group('gridableRender');
 				var content = this.dom.doc.body.innerHTML;
 
@@ -328,6 +333,8 @@
 				// event.content = content;
 				this.dom.doc.body.innerHTML = content;
 				// console.groupEnd('gridableRender');
+
+				$save_btn.removeAttr('disabled');
 			});
 
 			/**
@@ -341,6 +348,10 @@
 			 * @returns {*|string}
 			 */
 			editor.addCommand('gridableRestore', function () {
+
+				var $save_btn = jQuery('#publishing-action .button');
+				$save_btn.attr('disabled', 'disabled');
+
 				// console.group('gridableRestore');
 
 				// hold all the content inside a HTML element.This way we keep it safe
@@ -396,6 +407,8 @@
 					// console.debug( content_process );
 				}
 				// console.groupEnd('gridableRestore');
+
+				$save_btn.removeAttr('disabled');
 			});
 
 
