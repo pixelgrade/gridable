@@ -914,6 +914,8 @@
 
 						this.$el.html(element);
 
+						var self = this;
+
 						// if there is a colorpicker left behind, init it now
 						if ('color' === this.type) {
 							this.$el.find('.colorpicker input:not(.wp-color-picker)').wpColorPicker({
@@ -925,14 +927,18 @@
 									jQuery(this).val(ui.color.toString());
 									jQuery(this).trigger('input');
 									// change the bg color
+								},
+								clear: function( event ) {
+									// Clear button should make the field transparent
+									self.options.model.attributes[self.options.key] = 'transparent';
 								}
 							});
 						}
 
-						if ('select' === this.type) {
+						if ('select' === self.type) {
 							var options = [];
 
-							_.each(this.config.options, function (label, value) {
+							_.each(self.config.options, function (label, value) {
 								var opt_conf = {id: value, text: label};
 								if ( value === template_config.value ) {
 									opt_conf.selected = true;
@@ -941,8 +947,8 @@
 								options.push(opt_conf);
 							});
 
-							var $fieldSelect2 = this.$el.find('.selector select').select2({
-								placeholder: this.config.label || 'Search',
+							var $fieldSelect2 = self.$el.find('.selector select').select2({
+								placeholder: self.config.label || 'Search',
 								data: options,
 								// containerCssClass: 'gridable-select2',
 								theme: 'gridable',
@@ -950,7 +956,7 @@
 							});
 						}
 
-						return this;
+						return self;
 					},
 
 					/**
