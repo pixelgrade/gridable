@@ -88,7 +88,7 @@
 					var tmp = getColTemplate({
 						atts: {size: new_size.toString()},
 						size: new_size.toString(),
-						content: l10n.new_column_content
+						content: '<p>' + l10n.new_column_content + '</p>'
 					});
 
 					node = editor.dom.create('DIV', {}, tmp);
@@ -162,8 +162,8 @@
 				var selected_row = editor.dom.$(args.element).closest('div.row.gridable-mceItem');
 
 				// if a row is focused we display the toolbar and add a CSS class
-				// if ( selected_row.length > 0 && ( ["P", "H1", "H2"].indexOf(args.element.tagName) !== -1 || args.element.className.indexOf('gridable-mceItem') !== -1 ) ) {
-				if ( selected_row.length > 0 ) {
+				if ( selected_row.length > 0 && ( ["P", "H1", "H2", "H3", "H4", "H5", "strong"].indexOf(args.element.tagName) !== -1 || args.element.className.indexOf('gridable-mceItem') !== -1 ) ) {
+				// if ( selected_row.length > 0 ) {
 					args.toolbar = toolbar;
 					args.selection = selected_row[0];
 					selected_row.addClass('is-focused');
