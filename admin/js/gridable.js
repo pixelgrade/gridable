@@ -163,7 +163,7 @@
 				var selected_row = editor.dom.$(args.element).closest('div.row.gridable-mceItem');
 
 				// if a row is focused we display the toolbar and add a CSS class
-				if ( selected_row.length > 0 && ( ["P", "H1", "H2", "H3", "H4", "H5", "strong"].indexOf(args.element.tagName) !== -1 || args.element.className.indexOf('gridable-mceItem') !== -1 ) ) {
+				if ( selected_row.length > 0 && ( ['P', 'h1', 'H2', 'H3', 'H4', 'H5', 'STRONG', 'SPAN', 'DIV', 'FONT', 'BR'].indexOf(args.element.tagName) !== -1 || args.element.className.indexOf('gridable-mceItem') !== -1 ) ) {
 				// if ( selected_row.length > 0 ) {
 					args.toolbar = toolbar;
 					args.selection = selected_row[0];
@@ -294,7 +294,6 @@
 			/**
 			 * After we save the content ensure that the shortcodes are rendered back
 			 */
-
 			editor.on('PreProcess', function (event) {
 				if ('html' === window.getUserSetting('editor')) {
 					return false;
@@ -316,7 +315,7 @@
 				var $save_btn = jQuery('#publishing-action .button');
 				$save_btn.attr('disabled', 'disabled');
 
-				// console.group('gridableRender');
+				console.group('gridableRender');
 				var content = this.dom.doc.body.innerHTML;
 
 				if (typeof content === "undefined") {
@@ -332,7 +331,7 @@
 
 				// event.content = content;
 				this.dom.doc.body.innerHTML = content;
-				// console.groupEnd('gridableRender');
+				console.groupEnd('gridableRender');
 
 				$save_btn.removeAttr('disabled');
 			});
@@ -661,12 +660,17 @@
 				var next = wp.shortcode.next('row', content);
 
 				if (typeof next !== "undefined") {
-
-					var row = getRowTemplate({
+					var template_attrs = {
 						tag: "row",
 						content: next.shortcode.content,
 						atts: next.shortcode.attrs.named
-					});
+					};
+
+					if ( typeof next.shortcode.attrs.named.bg_color !== "undefined" ) {
+						template_attrs.atts.style = "background-color:" +  next.shortcode.attrs.named.bg_color + ';';
+					}
+
+					var row = getRowTemplate(template_attrs);
 
 					var new_content = content.replace(next.content, row);
 
@@ -691,12 +695,18 @@
 
 				if (typeof next !== "undefined") {
 
-					// get the HTML template of a column
-					var col = getColTemplate({
+					var template_attrs = {
 						tag: "col",
 						content: next.shortcode.content,
 						atts: next.shortcode.attrs.named
-					});
+					};
+
+					if ( typeof next.shortcode.attrs.named.bg_color !== "undefined" ) {
+						template_attrs.atts.style = "background-color:" +  next.shortcode.attrs.named.bg_color + ';';
+					}
+
+					// get the HTML template of a column
+					var col = getColTemplate(template_attrs);
 
 					var new_content = content.replace(next.content, col);
 
@@ -754,7 +764,11 @@
 
 				if (typeof atts !== "undefined" && Object.keys(atts).length > 0) {
 					Object.keys(atts).forEach(function (key, index) {
-						atts_string += ' data-sh-' + tag + '-attr-' + key + '="' + atts[key]  + '" ';
+						if ( key === "style") {
+							atts_string += key + '="' + atts[key]  + '" ';
+						} else {
+							atts_string += ' data-sh-' + tag + '-attr-' + key + '="' + atts[key]  + '" ';
+						}
 					});
 				}
 
@@ -830,8 +844,10 @@
 								$sh.setAttribute('data-sh-' + tag + '-attr-' + key, value);
 							});
 
-							// send_to_editor( shortcode.formatShortcode() );
-							// this.reset();
+							// apply style changes by re-rendering
+							editor.execCommand('gridableRestore');
+							editor.execCommand('gridableRender');
+
 							this.frame.close();
 						}
 					},

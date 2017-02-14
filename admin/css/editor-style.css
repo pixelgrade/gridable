@@ -1,6 +1,6 @@
 .gridable, .gridable *, .gridable *:before, .gridable *:after { box-sizing: border-box; }
 
-[data-gridable-row] { display: -ms-flexbox; display: flex; }
+[data-gridable-row] { display: -ms-flexbox; display: flex; padding: 10px; }
 
 [data-sh-column-attr-size] { -ms-flex: 0 0 100%; flex: 0 0 100%; }
 
