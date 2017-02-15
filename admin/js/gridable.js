@@ -315,7 +315,7 @@
 				var $save_btn = jQuery('#publishing-action .button');
 				$save_btn.attr('disabled', 'disabled');
 
-				console.group('gridableRender');
+				// console.group('gridableRender');
 				var content = this.dom.doc.body.innerHTML;
 
 				if (typeof content === "undefined") {
@@ -332,7 +332,7 @@
 
 				// event.content = content;
 				this.dom.doc.body.innerHTML = content;
-				console.groupEnd('gridableRender');
+				// console.groupEnd('gridableRender');
 
 				$save_btn.removeAttr('disabled');
 			});
