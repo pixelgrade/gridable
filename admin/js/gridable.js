@@ -160,7 +160,7 @@
 			 * Create the toolbar with the controls for row
 			 */
 			editor.on('wptoolbar', function (args) {
-				var selected_row = editor.dom.$(args.element).closest('div.row.gridable-mceItem');
+				var selected_row = editor.dom.$(args.element).parents('.row.gridable-mceItem');
 
 				// if a row is focused we display the toolbar and add a CSS class
 				if ( selected_row.length > 0 && ( ['P', 'h1', 'H2', 'H3', 'H4', 'H5', 'STRONG', 'SPAN', 'DIV', 'FONT', 'BR'].indexOf(args.element.tagName) !== -1 || args.element.className.indexOf('gridable-mceItem') !== -1 ) ) {
@@ -169,7 +169,7 @@
 					args.selection = selected_row[0];
 					selected_row.addClass('is-focused');
 				} else { // we need to ensure that the focused class is removed
-					var $rows = editor.dom.$('div.row.gridable-mceItem.is-focused');
+					var $rows = editor.dom.$('.row.gridable-mceItem.is-focused');
 					if ($rows.length > 0) {
 						$rows = $rows.removeClass('is-focused');
 					}
@@ -230,7 +230,7 @@
 					editor.selection.collapse(false);
 				}
 
-				var wrap = editor.dom.$(event.element).closest('.row.gridable-mceItem');
+				var wrap = editor.dom.$(event.element).parents('.row.gridable-mceItem');
 
 				// if the parent is a column: Add resize handlers
 				if (wrap.length > 0) {
@@ -271,7 +271,7 @@
 
 			/**
 			 * Event triggered when the content is set
-			 * Here we replace the shortcodes like [row] with <div class="row">
+			 * Here we replace the shortcodes like [row] with <section class="row">
 			 */
 			editor.on('SetContent', function (event) {
 				// console.group('GetContent');
@@ -305,7 +305,7 @@
 			/**
 			 * This function turns the grid shortcodes into HTML
 			 *
-			 * [row][/row] will turn into <div class="row"></div>
+			 * [row][/row] will turn into <section class="row"></section>
 			 *
 			 * @param content
 			 * @returns {*}
@@ -323,6 +323,7 @@
 				}
 				// first we need to strip grid shortcodes from p's
 				content = remove_p_around_shortcodes(content);
+
 				// same for cols
 				content = maybe_replace_columns(content);
 
@@ -341,7 +342,7 @@
 			 *
 			 * Since we are handling html we rather create a DOM element and use its innerHTML as parsing method
 			 *
-			 * <div class="row"></div> will turn into [row][/row]
+			 * <section class="row"></section> will turn into [row][/row]
 			 *
 			 * @param content
 			 * @returns {*|string}
@@ -594,8 +595,8 @@
 
 			/**
 			 * Try to keep our shortcodes clear of wraping P tags
-			 * This is very important since a [row] shortcode will turn into a <div class="row">
-			 *     In this case there is now way we can have a <p>[row]</p> turned into <p><div class="row"></p>
+			 * This is very important since a [row] shortcode will turn into a <section class="row">
+			 *     In this case there is now way we can have a <p>[row]</p> turned into <p><section class="row"></p>
 			 *     The world will end then.
 			 *
 			 * @param content
@@ -636,6 +637,8 @@
 				// This catches anything like [col]</p>
 				content = content.replace(/(\[\s*col[^\]]*\])\s*<\s*\/p\s*>/gmi, '$1');
 
+				// avoid casses like <p>[/col], you can never start a paragraf when you are just closing a column
+				content = content.replace( /<p[^>]*>\s*(\[\s*\/col[^\]]*\])/gmi, '$1');
 				return content;
 			};
 

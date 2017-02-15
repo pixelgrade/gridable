@@ -1,6 +1,8 @@
 .gridable, .gridable *, .gridable *:before, .gridable *:after { box-sizing: border-box; }
 
-[data-gridable-row] { display: -ms-flexbox; display: flex; padding: 10px; }
+.no_select { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+
+[data-gridable-row] { display: -ms-flexbox; display: flex; padding: 10px; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 
 [data-sh-column-attr-size] { -ms-flex: 0 0 100%; flex: 0 0 100%; }
 
@@ -29,11 +31,12 @@
 [data-sh-column-attr-size="12"] { -ms-flex-preferred-size: 100%; flex-basis: 100%; width: 100%; }
 
 .gridable { margin: 0 -1.5em; border: 1px solid transparent; transition: border-color .2s ease-out; }
-.gridable > .col { border-left: 1px solid transparent; position: relative; padding: 1.5em; transition: all .2s ease-out; }
+.gridable > .col { border-left: 1px solid transparent; position: relative; padding: 1.5em; display: inline-block; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; transition: all .2s ease-out; }
+.gridable > .col * { -webkit-user-select: text; /* Chrome 49+ */ -moz-user-select: text; /* Firefox 43+ */ -ms-user-select: text; /* No support yet */ user-select: text; /* Likely future */ }
 .gridable > .col:first-child { border-left: 0; }
 .gridable:hover, .gridable:hover > .col, .gridable.is-focused, .gridable.is-focused > .col { border-color: #E6E6E6; }
 
-.gridable__handle { /* autoprefixer: off */ position: absolute; top: 0; left: -0.5em; width: 1em; height: 100%; font-size: 24px; cursor: col-resize; }
+.gridable__handle { /* autoprefixer: off */ position: absolute; top: 0; left: -0.5em; width: 1em; height: 100%; font-size: 24px; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: col-resize; }
 .gridable__handle:before { content: ""; position: absolute; top: 50%; left: 0; display: block; width: 1em; height: 1em; margin-top: -0.5em; background: url("../images/resize-column.svg") center center no-repeat; background-size: 100% 100%; opacity: 0; transition: opacity .2s ease-out; }
 .gridable.has-handlers:hover > .col > .gridable__handle:before { opacity: 1; }
 .col:first-child > .gridable__handle { display: none; }
