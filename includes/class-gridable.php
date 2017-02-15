@@ -69,7 +69,7 @@ class Gridable {
 	public function __construct() {
 
 		$this->gridable = 'gridable';
-		$this->version = '1.0.0';
+		$this->version = '1.0.0.a';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -180,6 +180,11 @@ class Gridable {
 		// clear lost p tags in front-end
 		if ( ! is_admin() ) {
 			add_filter( 'gridable_the_column_content', array( $plugin_public, 'gridable_fix_lost_p_tags' ), 10, 2 );
+
+			if ( true === apply_filters('gridable_add_empty_column_class', true ) ) {
+				add_filter( 'gridable_column_class', array( $plugin_public, 'gridable_add_empty_column_class' ), 10, 4 );
+			}
+
 		}
 	}
 

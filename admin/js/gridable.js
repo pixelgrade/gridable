@@ -71,9 +71,10 @@
 						columns.each(function (i, el) {
 							var current_size = editor.$(el).attr('data-sh-column-attr-size');
 
-							if ( current_size > 1 ) {
-								editor.$(el).attr('data-sh-column-attr-size', current_size - 1);
-								new_size += 1;
+							if ( current_size > 2 ) {
+								editor.$(el).attr('data-sh-column-attr-size', current_size - 2);
+								new_size += 2;
+								return false;
 							}
 						});
 					}
@@ -88,7 +89,7 @@
 					var tmp = getColTemplate({
 						atts: {size: new_size.toString()},
 						size: new_size.toString(),
-						content: l10n.new_column_content
+						content: '<p>' + l10n.new_column_content + '</p>'
 					});
 
 					node = editor.dom.create('DIV', {}, tmp);
@@ -159,15 +160,16 @@
 			 * Create the toolbar with the controls for row
 			 */
 			editor.on('wptoolbar', function (args) {
-				var selected_row = editor.dom.$(args.element).closest('div.row.gridable-mceItem');
+				var selected_row = editor.dom.$(args.element).parents('.row.gridable-mceItem');
 
 				// if a row is focused we display the toolbar and add a CSS class
-				if (( args.element.tagName === "P" || args.element.className.indexOf('gridable-mceItem') !== -1 ) && selected_row.length > 0) {
+				if ( selected_row.length > 0 && ( ['P', 'h1', 'H2', 'H3', 'H4', 'H5', 'STRONG', 'SPAN', 'DIV', 'FONT', 'BR'].indexOf(args.element.tagName) !== -1 || args.element.className.indexOf('gridable-mceItem') !== -1 ) ) {
+				// if ( selected_row.length > 0 ) {
 					args.toolbar = toolbar;
 					args.selection = selected_row[0];
 					selected_row.addClass('is-focused');
 				} else { // we need to ensure that the focused class is removed
-					var $rows = editor.dom.$('div.row.gridable-mceItem.is-focused');
+					var $rows = editor.dom.$('.row.gridable-mceItem.is-focused');
 					if ($rows.length > 0) {
 						$rows = $rows.removeClass('is-focused');
 					}
@@ -217,7 +219,18 @@
 					return;
 				}
 
-				var wrap = editor.dom.$(event.element).closest('.row.gridable-mceItem');
+				// the cursor is not allowed inside the resize handler. in this case it will be moved in the next column
+				if ( event.element.className === 'gridable__handle' ) {
+					var next_col = editor.dom.$(event.element).closest('.col.gridable-mceItem');
+					if ( next_col[0].getElementsByTagName('p').length > 0 ) {
+						editor.selection.select( next_col[0].getElementsByTagName('p')[0], true );
+					} else {
+						editor.selection.select( next_col[0], true );
+					}
+					editor.selection.collapse(false);
+				}
+
+				var wrap = editor.dom.$(event.element).parents('.row.gridable-mceItem');
 
 				// if the parent is a column: Add resize handlers
 				if (wrap.length > 0) {
@@ -258,7 +271,7 @@
 
 			/**
 			 * Event triggered when the content is set
-			 * Here we replace the shortcodes like [row] with <div class="row">
+			 * Here we replace the shortcodes like [row] with <section class="row">
 			 */
 			editor.on('SetContent', function (event) {
 				// console.group('GetContent');
@@ -281,24 +294,27 @@
 			/**
 			 * After we save the content ensure that the shortcodes are rendered back
 			 */
-
 			editor.on('PreProcess', function (event) {
 				if ('html' === window.getUserSetting('editor')) {
-					return;
+					return false;
+				} else if ( editor.editorCommands.hasCustomCommand('gridableRestore' ) && event.save === true ) {
+					editor.editorCommands.execCommand('gridableRestore');
 				}
-
-				editor.execCommand('gridableRestore');
 			});
 
 			/**
 			 * This function turns the grid shortcodes into HTML
 			 *
-			 * [row][/row] will turn into <div class="row"></div>
+			 * [row][/row] will turn into <section class="row"></section>
 			 *
 			 * @param content
 			 * @returns {*}
 			 */
 			editor.addCommand('gridableRender', function () {
+
+				var $save_btn = jQuery('#publishing-action .button');
+				$save_btn.attr('disabled', 'disabled');
+
 				// console.group('gridableRender');
 				var content = this.dom.doc.body.innerHTML;
 
@@ -307,6 +323,7 @@
 				}
 				// first we need to strip grid shortcodes from p's
 				content = remove_p_around_shortcodes(content);
+
 				// same for cols
 				content = maybe_replace_columns(content);
 
@@ -316,6 +333,8 @@
 				// event.content = content;
 				this.dom.doc.body.innerHTML = content;
 				// console.groupEnd('gridableRender');
+
+				$save_btn.removeAttr('disabled');
 			});
 
 			/**
@@ -323,12 +342,16 @@
 			 *
 			 * Since we are handling html we rather create a DOM element and use its innerHTML as parsing method
 			 *
-			 * <div class="row"></div> will turn into [row][/row]
+			 * <section class="row"></section> will turn into [row][/row]
 			 *
 			 * @param content
 			 * @returns {*|string}
 			 */
 			editor.addCommand('gridableRestore', function () {
+
+				var $save_btn = jQuery('#publishing-action .button');
+				$save_btn.attr('disabled', 'disabled');
+
 				// console.group('gridableRestore');
 
 				// hold all the content inside a HTML element.This way we keep it safe
@@ -384,6 +407,8 @@
 					// console.debug( content_process );
 				}
 				// console.groupEnd('gridableRestore');
+
+				$save_btn.removeAttr('disabled');
 			});
 
 
@@ -540,7 +565,7 @@
 
 				if ($next.length && $prev.length && typeof xStart !== "unedfined") {
 
-					if (xLast - xStart >= colWidth) {
+					if (xLast - xStart >= colWidth / 2) {
 						var nextSpan = parseInt($next[0].getAttribute('data-sh-column-attr-size'), 10),
 							prevSpan = parseInt($prev[0].getAttribute('data-sh-column-attr-size'), 10);
 
@@ -550,7 +575,7 @@
 
 							xStart += 1 * colWidth;
 						}
-					} else if (xStart - xLast >= colWidth) {
+					} else if (xStart - xLast >= colWidth / 2) {
 						var nextSpan = parseInt($next[0].getAttribute('data-sh-column-attr-size'), 10),
 							prevSpan = parseInt($prev[0].getAttribute('data-sh-column-attr-size'), 10);
 
@@ -570,8 +595,8 @@
 
 			/**
 			 * Try to keep our shortcodes clear of wraping P tags
-			 * This is very important since a [row] shortcode will turn into a <div class="row">
-			 *     In this case there is now way we can have a <p>[row]</p> turned into <p><div class="row"></p>
+			 * This is very important since a [row] shortcode will turn into a <section class="row">
+			 *     In this case there is now way we can have a <p>[row]</p> turned into <p><section class="row"></p>
 			 *     The world will end then.
 			 *
 			 * @param content
@@ -612,6 +637,8 @@
 				// This catches anything like [col]</p>
 				content = content.replace(/(\[\s*col[^\]]*\])\s*<\s*\/p\s*>/gmi, '$1');
 
+				// avoid casses like <p>[/col], you can never start a paragraf when you are just closing a column
+				content = content.replace( /<p[^>]*>\s*(\[\s*\/col[^\]]*\])/gmi, '$1');
 				return content;
 			};
 
@@ -636,12 +663,17 @@
 				var next = wp.shortcode.next('row', content);
 
 				if (typeof next !== "undefined") {
-
-					var row = getRowTemplate({
+					var template_attrs = {
 						tag: "row",
 						content: next.shortcode.content,
 						atts: next.shortcode.attrs.named
-					});
+					};
+
+					if ( typeof next.shortcode.attrs.named.bg_color !== "undefined" ) {
+						template_attrs.atts.style = "background-color:" +  next.shortcode.attrs.named.bg_color + ';';
+					}
+
+					var row = getRowTemplate(template_attrs);
 
 					var new_content = content.replace(next.content, row);
 
@@ -666,12 +698,18 @@
 
 				if (typeof next !== "undefined") {
 
-					// get the HTML template of a column
-					var col = getColTemplate({
+					var template_attrs = {
 						tag: "col",
 						content: next.shortcode.content,
 						atts: next.shortcode.attrs.named
-					});
+					};
+
+					if ( typeof next.shortcode.attrs.named.bg_color !== "undefined" ) {
+						template_attrs.atts.style = "background-color:" +  next.shortcode.attrs.named.bg_color + ';';
+					}
+
+					// get the HTML template of a column
+					var col = getColTemplate(template_attrs);
 
 					var new_content = content.replace(next.content, col);
 
@@ -729,8 +767,11 @@
 
 				if (typeof atts !== "undefined" && Object.keys(atts).length > 0) {
 					Object.keys(atts).forEach(function (key, index) {
-						// console.debug( key );
-						atts_string += ' data-sh-' + tag + '-attr-' + key + '="' + atts[key]  + '" ';
+						if ( key === "style") {
+							atts_string += key + '="' + atts[key]  + '" ';
+						} else {
+							atts_string += ' data-sh-' + tag + '-attr-' + key + '="' + atts[key]  + '" ';
+						}
 					});
 				}
 
@@ -806,8 +847,10 @@
 								$sh.setAttribute('data-sh-' + tag + '-attr-' + key, value);
 							});
 
-							// send_to_editor( shortcode.formatShortcode() );
-							// this.reset();
+							// apply style changes by re-rendering
+							editor.execCommand('gridableRestore');
+							editor.execCommand('gridableRender');
+
 							this.frame.close();
 						}
 					},
@@ -890,6 +933,8 @@
 
 						this.$el.html(element);
 
+						var self = this;
+
 						// if there is a colorpicker left behind, init it now
 						if ('color' === this.type) {
 							this.$el.find('.colorpicker input:not(.wp-color-picker)').wpColorPicker({
@@ -901,27 +946,36 @@
 									jQuery(this).val(ui.color.toString());
 									jQuery(this).trigger('input');
 									// change the bg color
+								},
+								clear: function( event ) {
+									// Clear button should make the field transparent
+									self.options.model.attributes[self.options.key] = 'transparent';
 								}
 							});
 						}
 
-						if ('select' === this.type) {
+						if ('select' === self.type) {
 							var options = [];
 
-							_.each(this.config.options, function (value, key) {
-								options.push({id: key, text: value});
+							_.each(self.config.options, function (label, value) {
+								var opt_conf = {id: value, text: label};
+								if ( value === template_config.value ) {
+									opt_conf.selected = true;
+								}
+
+								options.push(opt_conf);
 							});
 
-							var $fieldSelect2 = this.$el.find('.selector input:not(.wp-color-picker)').select2({
-								placeholder: this.config.label || 'Search',
+							var $fieldSelect2 = self.$el.find('.selector select').select2({
+								placeholder: self.config.label || 'Search',
 								data: options,
-								containerCssClass: 'gridable-select2',
+								// containerCssClass: 'gridable-select2',
 								theme: 'gridable',
 								minimumResultsForSearch: -1
 							});
 						}
 
-						return this;
+						return self;
 					},
 
 					/**

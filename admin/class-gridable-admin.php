@@ -69,27 +69,25 @@ class Gridable_Admin {
 		 * Enqueue the editor script only when there is an editor on page.
 		 * We ditch `admin_enqueue_scripts` intentionally since the editor can appear on non-edit pages like theme options
 		 */
-		wp_register_script( 'select2-full', plugin_dir_url( __FILE__ ) . 'js/select2.full.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'select2', plugin_dir_url( __FILE__ ) . 'js/select2.min.js', array( 'jquery' ), $this->version );
 
-		wp_enqueue_script( 'gridable-editor', plugin_dir_url( __FILE__ ) . 'js/admin-editor.js', array( 'jquery', 'wp-color-picker', 'select2-full' ), $this->version, true );
+		wp_enqueue_script( 'gridable-add-row-button', plugin_dir_url( __FILE__ ) . 'js/add-row-button.js', array( 'jquery', 'wp-color-picker', 'select2' ), $this->version, true );
 
-		wp_register_style( 'select2-full', plugin_dir_url( __FILE__ ) . 'css/select2.css', array(), $this->version );
+		wp_register_style( 'select2', plugin_dir_url( __FILE__ ) . 'css/select2.css', array(), $this->version );
 
-		wp_enqueue_style( 'gridable-admin-style', plugin_dir_url( __FILE__ ) . 'css/admin-style.css', array( 'wp-color-picker', 'select2-full' ), $this->version, false );
+		wp_enqueue_style( 'gridable-admin-style', plugin_dir_url( __FILE__ ) . 'css/admin-style.css', array( 'wp-color-picker', 'select2' ), $this->version, false );
 
-		wp_localize_script( 'gridable-editor', 'gridable_editor_params', array(
+		wp_localize_script( 'gridable-add-row-button', 'gridable_editor_params', array(
 			'new_column_content' => esc_html__( 'Content', 'gridable' )
 		) );
 
-		wp_localize_script( 'gridable-editor', 'GridableCallbacks', null );
-
-		wp_localize_script( 'gridable-editor', 'gridable_row_options', apply_filters('gridable_row_options', array(
+		wp_localize_script( 'gridable-add-row-button', 'gridable_row_options', apply_filters('gridable_row_options', array(
 			'cols_nr' => array(
 				'default' => 2
 			)
 		) ) );
 
-		wp_localize_script( 'gridable-editor', 'gridable_column_options', apply_filters('gridable_column_options', array(
+		wp_localize_script( 'gridable-add-row-button', 'gridable_column_options', apply_filters('gridable_column_options', array(
 			'size' => array(
 				'default' => 6
 			)
@@ -116,8 +114,8 @@ class Gridable_Admin {
 		$col_classes = array(
 			'grid__item'
 		); ?>
-<script type="text/html" id="tmpl-gridable-grider-row"><div contenteditable="false" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_row_classes', $row_classes ) ); ?>" {{{data.atts}}} data-gridable-row="1" data-mce-resize="false" data-mce-placeholder="1">{{{data.content}}}</div></script>
-<script type="text/html" id="tmpl-gridable-grider-col"><div contenteditable="true" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_col_classes', $col_classes ) ); ?>" {{{data.atts}}} data-mce-resize="false" data-mce-placeholder="1"><div class="gridable__handle"></div>{{{data.content}}}</div></script>
+<script type="text/html" id="tmpl-gridable-grider-row"><section contenteditable="false" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_row_classes', $row_classes ) ); ?>" {{{data.atts}}} data-gridable-row="1" data-mce-resize="false" data-mce-placeholder="1">{{{data.content}}}</section></script>
+<script type="text/html" id="tmpl-gridable-grider-col"><section contenteditable="true" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_col_classes', $col_classes ) ); ?>" {{{data.atts}}} data-mce-resize="false" data-mce-placeholder="1"><div class="gridable__handle"></div>{{{data.content}}}</section></script>
 	<?php
 		do_action( 'gridable_print_row_options_templates' );
 		do_action( 'gridable_print_column_options_templates' );
@@ -135,7 +133,6 @@ class Gridable_Admin {
 		if ( is_admin() ) { ?>
 			<script type="text/javascript">
 				var gridable_params = {
-					sh_col_classes: JSON.parse('<?php echo json_encode( apply_filters( 'gridable_sh_col_attr_size', array() ) ) ?>'),
 					l10n: JSON.parse('<?php echo json_encode( apply_filters( 'gridable_editor_l10n_labels', array(
 						'remove_row'         => esc_html__( 'Remove Row', 'gridable' ),
 						'remove_column'      => esc_html__( 'Remove Column', 'gridable' ),

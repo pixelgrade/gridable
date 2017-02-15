@@ -76,7 +76,14 @@ class Gridable_Public {
 			$cols_nr = (int) $atts['cols_nr'];
 		}
 
-		$class = apply_filters( "gridable_sh_{$tag}_classes", "gridable gridable--row", $cols_nr, $atts );
+		$classes = apply_filters( "gridable_row_class", array( "gridable", "gridable--row" ), $cols_nr, $atts, $content );
+
+		$classes = array_map( 'esc_attr', $classes );
+
+		$class = '';
+		if ( ! empty( $classes ) ) {
+			$class = 'class="' . join( ' ', array_unique( $classes ) ) . '"';
+		}
 
 		// get sh template
 		$template = $this->get_localed_sh_templated( $tag );
@@ -105,12 +112,15 @@ class Gridable_Public {
 			$size = (int) $atts['size'];
 		}
 
-		$size = apply_filters( "gridable_sh_{$tag}_attr_size", $size );
+		$size = apply_filters( "gridable_column_size", $size );
 
-		$classes = apply_filters( "gridable_sh_{$tag}_classes", array( 'gridable--col', 'hand-span-' . $size ), $size );
+		$classes = apply_filters( "gridable_column_class", array( 'gridable--col', 'hand-span-' . $size ), $size, $atts, $content );
 
+		$classes = array_map( 'esc_attr', $classes );
+
+		$class = '';
 		if ( ! empty( $classes ) ) {
-			$class = join( ' ', $classes);
+			$class = 'class="' . join( ' ', array_unique( $classes ) ) . '"';
 		}
 
 		// get sh template
@@ -198,6 +208,15 @@ class Gridable_Public {
 		return $content;
 	}
 
+	function gridable_add_empty_column_class( $classes, $size, $atts, $content ){
+
+		if ( empty( $content ) ) {
+			$classes[] = 'empty_column';
+		}
+
+		return $classes;
+	}
+
 //
 //	/**
 //	 * Register the JavaScript for the public-facing side of the site.
@@ -222,4 +241,6 @@ class Gridable_Public {
 //
 //	}
 
+
 }
+
