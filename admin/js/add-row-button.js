@@ -56,7 +56,7 @@
 		/**
 		 * Insert the new shortcode in the editor
 		 */
-		wp.media.editor.insert( row );
+		tinyMCE.activeEditor.insertContent( row );
 
 		function wpAutoP( content ) {
 			if ( switchEditors && switchEditors.wpautop ) {
