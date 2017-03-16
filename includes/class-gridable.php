@@ -177,6 +177,8 @@ class Gridable {
 		add_shortcode( 'row', array( $plugin_public, 'add_row_shortcode' ) );
 		add_shortcode( 'col', array( $plugin_public, 'add_column_shortcode' ) );
 
+		add_filter( 'the_content', array( $plugin_public, 'parse_content_for_nested_rows' ), 9 );
+
 		// clear lost p tags in front-end
 		if ( ! is_admin() ) {
 			add_filter( 'gridable_the_column_content', array( $plugin_public, 'gridable_fix_lost_p_tags' ), 10, 2 );
