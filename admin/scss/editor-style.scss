@@ -1,3 +1,5 @@
+$gutenberg-border: #E0E5E9;
+
 .gridable {
 	&, *, *:before, *:after {
 		box-sizing: border-box;
@@ -39,11 +41,30 @@
 
 .gridable {
 	margin: 0 -1.5em;
-	border: 1px solid transparent;
-	transition: border-color .2s ease-out;
+	border: 2px solid transparent;
+	// transition: border-color .2s ease-out;
+	
+	&:before {
+		content: "...";
+		display: block;
+
+		color: #86909B;
+		font-size: 20px;
+	    font-weight: bold;
+	    
+		position: absolute;
+		left: -5px;
+		top: 50%;
+		margin-top: -15px;
+		transform: rotate(90deg);
+
+		opacity: 0;
+		transition: opacity .2s;
+	}
 
 	> .col {
-		border-left: 1px solid transparent;
+		// border-left: 1px solid transparent;
+		
 		position: relative;
 		padding: 1.5em;
 		display: inline-block;
@@ -71,8 +92,28 @@
 
 	&:hover, &.is-focused {
 		&, > .col {
-			border-color: #E6E6E6;
+			// border-color: $gutenberg-border;
 		}
+		
+		// Hover Row
+		& {
+			
+		}
+	}
+
+	// Row Hover
+	&:hover {
+		// box-shadow: inset 0px 0px 0px 2px $gutenberg-border;
+	    // border: 2px dotted $gutenberg-border;
+	    &:before {
+			opacity: 1;
+			cursor: pointer;
+		}
+	}
+
+	// Row Focused
+	&.is-focused {
+
 	}
 }
 
@@ -115,7 +156,7 @@
 		transition: opacity .2s ease-out;
 
 		.gridable.has-handlers:hover > .col > & {
-			opacity: 1;
+			// opacity: 1;
 		}
 	}
 
@@ -136,3 +177,68 @@
 		cursor: move;
 	}
 }
+
+// Following the WordPress Default Classes
+.mce-content-body {
+	// Change Outline Color for 
+	// better consistency with Gridable
+	*[contentEditable=false] { 
+
+		*[contentEditable=true] { 
+			&:hover {
+
+			}
+
+			&:focus {
+				outline-color: $gutenberg-border;
+			}
+		}
+
+		&[data-mce-selected] {
+			outline-color: $gutenberg-border;
+		}
+	}
+
+	// Gridable Specifics
+	.row[contentEditable=false] { 
+		position: relative;
+		transition: box-shadow .2s ease-out;
+
+		.col[contentEditable=true] { 
+			
+			// Hover State
+			// Disable Outline 
+			// Add a Left Border with Box Shadow
+			&:hover {
+				outline: none;   
+			    box-shadow: inset 9px 0px 0px -7px $gutenberg-border;
+			}
+
+			// Selected State
+			// Disable Outline 
+			// Add an Outline Border with Box Shadow
+			&:focus {
+				outline: none;
+				box-shadow: inset 0px 0px 0px 2px $gutenberg-border;
+			}
+		}
+
+		&:hover {
+			
+		}
+
+		&[data-mce-selected] {
+			// Disable Outline 
+			// Add an Outline Border with Box Shadow
+			outline: none;
+			box-shadow: inset 0px 0px 0px 2px $gutenberg-border;
+
+			// Hide Row Ellipsis Menu
+			&:before {
+				display: none;
+			}
+		}
+	}
+}
+
+
