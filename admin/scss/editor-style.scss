@@ -1,4 +1,5 @@
 $gutenberg-border: #E0E5E9;
+$outline-spacing: 1em;
 
 .gridable {
 	&, *, *:before, *:after {
@@ -18,7 +19,6 @@ $gutenberg-border: #E0E5E9;
 // The Grid
 [data-gridable-row] {
 	display: flex;
-	padding: 10px;
 
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
@@ -40,9 +40,8 @@ $gutenberg-border: #E0E5E9;
 }
 
 .gridable {
-	margin: 0 -1.5em;
-	// border: 2px solid transparent;
-	// transition: border-color .2s ease-out;
+	margin-left: -$outline-spacing;
+	margin-right: -$outline-spacing;
 	
 	&:after {
 		content: "...";
@@ -53,7 +52,7 @@ $gutenberg-border: #E0E5E9;
 	    font-weight: bold;
 	    
 		position: absolute;
-		left: -5px;
+		left: -15px;
 		top: 50%;
 		margin-top: -15px;
 		transform: rotate(90deg);
@@ -62,12 +61,10 @@ $gutenberg-border: #E0E5E9;
 		transition: opacity .2s;
 	}
 
-	> .col {
-		// border-left: 1px solid transparent;
-		
+	> .col {		
 		position: relative;
-		padding: 1.5em;
 		display: inline-block;
+		padding: $outline-spacing;
 
 		-webkit-touch-callout: none;
 		-webkit-user-select: none;
@@ -90,21 +87,8 @@ $gutenberg-border: #E0E5E9;
 		}
 	}
 
-	&:hover, &.is-focused {
-		&, > .col {
-			// border-color: $gutenberg-border;
-		}
-		
-		// Hover Row
-		& {
-			
-		}
-	}
-
 	// Row Hover
 	&:hover {
-		// box-shadow: inset 0px 0px 0px 2px $gutenberg-border;
-	    // border: 2px dotted $gutenberg-border;
 	    &:after {
 			opacity: 1;
 			cursor: pointer;
@@ -117,13 +101,15 @@ $gutenberg-border: #E0E5E9;
 	}
 }
 
+
+// Resize Area
 .gridable__handle {
 	/* autoprefixer: off */
 	position: absolute;
 	top: 0;
-	left: -0.5em;
+	left: -1em;
 
-	width: 1em;
+	width: 1.5em;
 	height: 100%;
 
 	font-size: 24px;

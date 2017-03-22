@@ -2,7 +2,7 @@
 
 .no_select { -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 
-[data-gridable-row] { display: -ms-flexbox; display: flex; padding: 10px; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+[data-gridable-row] { display: -ms-flexbox; display: flex; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 
 [data-sh-column-attr-size] { -ms-flex: 0 0 100%; flex: 0 0 100%; }
 
@@ -30,14 +30,14 @@
 
 [data-sh-column-attr-size="12"] { -ms-flex-preferred-size: 100%; flex-basis: 100%; width: 100%; }
 
-.gridable { margin: 0 -1.5em; }
-.gridable:after { content: "..."; display: block; color: #86909B; font-size: 20px; font-weight: bold; position: absolute; left: -5px; top: 50%; margin-top: -15px; -webkit-transform: rotate(90deg); transform: rotate(90deg); opacity: 0; transition: opacity .2s; }
-.gridable > .col { position: relative; padding: 1.5em; display: inline-block; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; transition: all .2s ease-out; }
+.gridable { margin-left: -1em; margin-right: -1em; }
+.gridable:after { content: "..."; display: block; color: #86909B; font-size: 20px; font-weight: bold; position: absolute; left: -15px; top: 50%; margin-top: -15px; -webkit-transform: rotate(90deg); transform: rotate(90deg); opacity: 0; transition: opacity .2s; }
+.gridable > .col { position: relative; display: inline-block; padding: 1em; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; transition: all .2s ease-out; }
 .gridable > .col * { -webkit-user-select: text; /* Chrome 49+ */ -moz-user-select: text; /* Firefox 43+ */ -ms-user-select: text; /* No support yet */ user-select: text; /* Likely future */ }
 .gridable > .col:first-child { border-left: 0; }
 .gridable:hover:after { opacity: 1; cursor: pointer; }
 
-.gridable__handle { /* autoprefixer: off */ position: absolute; top: 0; left: -0.5em; width: 1em; height: 100%; font-size: 24px; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: col-resize !important; outline: none !important; }
+.gridable__handle { /* autoprefixer: off */ position: absolute; top: 0; left: -1em; width: 1.5em; height: 100%; font-size: 24px; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: col-resize !important; outline: none !important; }
 .gridable__handle:after { content: ""; position: absolute; top: 50%; left: 0; display: block; width: 1em; height: 1em; margin-top: -0.5em; background: url("../images/resize-column.svg") center center no-repeat; background-size: 100% 100%; opacity: 0; transition: opacity .2s ease-out; }
 .col:first-child > .gridable__handle { display: none; }
 
