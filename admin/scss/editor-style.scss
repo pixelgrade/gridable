@@ -41,10 +41,10 @@ $gutenberg-border: #E0E5E9;
 
 .gridable {
 	margin: 0 -1.5em;
-	border: 2px solid transparent;
+	// border: 2px solid transparent;
 	// transition: border-color .2s ease-out;
 	
-	&:before {
+	&:after {
 		content: "...";
 		display: block;
 
@@ -105,7 +105,7 @@ $gutenberg-border: #E0E5E9;
 	&:hover {
 		// box-shadow: inset 0px 0px 0px 2px $gutenberg-border;
 	    // border: 2px dotted $gutenberg-border;
-	    &:before {
+	    &:after {
 			opacity: 1;
 			cursor: pointer;
 		}
@@ -135,9 +135,10 @@ $gutenberg-border: #E0E5E9;
 	-ms-user-select: none;
 	user-select: none;
 
-	cursor: col-resize;
+	cursor: col-resize !important;
+	outline: none !important;
 
-	&:before {
+	&:after {
 		content: "";
 
 		position: absolute;
@@ -234,7 +235,7 @@ $gutenberg-border: #E0E5E9;
 			box-shadow: inset 0px 0px 0px 2px $gutenberg-border;
 
 			// Hide Row Ellipsis Menu
-			&:before {
+			&:after {
 				display: none;
 			}
 		}

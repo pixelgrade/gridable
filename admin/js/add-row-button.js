@@ -26,7 +26,8 @@
 		var handle = wp.html.string({
 			tag: 'div',
 			attrs: {
-				class: "gridable__handle"
+				class: "gridable__handle",
+				"contenteditable": "false"
 			}
 		})
 
