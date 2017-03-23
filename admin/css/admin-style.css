@@ -18,3 +18,8 @@
 .gridable-setting .wp-picker-container .wp-picker-input-wrap { padding-left: 115px; }
 
 .gridable-attribute-field .checkbox input[type=checkbox] { margin-top: 17px; }
+
+html #wpcontent, html #wpfooter, html #poststuff #post-body.columns-2 { transition: margin .3s ease-out; }
+html .wp-editor-expand div.mce-toolbar-grp, html .wp-editor-expand #wp-content-editor-tools { transition: width .3s ease-out; }
+html .focus-on #wpcontent, html .focus-on #wpfooter { margin-left: 0; }
+html .focus-on #poststuff #post-body.columns-2 { margin-right: 0; }

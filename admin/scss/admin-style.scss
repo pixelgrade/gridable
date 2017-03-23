@@ -89,3 +89,27 @@
 .gridable-attribute-field .checkbox input[type=checkbox] {
   margin-top: 17px;
 }
+
+
+
+html {
+	
+    // On Distraction Free Mode, make the Editor bigger
+	#wpcontent, #wpfooter, #poststuff #post-body.columns-2 {
+		transition: margin .3s ease-out;
+	}
+
+	.wp-editor-expand div.mce-toolbar-grp,
+	.wp-editor-expand #wp-content-editor-tools {
+		transition: width .3s ease-out;
+	}
+
+    .focus-on {
+        #wpcontent, #wpfooter {
+            margin-left: 0;
+        }
+        #poststuff #post-body.columns-2 {
+            margin-right: 0;
+        }
+    }
+}

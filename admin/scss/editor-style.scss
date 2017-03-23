@@ -1,22 +1,50 @@
+/* ==========================================================================
+   #EDITOR STYLES GRID
+   ========================================================================== */
+
+$gutenberg-border: #E0E5E9;
+$outline-spacing: 1em;
+
+
+// Set Editor Style Data Attributes Alternatives
+$c-row: '.row';
+$c-col: '.col';
+$c-row__item: '.grid__item';
+$c-col-prefix: 'data-sh-column-attr-size';
+
+$gridable-row-simple: '[data-sh-row-attr-row_style=simple]';
+$gridable-row-boxed: '[data-sh-row-attr-row_style=boxed]';
+
+$gridable-col-simple: '.row .grid__item[data-sh-column-attr-column_style=simple]';
+// $gridable-col-highlighted: '.row .grid__item[data-sh-column-attr-column_style=highlighted]';
+$gridable-col-boxed: '.row .grid__item[data-sh-column-attr-column_style=boxed]';
+
+
+
+
+
+/* Grid Layout
+   ========================================================================== */
+
+
 .gridable {
+	margin-left: -$outline-spacing;
+	margin-right: -$outline-spacing;
+
 	&, *, *:before, *:after {
 		box-sizing: border-box;
 	}
 }
 
-.no_select {
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}
 
-// The Grid
-[data-gridable-row] {
+/**
+ * Grid Row
+ */
+
+#{$c-row} {
 	display: flex;
-	padding: 10px;
+	flex-flow: row wrap;
+    justify-content: space-between;
 
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
@@ -26,27 +54,60 @@
 	user-select: none;
 }
 
-[data-sh-column-attr-size] {
-	flex: 0 0 100%;
+
+/**
+ * Grid Columns
+ */
+
+#{$c-col} {
+    flex: 0 0 100%;
+    max-width: 100%;
+    max-width: 100%;
 }
+
+/**
+ * Grid Columns
+ */
 
 @for $i from 1 through 12 {
-	[data-sh-column-attr-size="#{$i}"] {
-		flex-basis: percentage($i/12);
-		width: percentage($i/12);
-	}
+    [#{$c-col-prefix}='#{$i}'] {
+        flex-basis: calc(#{percentage($i/12)});
+        width: percentage($i/12);
+    }
 }
 
-.gridable {
-	margin: 0 -1.5em;
-	border: 1px solid transparent;
-	transition: border-color .2s ease-out;
 
-	> .col {
-		border-left: 1px solid transparent;
+
+/* UI Interactions
+   ========================================================================== */
+
+
+#{$c-row} {
+	
+	// Row Ellipis Menu
+	&:after {
+		content: "...";
+		display: block;
+
+		color: #86909B;
+		font-size: 25px;
+	    font-weight: bold;
+	    font-family: initial;
+	    
+		position: absolute;
+		left: -15px;
+		top: 50%;
+		margin-top: -15px;
+		transform: rotate(90deg);
+
+		opacity: 0;
+		transition: opacity .2s;
+	}
+
+	> #{$c-col} {		
 		position: relative;
-		padding: 1.5em;
 		display: inline-block;
+		padding: $outline-spacing;
 
 		-webkit-touch-callout: none;
 		-webkit-user-select: none;
@@ -67,22 +128,37 @@
 		&:first-child {
 			border-left: 0;
 		}
+
+		img {
+			margin-left: 0;
+			margin-right: 0;
+			max-width: 100%;
+		}
 	}
 
-	&:hover, &.is-focused {
-		&, > .col {
-			border-color: #E6E6E6;
+	// Row Hover
+	&:hover {
+	    &:after {
+			opacity: 1;
+			cursor: pointer;
 		}
+	}
+
+	// Row Focused
+	&.is-focused {
+
 	}
 }
 
+
+// Resize Area
 .gridable__handle {
 	/* autoprefixer: off */
 	position: absolute;
 	top: 0;
-	left: -0.5em;
+	left: -15px;
 
-	width: 1em;
+	width: 1.5em;
 	height: 100%;
 
 	font-size: 24px;
@@ -94,9 +170,10 @@
 	-ms-user-select: none;
 	user-select: none;
 
-	cursor: col-resize;
+	cursor: col-resize !important;
+	outline: none !important;
 
-	&:before {
+	&.dafter {
 		content: "";
 
 		position: absolute;
@@ -115,7 +192,7 @@
 		transition: opacity .2s ease-out;
 
 		.gridable.has-handlers:hover > .col > & {
-			opacity: 1;
+			// opacity: 1;
 		}
 	}
 
@@ -136,3 +213,112 @@
 		cursor: move;
 	}
 }
+
+.no_select {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+// Following the WordPress Default Classes
+.mce-content-body {
+	// Change Outline Color for 
+	// better consistency with Gridable
+	*[contentEditable=false] { 
+
+		*[contentEditable=true] { 
+			&:hover {
+
+			}
+
+			&:focus {
+				outline-color: $gutenberg-border;
+			}
+		}
+
+		&[data-mce-selected] {
+			outline-color: $gutenberg-border;
+		}
+	}
+
+	// Gridable Specifics
+	#{$c-row}[contentEditable=false] { 
+		position: relative;
+		transition: box-shadow .2s ease-out;
+
+		#{$c-col}[contentEditable=true] { 
+			
+			// Hover State
+			// Disable Outline 
+			// Add a Left Border with Box Shadow
+			&:hover {
+				outline: none;   
+			    box-shadow: inset 9px 0px 0px -7px $gutenberg-border;
+			}
+
+			// Selected State
+			// Disable Outline 
+			// Add an Outline Border with Box Shadow
+			&:focus {
+				outline: none;
+				box-shadow: inset 0px 0px 0px 2px $gutenberg-border;
+			}
+		}
+
+		&:hover {
+			
+		}
+
+		&[data-mce-selected] {
+			// Disable Outline 
+			// Add an Outline Border with Box Shadow
+			outline: none;
+			box-shadow: inset 0px 0px 0px 2px $gutenberg-border;
+
+			// Hide Row Ellipsis Menu
+			&:after {
+				display: none;
+			}
+		}
+	}
+}
+
+
+/* Rows and Columns Style Variants.
+   ========================================================================== */
+
+
+// Rows Styling Rules
+#{$gridable-row-simple} {
+
+}
+
+// Full Width Light Background
+#{$gridable-row-boxed} { 
+	padding: 20px;
+    background-color: #222222;
+}
+
+// Columns Styling Rules
+// Default
+#{$gridable-col-simple} {
+
+}
+
+// Dark Background
+// White Text
+// Padding
+#{$gridable-col-boxed} {
+    // @extend %p-m; 
+    padding: 20px;
+    background-color: #222222;
+    
+    * { 
+        color: white;
+    }
+}
+
+

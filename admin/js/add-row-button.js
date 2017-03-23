@@ -26,7 +26,8 @@
 		var handle = wp.html.string({
 			tag: 'div',
 			attrs: {
-				class: "gridable__handle"
+				class: "gridable__handle",
+				"contenteditable": "false"
 			}
 		})
 
@@ -56,7 +57,7 @@
 		/**
 		 * Insert the new shortcode in the editor
 		 */
-		wp.media.editor.insert( row );
+		tinyMCE.activeEditor.insertContent( row );
 
 		function wpAutoP( content ) {
 			if ( switchEditors && switchEditors.wpautop ) {

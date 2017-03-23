@@ -1,3 +1,7 @@
+/* ==========================================================================
+    #THE DEFAULT GRIDABLE GRID
+   ========================================================================== */
+
 /**
  * All of the CSS for your public-facing functionality should be
  * included in this file.
@@ -7,6 +11,7 @@
 .gridable--row {
 	display: flex;
 	flex-flow: row wrap;
+    justify-content: space-between;
 	overflow: hidden;
 	margin-left: -20px;
 }
@@ -19,7 +24,7 @@
 }
 
 @for $i from 1 through 12 {
-	.hand-span-#{$i} {
+	.col-#{$i} {
 		flex-basis: percentage($i/12);
 		width: percentage($i/12);
 		max-width: percentage($i/12);
@@ -27,7 +32,7 @@
 }
 
 @media only screen and (max-width: 1024px) {
-	[class*="hand-span-"] {
+	[class*="col-"] {
 		flex-basis: 100%;
 		width: 100%;
 		max-width: 100%;
@@ -38,4 +43,53 @@
 	overflow: hidden;
 	box-sizing: border-box;
 }
+
+
+
+/* Rows and Columns Style Variants.
+   ========================================================================== */
+// DO NOT EDIT DIRECTLY 
+// Copy from editor-style.scss
+
+
+// Rows
+$gridable-row-simple: '.row-style--simple';
+$gridable-row-boxed: '.row-style--boxed';
+
+// Columns
+$gridable-col-simple: '.col-style--simple';
+$gridable-col-boxed: '.col-style--boxed';
+
+
+
+
+// Rows Styling Rules
+#{$gridable-row-simple} {
+
+}
+
+// Full Width Light Background
+#{$gridable-row-boxed} { 
+    background-color: #eef1f2;
+}
+
+// Columns Styling Rules
+// Default
+#{$gridable-col-simple} {
+
+}
+
+// Dark Background
+// White Text
+// Padding
+#{$gridable-col-boxed} {
+    // @extend %p-m; 
+    background-color: #23252d;
+
+    // @extend .dark;
+    * { 
+        color: white;
+    }
+}
+
 
