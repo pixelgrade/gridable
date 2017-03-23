@@ -114,7 +114,7 @@ class Gridable_Public {
 
 		$size = apply_filters( "gridable_column_size", $size );
 
-		$classes = apply_filters( "gridable_column_class", array( 'gridable--col', 'hand-span-' . $size ), $size, $atts, $content );
+		$classes = apply_filters( "gridable_column_class", array( 'gridable--col', 'col-' . $size ), $size, $atts, $content );
 
 		$classes = array_map( 'esc_attr', $classes );
 

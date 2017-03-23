@@ -1,3 +1,7 @@
+/* ==========================================================================
+    #THE DEFAULT GRIDABLE GRID
+   ========================================================================== */
+
 /**
  * All of the CSS for your public-facing functionality should be
  * included in this file.
@@ -7,6 +11,7 @@
 .gridable--row {
 	display: flex;
 	flex-flow: row wrap;
+    justify-content: space-between;
 	overflow: hidden;
 	margin-left: -20px;
 }
@@ -19,7 +24,7 @@
 }
 
 @for $i from 1 through 12 {
-	.hand-span-#{$i} {
+	.col-#{$i} {
 		flex-basis: percentage($i/12);
 		width: percentage($i/12);
 		max-width: percentage($i/12);
@@ -27,7 +32,7 @@
 }
 
 @media only screen and (max-width: 1024px) {
-	[class*="hand-span-"] {
+	[class*="col-"] {
 		flex-basis: 100%;
 		width: 100%;
 		max-width: 100%;
@@ -38,4 +43,6 @@
 	overflow: hidden;
 	box-sizing: border-box;
 }
+
+
 
