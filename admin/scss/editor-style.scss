@@ -13,7 +13,7 @@ $c-row__item: '.grid__item';
 $c-col-prefix: 'data-sh-column-attr-size';
 
 $gridable-row-simple: '[data-sh-row-attr-row_style=simple]';
-$gridable-row-strip: '[data-sh-row-attr-row_style=strip]';
+$gridable-row-boxed: '[data-sh-row-attr-row_style=boxed]';
 
 $gridable-col-simple: '.row .grid__item[data-sh-column-attr-column_style=simple]';
 // $gridable-col-highlighted: '.row .grid__item[data-sh-column-attr-column_style=highlighted]';
@@ -127,6 +127,12 @@ $gridable-col-boxed: '.row .grid__item[data-sh-column-attr-column_style=boxed]';
 
 		&:first-child {
 			border-left: 0;
+		}
+
+		img {
+			margin-left: 0;
+			margin-right: 0;
+			max-width: 100%;
 		}
 	}
 
@@ -278,6 +284,41 @@ $gridable-col-boxed: '.row .grid__item[data-sh-column-attr-column_style=boxed]';
 			}
 		}
 	}
+}
+
+
+/* Rows and Columns Style Variants.
+   ========================================================================== */
+
+
+// Rows Styling Rules
+#{$gridable-row-simple} {
+
+}
+
+// Full Width Light Background
+#{$gridable-row-boxed} { 
+	padding: 20px;
+    background-color: #222222;
+}
+
+// Columns Styling Rules
+// Default
+#{$gridable-col-simple} {
+
+}
+
+// Dark Background
+// White Text
+// Padding
+#{$gridable-col-boxed} {
+    // @extend %p-m; 
+    padding: 20px;
+    background-color: #222222;
+    
+    * { 
+        color: white;
+    }
 }
 
 

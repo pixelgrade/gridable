@@ -30,3 +30,9 @@
 
 @media only screen and (max-width: 1024px) { [class*="col-"] { -ms-flex-preferred-size: 100%; flex-basis: 100%; width: 100%; max-width: 100%; } }
 .gridable--col { overflow: hidden; box-sizing: border-box; }
+
+/* Rows and Columns Style Variants. ========================================================================== */
+.row-style--boxed { background-color: #eef1f2; }
+
+.col-style--boxed { background-color: #23252d; }
+.col-style--boxed * { color: white; }

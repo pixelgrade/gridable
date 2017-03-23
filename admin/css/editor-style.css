@@ -39,6 +39,7 @@
 .row > .col { position: relative; display: inline-block; padding: 1em; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; transition: all .2s ease-out; }
 .row > .col * { -webkit-user-select: text; /* Chrome 49+ */ -moz-user-select: text; /* Firefox 43+ */ -ms-user-select: text; /* No support yet */ user-select: text; /* Likely future */ }
 .row > .col:first-child { border-left: 0; }
+.row > .col img { margin-left: 0; margin-right: 0; max-width: 100%; }
 .row:hover:after { opacity: 1; cursor: pointer; }
 
 .gridable__handle { /* autoprefixer: off */ position: absolute; top: 0; left: -15px; width: 1.5em; height: 100%; font-size: 24px; -webkit-touch-callout: none; -webkit-user-select: none; -khtml-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; cursor: col-resize !important; outline: none !important; }
@@ -59,3 +60,9 @@
 .mce-content-body .row[contentEditable=false] .col[contentEditable=true]:focus { outline: none; box-shadow: inset 0px 0px 0px 2px #E0E5E9; }
 .mce-content-body .row[contentEditable=false][data-mce-selected] { outline: none; box-shadow: inset 0px 0px 0px 2px #E0E5E9; }
 .mce-content-body .row[contentEditable=false][data-mce-selected]:after { display: none; }
+
+/* Rows and Columns Style Variants. ========================================================================== */
+[data-sh-row-attr-row_style=boxed] { padding: 20px; background-color: #222222; }
+
+.row .grid__item[data-sh-column-attr-column_style=boxed] { padding: 20px; background-color: #222222; }
+.row .grid__item[data-sh-column-attr-column_style=boxed] * { color: white; }

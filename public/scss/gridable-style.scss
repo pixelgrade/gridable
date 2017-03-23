@@ -46,3 +46,50 @@
 
 
 
+/* Rows and Columns Style Variants.
+   ========================================================================== */
+// DO NOT EDIT DIRECTLY 
+// Copy from editor-style.scss
+
+
+// Rows
+$gridable-row-simple: '.row-style--simple';
+$gridable-row-boxed: '.row-style--boxed';
+
+// Columns
+$gridable-col-simple: '.col-style--simple';
+$gridable-col-boxed: '.col-style--boxed';
+
+
+
+
+// Rows Styling Rules
+#{$gridable-row-simple} {
+
+}
+
+// Full Width Light Background
+#{$gridable-row-boxed} { 
+    background-color: #eef1f2;
+}
+
+// Columns Styling Rules
+// Default
+#{$gridable-col-simple} {
+
+}
+
+// Dark Background
+// White Text
+// Padding
+#{$gridable-col-boxed} {
+    // @extend %p-m; 
+    background-color: #23252d;
+
+    // @extend .dark;
+    * { 
+        color: white;
+    }
+}
+
+
