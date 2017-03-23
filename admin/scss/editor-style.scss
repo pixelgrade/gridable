@@ -1,24 +1,50 @@
+/* ==========================================================================
+   #EDITOR STYLES GRID
+   ========================================================================== */
+
 $gutenberg-border: #E0E5E9;
 $outline-spacing: 1em;
 
+
+// Set Editor Style Data Attributes Alternatives
+$c-row: '.row';
+$c-col: '.col';
+$c-row__item: '.grid__item';
+$c-col-prefix: 'data-sh-column-attr-size';
+
+$gridable-row-simple: '[data-sh-row-attr-row_style=simple]';
+$gridable-row-strip: '[data-sh-row-attr-row_style=strip]';
+
+$gridable-col-simple: '.row .grid__item[data-sh-column-attr-column_style=simple]';
+// $gridable-col-highlighted: '.row .grid__item[data-sh-column-attr-column_style=highlighted]';
+$gridable-col-boxed: '.row .grid__item[data-sh-column-attr-column_style=boxed]';
+
+
+
+
+
+/* Grid Layout
+   ========================================================================== */
+
+
 .gridable {
+	margin-left: -$outline-spacing;
+	margin-right: -$outline-spacing;
+
 	&, *, *:before, *:after {
 		box-sizing: border-box;
 	}
 }
 
-.no_select {
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}
 
-// The Grid
-[data-gridable-row] {
+/**
+ * Grid Row
+ */
+
+#{$c-row} {
 	display: flex;
+	flex-flow: row wrap;
+    justify-content: space-between;
 
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
@@ -28,28 +54,45 @@ $outline-spacing: 1em;
 	user-select: none;
 }
 
-[data-sh-column-attr-size] {
-	flex: 0 0 100%;
+
+/**
+ * Grid Columns
+ */
+
+#{$c-col} {
+    flex: 0 0 100%;
+    max-width: 100%;
+    max-width: 100%;
 }
+
+/**
+ * Grid Columns
+ */
 
 @for $i from 1 through 12 {
-	[data-sh-column-attr-size="#{$i}"] {
-		flex-basis: percentage($i/12);
-		width: percentage($i/12);
-	}
+    [#{$c-col-prefix}='#{$i}'] {
+        flex-basis: calc(#{percentage($i/12)});
+        width: percentage($i/12);
+    }
 }
 
-.gridable {
-	margin-left: -$outline-spacing;
-	margin-right: -$outline-spacing;
+
+
+/* UI Interactions
+   ========================================================================== */
+
+
+#{$c-row} {
 	
+	// Row Ellipis Menu
 	&:after {
 		content: "...";
 		display: block;
 
 		color: #86909B;
-		font-size: 20px;
+		font-size: 25px;
 	    font-weight: bold;
+	    font-family: initial;
 	    
 		position: absolute;
 		left: -15px;
@@ -61,7 +104,7 @@ $outline-spacing: 1em;
 		transition: opacity .2s;
 	}
 
-	> .col {		
+	> #{$c-col} {		
 		position: relative;
 		display: inline-block;
 		padding: $outline-spacing;
@@ -107,7 +150,7 @@ $outline-spacing: 1em;
 	/* autoprefixer: off */
 	position: absolute;
 	top: 0;
-	left: -1em;
+	left: -15px;
 
 	width: 1.5em;
 	height: 100%;
@@ -124,7 +167,7 @@ $outline-spacing: 1em;
 	cursor: col-resize !important;
 	outline: none !important;
 
-	&:after {
+	&.dafter {
 		content: "";
 
 		position: absolute;
@@ -165,6 +208,15 @@ $outline-spacing: 1em;
 	}
 }
 
+.no_select {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
 // Following the WordPress Default Classes
 .mce-content-body {
 	// Change Outline Color for 
@@ -187,11 +239,11 @@ $outline-spacing: 1em;
 	}
 
 	// Gridable Specifics
-	.row[contentEditable=false] { 
+	#{$c-row}[contentEditable=false] { 
 		position: relative;
 		transition: box-shadow .2s ease-out;
 
-		.col[contentEditable=true] { 
+		#{$c-col}[contentEditable=true] { 
 			
 			// Hover State
 			// Disable Outline 
