@@ -115,7 +115,7 @@ class Gridable_Admin {
 			'grid__item'
 		); ?>
 <script type="text/html" id="tmpl-gridable-grider-row"><section contenteditable="false" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_row_classes', $row_classes ) ); ?>" {{{data.atts}}} data-gridable-row="1" data-mce-resize="false" data-mce-placeholder="1">{{{data.content}}}</section></script>
-<script type="text/html" id="tmpl-gridable-grider-col"><section contenteditable="true" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_col_classes', $col_classes ) ); ?>" {{{data.atts}}} data-mce-resize="false" data-mce-placeholder="1"><div class="gridable__handle" contenteditable="false"></div>{{{data.content}}}</section></script>
+<script type="text/html" id="tmpl-gridable-grider-col"><section contenteditable="true" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_col_classes', $col_classes ) ); ?>" {{{data.atts}}} data-mce-resize="false" data-mce-placeholder="1"><div class="gridable__handle mceNonEditable" contenteditable="false"></div>{{{data.content}}}</section></script>
 	<?php
 		do_action( 'gridable_print_row_options_templates' );
 		do_action( 'gridable_print_column_options_templates' );

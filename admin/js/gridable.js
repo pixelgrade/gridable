@@ -156,6 +156,23 @@
 				role: 'separator'
 			});
 
+
+			// @TODO https://github.com/pixelgrade/gridable/issues/57
+			// editor.on('ExecCommand', function (args, e) {
+			// 	if ( 'SelectAll' !== args.command ) {
+			// 		return;
+			// 	}
+			// 	console.log( editor.selection.getRng() );
+			// });
+			//
+			// editor.on('BeforeExecCommand', function (args) {
+			// 	if ( 'SelectAll' !== args.command ) {
+			// 		return;
+			// 	}
+			// 	console.log( args );
+			// 	console.log( editor.selection.getRng() );
+			// });
+
 			/**
 			 * Create the toolbar with the controls for row
 			 */
@@ -218,19 +235,26 @@
 				if ('html' === window.getUserSetting('editor')) {
 					return;
 				}
-
-				// the cursor is not allowed inside the resize handler. in this case it will be moved in the next column
-				if ( event.element.className === 'gridable__handle' ) {
-
-					var next_col = editor.dom.$(event.element).closest('.col.gridable-mceItem');
-
-					if ( next_col[0].getElementsByTagName('p').length > 0 ) {
-						editor.selection.select( next_col[0].getElementsByTagName('p')[0], true );
-					} else {
-						editor.selection.select( next_col[0], true );
-					}
-					editor.selection.collapse(false);
-				}
+				//
+				// var el = editor.dom.$(event.element);
+				//
+				// console.debug( event.element );
+				// // console.debug( el.prev() );
+				//
+				// // the cursor is not allowed inside the resize handler. in this case it will be moved in the next column
+				// if ( event.element.className === 'gridable__handle' ) {
+				//
+				// 	var next_col = editor.dom.$(event.element).closest('.col.gridable-mceItem');
+				//
+				// 	if ( next_col[0].getElementsByTagName('p').length > 0 ) {
+				// 		console.log(next_col);
+				// 		editor.selection.select( next_col[0].getElementsByTagName('p')[0], true );
+				// 	} else {
+				// 		console.log(next_col);
+				// 		editor.selection.select( next_col[0], true );
+				// 	}
+				// 	editor.selection.collapse(false);
+				// }
 
 				var wrap = editor.dom.$(event.element).parents('.row.gridable-mceItem');
 
@@ -290,7 +314,7 @@
 			 */
 			editor.on('SaveContent', function (event) {
 				// we must ensure we don't forget any handlers in front-end
-				event.content = event.content.replace(/<div class=\"gridable__handle\" contenteditable=\"false\"><\/div>/gm, '');
+				event.content = event.content.replace(/<div class=\"gridable__handle mceNonEditable\" contenteditable=\"false\"><\/div>/gm, '');
 			});
 
 			/**
