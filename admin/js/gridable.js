@@ -221,7 +221,9 @@
 
 				// the cursor is not allowed inside the resize handler. in this case it will be moved in the next column
 				if ( event.element.className === 'gridable__handle' ) {
+
 					var next_col = editor.dom.$(event.element).closest('.col.gridable-mceItem');
+
 					if ( next_col[0].getElementsByTagName('p').length > 0 ) {
 						editor.selection.select( next_col[0].getElementsByTagName('p')[0], true );
 					} else {

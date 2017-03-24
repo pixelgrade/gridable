@@ -238,10 +238,10 @@ class Gridable_Public {
 			foreach ($rows_matches[0] as $key => $match ) {
 
 				/// just for the sake of this exersize, only the first row occurance is crazy and needs help
-				if ( $key > 0 ) {
-					$content = str_replace( $match, do_shortcode($match), $content);
-					continue;
-				}
+//				if ( $key > 0 ) {
+//					$content = str_replace( $match, do_shortcode($match), $content);
+//					continue;
+//				}
 
 				// make a clone of the original row
 				$temp_row = $match;
