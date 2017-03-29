@@ -230,39 +230,15 @@
 			/**
 			 * Whenever the cursor changes it's position the parent may be a grid column, then we need to add handlers
 			 */
-			editor.on('NodeChange', function (event) {
-
-				if ('html' === window.getUserSetting('editor')) {
-					return;
-				}
-				//
-				// var el = editor.dom.$(event.element);
-				//
-				// console.debug( event.element );
-				// // console.debug( el.prev() );
-				//
-				// // the cursor is not allowed inside the resize handler. in this case it will be moved in the next column
-				// if ( event.element.className === 'gridable__handle' ) {
-				//
-				// 	var next_col = editor.dom.$(event.element).closest('.col.gridable-mceItem');
-				//
-				// 	if ( next_col[0].getElementsByTagName('p').length > 0 ) {
-				// 		console.log(next_col);
-				// 		editor.selection.select( next_col[0].getElementsByTagName('p')[0], true );
-				// 	} else {
-				// 		console.log(next_col);
-				// 		editor.selection.select( next_col[0], true );
-				// 	}
-				// 	editor.selection.collapse(false);
-				// }
-
-				var wrap = editor.dom.$(event.element).parents('.row.gridable-mceItem');
-
-				// if the parent is a column: Add resize handlers
-				if (wrap.length > 0) {
-					addResize(wrap);
-				}
-			});
+			// editor.on('NodeChange', function (event) {
+			//
+			// 	if ('html' === window.getUserSetting('editor')) {
+			// 		return;
+			// 	}
+			//
+			// 	var el = editor.dom.$(event.element);
+			//
+			// });
 
 			editor.on('keydown', function (evt) {
 				if ('html' === window.getUserSetting('editor')) {
@@ -310,14 +286,6 @@
 			});
 
 			/**
-			 * When the content is saved we need en ensure that we don't forget resize handlers and rendered shortcodes
-			 */
-			editor.on('SaveContent', function (event) {
-				// we must ensure we don't forget any handlers in front-end
-				event.content = event.content.replace(/<div class=\"gridable__handle mceNonEditable\" contenteditable=\"false\"><\/div>/gm, '');
-			});
-
-			/**
 			 * After we save the content ensure that the shortcodes are rendered back
 			 */
 			editor.on('PreProcess', function (event) {
@@ -326,6 +294,21 @@
 				} else if ( editor.editorCommands.hasCustomCommand('gridableRestore' ) && event.save === true ) {
 					editor.editorCommands.execCommand('gridableRestore');
 				}
+			});
+
+			editor.on( 'pastePostProcess', function( event ) {
+				var bm = tinyMCE.activeEditor.selection.getBookmark();
+				var node =  event.target.selection.getNode();
+
+				// mceInsertContent is messing our resize handlers, we stick with this simple replce for now
+				$(node).replaceWith( event.node.innerHTML );
+				// editor.execCommand('mceInsertContent', false,  event.node.innerHTML);
+
+				// event.target.selection.setNode( node );
+				// event.target.selection.collapse(0);
+				tinyMCE.activeEditor.selection.moveToBookmark(bm);
+
+				event.preventDefault();
 			});
 
 			/**
@@ -358,8 +341,9 @@
 
 				// event.content = content;
 				this.dom.doc.body.innerHTML = content;
-				// console.groupEnd('gridableRender');
 
+				// console.groupEnd('gridableRender');
+				editor.execCommand('gridableAddResizeHandlers');
 				$save_btn.removeAttr('disabled');
 			});
 
@@ -385,10 +369,6 @@
 				var content_process = this.dom.doc.body,
 					restore_needed = false;
 
-				if (content_process.className.indexOf('gridable--resize-handlers-on') !== -1) {
-					editor.execCommand('gridableRemoveResize');
-				}
-
 				content_process.innerHTML = content_process.innerHTML.replace(/(<p>&nbsp;<\/p>)/gi, '<br />');
 
 				// get all the columns inside the editor
@@ -396,6 +376,7 @@
 					columnReplacement = '';
 
 				for (var columnIndex = 0; columnIndex < columns.length; columnIndex++) {
+
 					// create a new shortcode string like [col size="6"]
 					var columnReplacement = wp.shortcode.string({
 						tag: 'col',
@@ -437,68 +418,6 @@
 				$save_btn.removeAttr('disabled');
 			});
 
-
-			function get_valid_row_attrs(el) {
-				var to_return = {};
-
-				var needle = 'data-sh-row-attr-';
-
-				Array.prototype.slice.call(el.attributes).forEach(function (item) {
-					var attr_name = item.name.replace(needle, '');
-
-					if (item.name.indexOf(needle) !== -1 && attr_name in gridable_row_options) {
-
-						if (item.value !== '') {
-							to_return[attr_name] = item.value;
-						} else if (typeof gridable_row_options[attr_name].default !== 'undefined') {
-							to_return[attr_name] = gridable_row_options[attr_name].default;
-						}
-					}
-				});
-
-				return to_return;
-			}
-
-
-			function get_valid_column_attrs(el) {
-
-				var to_return = {};
-				var needle = 'data-sh-column-attr-';
-
-				Array.prototype.slice.call(el.attributes).forEach(function (item) {
-
-					var attr_name = item.name.replace(needle, '');
-
-					if (item.name.indexOf(needle) !== -1 && attr_name in gridable_column_options) {
-
-						if (item.value !== '') {
-							to_return[attr_name] = item.value;
-						} else if (typeof gridable_column_options[attr_name].default !== 'undefined') {
-							to_return[attr_name] = gridable_column_options[attr_name].default;
-						}
-					}
-				});
-
-				return to_return;
-			}
-
-
-			/**
-			 * Function to add Column Resize Handlers and bound events
-			 */
-			function addResize($grid) {
-				if (typeof $grid.attr('data-gridable-bound') !== "undefined") {
-					return;
-				}
-				;
-
-				$grid.attr('data-gridable-bound', true).addClass('has-handlers');
-
-				$grid.on('mousedown .gridable__handle', onMouseDown);
-				$grid.on('mousemove', onMouseMove);
-				$grid.on('mouseup mouseleave', onMouseUp);
-			};
-
 			editor.addCommand('gridableRemoveResize', function () {
 
 				var $grids = editor.dom.$('.gridable');
@@ -515,6 +434,25 @@
 					$grid.off('mousedown .gridable__handle', onMouseDown);
 					$grid.off('mousemove', onMouseMove);
 					$grid.off('mouseup mouseleave', onMouseUp);
+				});
+			});
+
+			/**
+			 * Function to add Column Resize Handlers and bound events
+			 */
+			editor.addCommand('gridableAddResizeHandlers', function () {
+				var $handlers = editor.dom.$('.gridable__handle');
+				$handlers.each( function (count, el) {
+					var row = editor.dom.$(el).parents('.col.gridable-mceItem');
+
+					if ( ! row.hasClass('has-handlers') ) {
+						row.addClass('has-handlers');
+					}
+
+					editor.dom.bind( row[0], 'mousedown', onMouseDown );
+					editor.dom.bind( row[0], 'mousemove', onMouseMove);
+					editor.dom.bind( row[0], 'mouseup', onMouseUp);
+					editor.dom.bind( row[0], 'mouseleave', onMouseUp);
 				});
 			});
 
@@ -561,7 +499,6 @@
 			}
 
 			function onMouseMove(e) {
-
 				if (gridable_resizing) {
 					// console.log('handler mousemove');
 					e.preventDefault();
@@ -573,7 +510,6 @@
 
 			function onMouseUp(e) {
 				// console.log('handler mouse out');
-
 				var grid = editor.dom.$(e.target).closest('.grid'),
 					$grid = editor.dom.$(grid);
 
@@ -591,7 +527,7 @@
 
 				if ($next.length && $prev.length && typeof xStart !== "unedfined") {
 
-					if (xLast - xStart >= colWidth / 2) {
+					if ( xLast - xStart >= colWidth / 2 ) {
 						var nextSpan = parseInt($next[0].getAttribute('data-sh-column-attr-size'), 10),
 							prevSpan = parseInt($prev[0].getAttribute('data-sh-column-attr-size'), 10);
 
@@ -746,6 +682,49 @@
 				}
 
 				return content;
+			}
+
+			function get_valid_row_attrs(el) {
+				var to_return = {};
+
+				var needle = 'data-sh-row-attr-';
+
+				Array.prototype.slice.call(el.attributes).forEach(function (item) {
+					var attr_name = item.name.replace(needle, '');
+
+					if (item.name.indexOf(needle) !== -1 && attr_name in gridable_row_options) {
+
+						if (item.value !== '') {
+							to_return[attr_name] = item.value;
+						} else if (typeof gridable_row_options[attr_name].default !== 'undefined') {
+							to_return[attr_name] = gridable_row_options[attr_name].default;
+						}
+					}
+				});
+
+				return to_return;
+			}
+
+			function get_valid_column_attrs(el) {
+
+				var to_return = {};
+				var needle = 'data-sh-column-attr-';
+
+				Array.prototype.slice.call(el.attributes).forEach(function (item) {
+
+					var attr_name = item.name.replace(needle, '');
+
+					if (item.name.indexOf(needle) !== -1 && attr_name in gridable_column_options) {
+
+						if (item.value !== '') {
+							to_return[attr_name] = item.value;
+						} else if (typeof gridable_column_options[attr_name].default !== 'undefined') {
+							to_return[attr_name] = gridable_column_options[attr_name].default;
+						}
+					}
+				});
+
+				return to_return;
 			}
 
 			/**

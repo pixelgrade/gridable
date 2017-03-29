@@ -23,14 +23,6 @@
 			content: column_content
 		});
 
-		var handle = wp.html.string({
-			tag: 'div',
-			attrs: {
-				class: "gridable__handle mceNonEditable",
-				"contenteditable": "false"
-			}
-		})
-
 		column += wp.html.string({
 			tag: 'div',
 			attrs: {
@@ -39,7 +31,7 @@
 				"data-mce-placeholder": "1",
 				"contenteditable": "true"
 			},
-			content: handle + column_content
+			content: column_content
 		});
 
 		var row = wp.html.string({
