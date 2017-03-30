@@ -1,31 +1,39 @@
+/* ========================================================================== #THE DEFAULT GRIDABLE GRID ========================================================================== */
 /** All of the CSS for your public-facing functionality should be included in this file. */
-[data-gridable-row], .gridable--row { display: -ms-flexbox; display: flex; -ms-flex-flow: row wrap; flex-flow: row wrap; }
+.gridable--row { display: -ms-flexbox; display: flex; -ms-flex-flow: row wrap; flex-flow: row wrap; -ms-flex-pack: justify; justify-content: space-between; overflow: hidden; margin-left: -20px; }
 
-[data-sh-column-attr-size], .gridable--col { -ms-flex: 0 0 100%; flex: 0 0 100%; }
+.gridable--col { -ms-flex: 0 0 100%; flex: 0 0 100%; width: 100%; max-width: 100%; padding-left: 20px; }
+@media only screen and (max-width: 1024px) { .gridable--col.is-empty { display: none; } }
 
-[data-sh-column-attr-size="1"], .hand-span-1 { -ms-flex-preferred-size: 8.33333%; flex-basis: 8.33333%; }
+.col-1 { -ms-flex-preferred-size: 8.33333%; flex-basis: 8.33333%; width: 8.33333%; max-width: 8.33333%; }
 
-[data-sh-column-attr-size="2"], .hand-span-2 { -ms-flex-preferred-size: 16.66667%; flex-basis: 16.66667%; }
+.col-2 { -ms-flex-preferred-size: 16.66667%; flex-basis: 16.66667%; width: 16.66667%; max-width: 16.66667%; }
 
-[data-sh-column-attr-size="3"], .hand-span-3 { -ms-flex-preferred-size: 25%; flex-basis: 25%; }
+.col-3 { -ms-flex-preferred-size: 25%; flex-basis: 25%; width: 25%; max-width: 25%; }
 
-[data-sh-column-attr-size="4"], .hand-span-4 { -ms-flex-preferred-size: 33.33333%; flex-basis: 33.33333%; }
+.col-4 { -ms-flex-preferred-size: 33.33333%; flex-basis: 33.33333%; width: 33.33333%; max-width: 33.33333%; }
 
-[data-sh-column-attr-size="5"], .hand-span-5 { -ms-flex-preferred-size: 41.66667%; flex-basis: 41.66667%; }
+.col-5 { -ms-flex-preferred-size: 41.66667%; flex-basis: 41.66667%; width: 41.66667%; max-width: 41.66667%; }
 
-[data-sh-column-attr-size="6"], .hand-span-6 { -ms-flex-preferred-size: 50%; flex-basis: 50%; }
+.col-6 { -ms-flex-preferred-size: 50%; flex-basis: 50%; width: 50%; max-width: 50%; }
 
-[data-sh-column-attr-size="7"], .hand-span-7 { -ms-flex-preferred-size: 58.33333%; flex-basis: 58.33333%; }
+.col-7 { -ms-flex-preferred-size: 58.33333%; flex-basis: 58.33333%; width: 58.33333%; max-width: 58.33333%; }
 
-[data-sh-column-attr-size="8"], .hand-span-8 { -ms-flex-preferred-size: 66.66667%; flex-basis: 66.66667%; }
+.col-8 { -ms-flex-preferred-size: 66.66667%; flex-basis: 66.66667%; width: 66.66667%; max-width: 66.66667%; }
 
-[data-sh-column-attr-size="9"], .hand-span-9 { -ms-flex-preferred-size: 75%; flex-basis: 75%; }
+.col-9 { -ms-flex-preferred-size: 75%; flex-basis: 75%; width: 75%; max-width: 75%; }
 
-[data-sh-column-attr-size="10"], .hand-span-10 { -ms-flex-preferred-size: 83.33333%; flex-basis: 83.33333%; }
+.col-10 { -ms-flex-preferred-size: 83.33333%; flex-basis: 83.33333%; width: 83.33333%; max-width: 83.33333%; }
 
-[data-sh-column-attr-size="11"], .hand-span-11 { -ms-flex-preferred-size: 91.66667%; flex-basis: 91.66667%; }
+.col-11 { -ms-flex-preferred-size: 91.66667%; flex-basis: 91.66667%; width: 91.66667%; max-width: 91.66667%; }
 
-[data-sh-column-attr-size="12"], .hand-span-12 { -ms-flex-preferred-size: 100%; flex-basis: 100%; }
+.col-12 { -ms-flex-preferred-size: 100%; flex-basis: 100%; width: 100%; max-width: 100%; }
 
-[data-sh-column-attr-size], .gridable--col { overflow: hidden; box-sizing: border-box; padding: 10px; }
-[data-sh-column-attr-size] p:empty:first-child, [data-sh-column-attr-size] p:empty:last-child, .gridable--col p:empty:first-child, .gridable--col p:empty:last-child { display: none; }
+@media only screen and (max-width: 1024px) { [class*="col-"] { -ms-flex-preferred-size: 100%; flex-basis: 100%; width: 100%; max-width: 100%; } }
+.gridable--col { overflow: hidden; box-sizing: border-box; }
+
+/* Rows and Columns Style Variants. ========================================================================== */
+.row-style--boxed { background-color: #eef1f2; }
+
+.col-style--boxed { background-color: #23252d; }
+.col-style--boxed * { color: white; }
