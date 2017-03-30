@@ -13,7 +13,7 @@
 		});
 
 		var column = wp.html.string({
-			tag: 'div',
+			tag: 'section',
 			attrs: {
 				class: "col gridable-mceItem grid__item",
 				"data-sh-column-attr-size": "6",
@@ -24,7 +24,7 @@
 		});
 
 		column += wp.html.string({
-			tag: 'div',
+			tag: 'section',
 			attrs: {
 				class: "col gridable-mceItem grid__item",
 				"data-sh-column-attr-size": "6",
@@ -35,7 +35,7 @@
 		});
 
 		var row = wp.html.string({
-			tag: 'div',
+			tag: 'section',
 			attrs: {
 				class: "row gridable-mceItem gridable gridable--grid grid",
 				"data-sh-row-attr-cols_nr": "2",
