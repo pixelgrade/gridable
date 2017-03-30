@@ -149,10 +149,10 @@ $gridable-col-boxed: '.row .grid__item[data-sh-column-attr-column_style=boxed]';
 
 	}
 }
+ 
 
-
-.col.gridable-mceItem:not(:first-of-type):before {
-	content: "resize";
+#{$c-row__item}:not(:first-of-type):before {
+	content: " ";
 	display: block;
 	cursor: col-resize;
 	top: 0;
@@ -176,7 +176,7 @@ $gridable-col-boxed: '.row .grid__item[data-sh-column-attr-column_style=boxed]';
 		cursor: move;
 	}
 
-	.col.gridable-mceItem:not(:first-of-type):before {
+	#{$c-row__item}:not(:first-of-type):before {
 		cursor: move;
 	}
 }
