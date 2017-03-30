@@ -151,54 +151,17 @@ $gridable-col-boxed: '.row .grid__item[data-sh-column-attr-column_style=boxed]';
 }
 
 
-// Resize Area
-.gridable__handle {
-	/* autoprefixer: off */
-	position: absolute;
+.col.gridable-mceItem:not(:first-of-type):before {
+	content: "resize";
+	display: block;
+	cursor: col-resize;
 	top: 0;
-	left: -15px;
-
-	width: 1.5em;
-	height: 100%;
-
-	font-size: 24px;
-
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-
-	cursor: col-resize !important;
-	outline: none !important;
-
-	&.dafter {
-		content: "";
-
-		position: absolute;
-		top: 50%;
-		left: 0;
-
-		display: block;
-		width: 1em;
-		height: 1em;
-
-		margin-top: -0.5em;
-
-		background: url('../images/resize-column.svg') center center no-repeat;
-		background-size: 100% 100%;
-		opacity: 0;
-		transition: opacity .2s ease-out;
-
-		.gridable.has-handlers:hover > .col > & {
-			// opacity: 1;
-		}
-	}
-
-	.col:first-child > & {
-		display: none;
-	}
+	position: absolute;
+	opacity: 0;
+	bottom: 0;
+	left: -20px;
+	z-index: 9999;
+	width: 40px;
 }
 
 .gridable__content {
@@ -210,6 +173,10 @@ $gridable-col-boxed: '.row .grid__item[data-sh-column-attr-column_style=boxed]';
 
 	&,
 	* {
+		cursor: move;
+	}
+
+	.col.gridable-mceItem:not(:first-of-type):before {
 		cursor: move;
 	}
 }
