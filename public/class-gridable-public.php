@@ -39,6 +39,8 @@ class Gridable_Public {
 	 */
 	private $version;
 
+	private $last_row_pos = 0;
+
 	/**
 	 * Initialize the class and set its properties.
 	 *
@@ -223,7 +225,7 @@ class Gridable_Public {
 	 *
 	 * @return mixed
 	 */
-	function parse_content_for_nested_rows( $content ){
+	function parse_content_for_nested_rows( $content, $rec = false ){
 		$rows_matches = array();
 
 		preg_match_all( '#' . get_shortcode_regex( array('row') ) . '#ims' , $content, $rows_matches);
@@ -237,8 +239,10 @@ class Gridable_Public {
 			// iterate through each row and check if anyone has a nested row
 			foreach ($rows_matches[0] as $key => $match ) {
 
-				/// just for the sake of this exersize, only the first row occurance is crazy and needs help
-				if ( $key < 1 ) {
+				$row_pos = strpos( $rows_matches[0][$key], '[row cols_nr="', 5 );
+
+				// if there is another row inside render it first
+				if ( $row_pos !== false ) {
 					// make a clone of the original row
 					$temp_row = $match;
 					// if this row has an inner row, let's render it and replace it in the clone row
@@ -262,8 +266,8 @@ class Gridable_Public {
 					// now we have a [row] content <div class="row"></div>
 					// the closing [/row] is definetly somewhere after
 					$content = str_replace( $match, $temp_row, $content);
-				} else if ( strpos( $rows_matches[0][$key], '[row cols_nr="', 5 ) !== false ) {
-					$content = $this->parse_content_for_nested_rows( $content );
+				} else if ( ! $rec ) {
+					$content = $this->parse_content_for_nested_rows( $content, true );
 				}
 			}
 		}
