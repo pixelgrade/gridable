@@ -51,6 +51,8 @@
 		 */
 		tinyMCE.activeEditor.insertContent( row );
 
+		tinyMCE.activeEditor.execCommand('gridableAddResizeHandlers');
+
 		function wpAutoP( content ) {
 			if ( switchEditors && switchEditors.wpautop ) {
 				content = switchEditors.wpautop(content);

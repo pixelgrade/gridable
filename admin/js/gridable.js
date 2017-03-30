@@ -343,7 +343,12 @@
 				this.dom.doc.body.innerHTML = content;
 
 				// console.groupEnd('gridableRender');
+				// SHIM
+				editor.execCommand('gridableRemoveResize');
+
+				// bind resize events
 				editor.execCommand('gridableAddResizeHandlers');
+
 				$save_btn.removeAttr('disabled');
 			});
 
@@ -419,139 +424,138 @@
 			});
 
 			editor.addCommand('gridableRemoveResize', function () {
-
-				var $grids = editor.dom.$('.gridable');
-
-				editor.dom.$.each($grids, function (i, grid) {
-					var $grid = editor.dom.$(grid);
-
-					if (typeof $grid.attr('data-gridable-bound') == "undefined") {
-						return;
-					}
-
-					$grid.removeAttr('data-gridable-bound');
-
-					$grid.off('mousedown .gridable__handle', onMouseDown);
-					$grid.off('mousemove', onMouseMove);
-					$grid.off('mouseup mouseleave', onMouseUp);
-				});
+				var $grids = editor.dom.$('.gridable__handle');
+				$grids.remove();
 			});
 
 			/**
 			 * Function to add Column Resize Handlers and bound events
 			 */
 			editor.addCommand('gridableAddResizeHandlers', function () {
-				var $handlers = editor.dom.$('.gridable__handle');
-				$handlers.each( function (count, el) {
-					var row = editor.dom.$(el).parents('.col.gridable-mceItem');
+				var $cols = editor.dom.$('.col.gridable-mceItem');
 
-					if ( ! row.hasClass('has-handlers') ) {
-						row.addClass('has-handlers');
+				$cols.each( function (count, column) {
+					var row = editor.dom.$(column).parents('.row.gridable-mceItem');
+
+					editor.dom.bind( column, 'mousedown', onMouseDown );
+					editor.dom.bind( row[0], 'mousemove', onMouseMove, column );
+					editor.dom.bind( row[0], 'mouseup', onMouseUp, column );
+					editor.dom.bind( row[0], 'mouseleave', onMouseUp, column );
+				});
+
+				function getGridStyle(grid) {
+					var gridStyle = getComputedStyle(grid),
+						gridWidth = grid.clientWidth - parseFloat(gridStyle.paddingLeft) - parseFloat(gridStyle.paddingRight),
+						colWidth = gridWidth / 12;
+
+					return {
+						gridStyle: gridStyle,
+						gridWidth: gridWidth,
+						colWidth: colWidth
+					}
+				}
+
+				/**
+				 * Each column has a before pseudo element which acts as a resize handler
+				 * Detect if the click event is made over this pseude elements and add the resize class if so
+				 * @param e
+				 * @returns {boolean}
+				 */
+				function onMouseDown(e) {
+					// no class === no fun
+					if ( typeof e.target.className === "undefined" ) {
+						return true;
 					}
 
-					editor.dom.bind( row[0], 'mousedown', onMouseDown );
-					editor.dom.bind( row[0], 'mousemove', onMouseMove);
-					editor.dom.bind( row[0], 'mouseup', onMouseUp);
-					editor.dom.bind( row[0], 'mouseleave', onMouseUp);
-				});
+					xStart = e.clientX;
+					xLast = xStart;
+
+					if ( e.target.className.indexOf('col gridable-mceItem') !== -1) {
+						var $el = editor.dom.$( e.target );
+
+						if ( ( e.clientX - $el.offset().left ) <= 25 ) {
+							e.preventDefault();
+							e.stopImmediatePropagation();
+
+							var grid = e.target.closest('.grid'),
+								$grid = editor.$(grid);
+
+							var gstyle = getGridStyle(grid);
+
+							gridStyle = gstyle.gridStyle;
+							gridWidth = gstyle.gridWidth;
+							colWidth = gstyle.colWidth;
+
+							$grid.addClass('grabbing');
+
+							$next = editor.dom.$(e.target);
+							$prev = $next.prev('.col');
+
+							gridable_resizing = true;
+							updateLoop();
+
+							var width = parseInt($next[0].offsetWidth, 10),
+								colNo = Math.round(width / colWidth);
+						}
+					}
+				}
+
+				function onMouseMove(e) {
+					if (gridable_resizing) {
+						// console.log('handler mousemove');
+						e.preventDefault();
+						e.stopImmediatePropagation();
+						xLast = e.clientX;
+						return false;
+					}
+				};
+
+				function onMouseUp(e) {
+					// console.log('handler mouse out');
+					var grid = editor.dom.$(e.target).closest('.grid'),
+						$grid = editor.dom.$(grid);
+
+					$grid.removeClass('grabbing');
+
+					xEnd = e.clientX;
+					gridable_resizing = false;
+				};
+
+				function updateLoop() {
+
+					if (!gridable_resizing || !xLast || !xStart) {
+						return false;
+					}
+
+					if ( $next.length && $prev.length && typeof xStart !== "unedfined" ) {
+
+						if ( xLast - xStart >= colWidth / 2 ) {
+							var nextSpan = parseInt($next[0].getAttribute('data-sh-column-attr-size'), 10),
+								prevSpan = parseInt($prev[0].getAttribute('data-sh-column-attr-size'), 10);
+
+							if (nextSpan != 1) {
+								$next[0].setAttribute('data-sh-column-attr-size', nextSpan - 1);
+								$prev[0].setAttribute('data-sh-column-attr-size', prevSpan + 1);
+
+								xStart += 1 * colWidth;
+							}
+						} else if (xStart - xLast >= colWidth / 2) {
+							var nextSpan = parseInt($next[0].getAttribute('data-sh-column-attr-size'), 10),
+								prevSpan = parseInt($prev[0].getAttribute('data-sh-column-attr-size'), 10);
+
+							if (prevSpan != 1) {
+								$next[0].setAttribute('data-sh-column-attr-size', nextSpan + 1);
+								$prev[0].setAttribute('data-sh-column-attr-size', prevSpan - 1);
+
+								xStart -= 1 * colWidth;
+							}
+						}
+					}
+
+					requestAnimationFrame(updateLoop);
+				}
 			});
 
-			function getGridStyle(grid) {
-				var gridStyle = getComputedStyle(grid),
-					gridWidth = grid.clientWidth - parseFloat(gridStyle.paddingLeft) - parseFloat(gridStyle.paddingRight),
-					colWidth = gridWidth / 12;
-
-				return {
-					gridStyle: gridStyle,
-					gridWidth: gridWidth,
-					colWidth: colWidth
-				}
-			}
-
-			function onMouseDown(e) {
-				// console.log('handler mouse down');
-				xStart = e.clientX;
-				xLast = xStart;
-
-				if (typeof e.target.className !== "undefined" && e.target.className.indexOf('gridable__handle') !== -1) {
-					e.preventDefault();
-					e.stopImmediatePropagation();
-					var grid = e.target.closest('.grid'),
-						$grid = editor.$(grid);
-
-					var gstyle = getGridStyle(grid);
-
-					gridStyle = gstyle.gridStyle;
-					gridWidth = gstyle.gridWidth;
-					colWidth = gstyle.colWidth;
-
-					$grid.addClass('grabbing');
-
-					$next = editor.dom.$(e.target).parent();
-					$prev = $next.prev('.col');
-
-					gridable_resizing = true;
-					updateLoop();
-
-					var width = parseInt($next[0].offsetWidth, 10),
-						colNo = Math.round(width / colWidth);
-				}
-			}
-
-			function onMouseMove(e) {
-				if (gridable_resizing) {
-					// console.log('handler mousemove');
-					e.preventDefault();
-					e.stopImmediatePropagation();
-					xLast = e.clientX;
-					return false;
-				}
-			};
-
-			function onMouseUp(e) {
-				// console.log('handler mouse out');
-				var grid = editor.dom.$(e.target).closest('.grid'),
-					$grid = editor.dom.$(grid);
-
-				$grid.removeClass('grabbing');
-
-				xEnd = e.clientX;
-				gridable_resizing = false;
-			};
-
-			function updateLoop() {
-
-				if (!gridable_resizing || !xLast || !xStart) {
-					return false;
-				}
-
-				if ($next.length && $prev.length && typeof xStart !== "unedfined") {
-
-					if ( xLast - xStart >= colWidth / 2 ) {
-						var nextSpan = parseInt($next[0].getAttribute('data-sh-column-attr-size'), 10),
-							prevSpan = parseInt($prev[0].getAttribute('data-sh-column-attr-size'), 10);
-
-						if (nextSpan != 1) {
-							$next[0].setAttribute('data-sh-column-attr-size', nextSpan - 1);
-							$prev[0].setAttribute('data-sh-column-attr-size', prevSpan + 1);
-
-							xStart += 1 * colWidth;
-						}
-					} else if (xStart - xLast >= colWidth / 2) {
-						var nextSpan = parseInt($next[0].getAttribute('data-sh-column-attr-size'), 10),
-							prevSpan = parseInt($prev[0].getAttribute('data-sh-column-attr-size'), 10);
-
-						if (prevSpan != 1) {
-							$next[0].setAttribute('data-sh-column-attr-size', nextSpan + 1);
-							$prev[0].setAttribute('data-sh-column-attr-size', prevSpan - 1);
-
-							xStart -= 1 * colWidth;
-						}
-					}
-				}
-
-				requestAnimationFrame(updateLoop);
-			}
 
 			/** === Helper functions ==== **/
 
