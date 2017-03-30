@@ -42,6 +42,7 @@ We invest a lot of time and energy into developing Gridable in a way that makes 
 * Rewrite the Column Resize feature which helped us fix a lot of bugs with the content "Copy/Paste" actions
 * Added the ability to have 1 level of **Nested rows**
 * Added Screenshots to wordpress.org
+* Added a better Distraction-Free editor width
 
 = 1.1.0 =
 * Rewrite `gridable_sh_row_classes` and `gridable_sh_col_classes` into a more consistent way as `gridable_row_class` and `gridable_column_class`
