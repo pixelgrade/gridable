@@ -39,6 +39,8 @@ class Gridable_Public {
 	 */
 	private $version;
 
+	private $last_row_pos = 0;
+
 	/**
 	 * Initialize the class and set its properties.
 	 *
@@ -223,10 +225,10 @@ class Gridable_Public {
 	 *
 	 * @return mixed
 	 */
-	function parse_content_for_nested_rows( $content ){
+	function parse_content_for_nested_rows( $content, $rec = false ){
 		$rows_matches = array();
 
-		preg_match_all( '#' . get_shortcode_regex( array('row') ) . '#ms' , $content, $rows_matches);
+		preg_match_all( '#' . get_shortcode_regex( array('row') ) . '#ims' , $content, $rows_matches);
 
 		/**
 		 * Basically in the first group of matches are the plain row texts
@@ -237,64 +239,64 @@ class Gridable_Public {
 			// iterate through each row and check if anyone has a nested row
 			foreach ($rows_matches[0] as $key => $match ) {
 
-				/// just for the sake of this exersize, only the first row occurance is crazy and needs help
-//				if ( $key > 0 ) {
-//					$content = str_replace( $match, do_shortcode($match), $content);
-//					continue;
-//				}
+				$row_pos = strpos( $rows_matches[0][$key], '[row cols_nr="', 5 );
 
-				// make a clone of the original row
-				$temp_row = $match;
-				// if this row has an inner row, let's render it and replace it in the clone row
-				preg_match(  '#' . get_shortcode_regex( array('row') ) . '#', $match, $smatch);
-				if ( substr_count( $smatch[0], '[row ' ) > 1 ) {
-					$inner_rows = array();
+				// if there is another row inside render it first
+				if ( $row_pos !== false ) {
+					// make a clone of the original row
+					$temp_row = $match;
+					// if this row has an inner row, let's render it and replace it in the clone row
+					preg_match(  '#' . get_shortcode_regex( array('row') ) . '#', $match, $smatch);
+					if ( substr_count( $smatch[0], '[row ' ) > 1 ) {
+						$inner_rows = array();
 
-					// right now the row form is [row] content [row]content[/row]
-					// if we render the available rows we will have a nested-free row
-					$remove_starting_row = '~\[' . $smatch[1] . $smatch[2] . $smatch[3] . '\]~';
-					$temp_content = preg_replace( $remove_starting_row, '', $smatch[0], 1 );
+						// right now the row form is [row] content [row]content[/row]
+						// if we render the available rows we will have a nested-free row
+						$remove_starting_row = '~\[' . $smatch[1] . $smatch[2] . $smatch[3] . '\]~';
+						$temp_content = preg_replace( $remove_starting_row, '', $smatch[0], 1 );
 
-					preg_match_all( '#' . get_shortcode_regex( array( 'row' ) ) . '#ms' , $temp_content, $inner_rows);
+						preg_match_all( '#' . get_shortcode_regex( array( 'row' ) ) . '#ms' , $temp_content, $inner_rows);
 
-					// there may be more than one inner row, catch'em all
-					foreach ($inner_rows[0] as $inner_row ) {
-						$temp_row = str_replace( $inner_row, do_shortcode($inner_row), $temp_row );
+						// there may be more than one inner row, catch'em all
+						foreach ($inner_rows[0] as $inner_row ) {
+							$temp_row = str_replace( $inner_row, do_shortcode($inner_row), $temp_row );
+						}
 					}
-				}
 
-				// now we have a [row] content <div class="row"></div>
-				// the closing [/row] is definetly somewhere after
-				$content = str_replace( $match, $temp_row, $content);
+					// now we have a [row] content <div class="row"></div>
+					// the closing [/row] is definetly somewhere after
+					$content = str_replace( $match, $temp_row, $content);
+				} else if ( ! $rec ) {
+					$content = $this->parse_content_for_nested_rows( $content, true );
+				}
 			}
 		}
 
 		return $content;
 	}
 
-//
-//	/**
-//	 * Register the JavaScript for the public-facing side of the site.
-//	 *
-//	 * @since    1.0.0
-//	 */
-//	public function enqueue_scripts() {
-//
-//		/**
-//		 * This function is provided for demonstration purposes only.
-//		 *
-//		 * An instance of this class should be passed to the run() function
-//		 * defined in Gridable_Loader as all of the hooks are defined
-//		 * in that particular class.
-//		 *
-//		 * The Gridable_Loader will then create the relationship
-//		 * between the defined hooks and the functions defined in this
-//		 * class.
-//		 */
-//
-//		wp_enqueue_script( $this->gridable, plugin_dir_url( __FILE__ ) . 'js/gridable-public.js', array( 'jquery' ), $this->version, false );
-//
-//	}
+	/**
+	 * Register the JavaScript for the public-facing side of the site.
+	 *
+	 * @since    1.0.0
+	 */
+	public function enqueue_scripts() {
+
+		/**
+		 * This function is provided for demonstration purposes only.
+		 *
+		 * An instance of this class should be passed to the run() function
+		 * defined in Gridable_Loader as all of the hooks are defined
+		 * in that particular class.
+		 *
+		 * The Gridable_Loader will then create the relationship
+		 * between the defined hooks and the functions defined in this
+		 * class.
+		 */
+
+		wp_enqueue_script( $this->gridable, plugin_dir_url( __FILE__ ) . 'js/gridable-scripts.js', array( 'jquery' ), $this->version, false );
+
+	}
 
 
 }

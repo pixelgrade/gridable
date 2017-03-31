@@ -69,7 +69,7 @@ class Gridable {
 	public function __construct() {
 
 		$this->gridable = 'gridable';
-		$this->version = '1.1.0';
+		$this->version = '1.2.0';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -174,6 +174,7 @@ class Gridable {
 		$plugin_public = new Gridable_Public( $this->get_gridable(), $this->get_version() );
 
 		add_action( 'wp_enqueue_scripts', array( $plugin_public, 'enqueue_styles' ) );
+		add_action( 'wp_enqueue_scripts', array( $plugin_public, 'enqueue_scripts' ) );
 		add_shortcode( 'row', array( $plugin_public, 'add_row_shortcode' ) );
 		add_shortcode( 'col', array( $plugin_public, 'add_column_shortcode' ) );
 

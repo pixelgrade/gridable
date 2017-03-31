@@ -2,8 +2,8 @@
 Contributors: pixelgrade, euthelup, babbardel, razvanonofrei
 Tags: grid, preview, render, row, column, inline-edit
 Requires at least: 4.6.1
-Tested up to: 4.7.2
-Stable tag: 1.1.0
+Tested up to: 4.7.3
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,6 +36,12 @@ We invest a lot of time and energy into developing Gridable in a way that makes 
 3. Enjoy the "Add Row" button
 
 == Changelog ==
+
+= 1.2.0 =
+* Improved UI style as Gutenberg
+* Rewrite the Column Resize feature which helped us fix a lot of bugs with the content "Copy/Paste" actions
+* Added the ability to have 1 level of **Nested rows**
+* Added Screenshots to wordpress.org
 
 = 1.1.0 =
 * Rewrite `gridable_sh_row_classes` and `gridable_sh_col_classes` into a more consistent way as `gridable_row_class` and `gridable_column_class`

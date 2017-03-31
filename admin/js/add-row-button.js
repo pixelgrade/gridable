@@ -13,7 +13,7 @@
 		});
 
 		var column = wp.html.string({
-			tag: 'div',
+			tag: 'section',
 			attrs: {
 				class: "col gridable-mceItem grid__item",
 				"data-sh-column-attr-size": "6",
@@ -23,27 +23,19 @@
 			content: column_content
 		});
 
-		var handle = wp.html.string({
-			tag: 'div',
-			attrs: {
-				class: "gridable__handle mceNonEditable",
-				"contenteditable": "false"
-			}
-		})
-
 		column += wp.html.string({
-			tag: 'div',
+			tag: 'section',
 			attrs: {
 				class: "col gridable-mceItem grid__item",
 				"data-sh-column-attr-size": "6",
 				"data-mce-placeholder": "1",
 				"contenteditable": "true"
 			},
-			content: handle + column_content
+			content: column_content
 		});
 
 		var row = wp.html.string({
-			tag: 'div',
+			tag: 'section',
 			attrs: {
 				class: "row gridable-mceItem gridable gridable--grid grid",
 				"data-sh-row-attr-cols_nr": "2",
@@ -58,6 +50,8 @@
 		 * Insert the new shortcode in the editor
 		 */
 		tinyMCE.activeEditor.insertContent( row );
+
+		tinyMCE.activeEditor.execCommand('gridableAddResizeHandlers');
 
 		function wpAutoP( content ) {
 			if ( switchEditors && switchEditors.wpautop ) {
