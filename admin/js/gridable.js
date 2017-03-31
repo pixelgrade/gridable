@@ -180,7 +180,7 @@
 				var selected_row = editor.dom.$(args.element).parents('.row.gridable-mceItem');
 
 				// if a row is focused we display the toolbar and add a CSS class
-				if ( selected_row.length > 0 && ( ['P', 'h1', 'H2', 'H3', 'H4', 'H5', 'STRONG', 'SPAN', 'DIV', 'FONT', 'BR'].indexOf(args.element.tagName) !== -1 || args.element.className.indexOf('gridable-mceItem') !== -1 ) ) {
+				if ( selected_row.length > 0 && ( ['P', 'H1', 'H2', 'H3', 'H4', 'H5', 'STRONG', 'SPAN', 'DIV', 'FONT', 'BR'].indexOf(args.element.tagName) !== -1 || args.element.className.indexOf('gridable-mceItem') !== -1 ) ) {
 				// if ( selected_row.length > 0 ) {
 					args.toolbar = toolbar;
 					args.selection = selected_row[0];
