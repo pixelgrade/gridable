@@ -30,7 +30,7 @@
 }
 
 @for $i from 1 through 12 {
-	.col-#{$i} {
+	.gridable--col.col-#{$i} {
 		flex-basis: percentage($i/12);
 		width: percentage($i/12);
 		max-width: percentage($i/12);
@@ -38,7 +38,7 @@
 }
 
 @media only screen and (max-width: 1024px) {
-	[class*="col-"] {
+	.gridable--col[class*="col-"] {
 		flex-basis: 100%;
 		width: 100%;
 		max-width: 100%;
