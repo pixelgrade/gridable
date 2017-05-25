@@ -2,8 +2,8 @@
 Contributors: pixelgrade, euthelup, babbardel, razvanonofrei
 Tags: grid, preview, render, row, column, inline-edit
 Requires at least: 4.6.1
-Tested up to: 4.7.3
-Stable tag: 1.2.0
+Tested up to: 4.7.5
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,6 +36,11 @@ We invest a lot of time and energy into developing Gridable in a way that makes 
 3. Enjoy the "Add Row" button
 
 == Changelog ==
+
+= 1.2.1 =
+* **Added specificity to CSS Classes**.
+Since there are lots of conflicts with other plugins which uses the `.row` and `.col` classes we decided to prefix them with `.gridable.row` and `.gridable.col`.
+You can still use the `gridable_row_class` filter to add your own classes, we just adjusted the defaults.
 
 = 1.2.0 =
 * Improved UI style as Gutenberg
