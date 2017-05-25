@@ -39,7 +39,7 @@ We invest a lot of time and energy into developing Gridable in a way that makes 
 
 = 1.2.1 =
 * **Added specificity to CSS Classes**.
-Since there are lots of conflicts with other plugins which uses the `.row` and `.col` classes we decided to prefix them with `.gridable.row` and `.gridable.col`.
+Since there are lots of conflicts with other plugins which uses the `.row` and `.col` classes we decided to prefix them with `.gridable--row` and `.gridable--col`.
 You can still use the `gridable_row_class` filter to add your own classes, we just adjusted the defaults.
 
 = 1.2.0 =
