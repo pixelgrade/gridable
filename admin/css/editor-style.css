@@ -42,7 +42,7 @@
 .row > .col img { margin-left: 0; margin-right: 0; max-width: 100%; }
 .row:hover:after { opacity: 1; cursor: pointer; }
 
-.grid__item:not(:first-of-type):before { content: "resize"; display: block; cursor: col-resize; top: 0; position: absolute; opacity: 0; bottom: 0; left: -20px; z-index: 9999; width: 40px; }
+.grid__item:not(:first-of-type):before { content: " "; display: block; cursor: col-resize; top: 0; position: absolute; opacity: 0; bottom: 0; left: -20px; z-index: 9999; width: 40px; }
 
 .gridable__content { overflow: hidden; }
 
