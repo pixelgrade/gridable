@@ -2,7 +2,7 @@
 	'use strict';
 
 	// Insert shortcode into TinyMCE
-	$('.gridable-insert-row-button').click(function(event) {
+	$( document ).on( 'click', '.gridable-insert-row-button', function(event) {
 		event.preventDefault();
 		/**
 		 * Create one row shortcode with one column inside
@@ -46,12 +46,13 @@
 			content: column
 		});
 
-		/**
-		 * Insert the new shortcode in the editor
-		 */
-		tinyMCE.activeEditor.insertContent( row );
-
-		tinyMCE.activeEditor.execCommand('gridableAddResizeHandlers');
+		if ( typeof tinyMCE.activeEditor !== "undefined" ) {
+			/**
+			 * Insert the new shortcode in the editor
+			 */
+			tinyMCE.activeEditor.insertContent( row );
+			tinyMCE.activeEditor.execCommand('gridableAddResizeHandlers');
+		}
 
 		function wpAutoP( content ) {
 			if ( switchEditors && switchEditors.wpautop ) {
