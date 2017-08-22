@@ -69,7 +69,7 @@ class Gridable {
 	public function __construct() {
 
 		$this->gridable = 'gridable';
-		$this->version = '1.2.1';
+		$this->version = '1.2.2';
 
 		$this->load_dependencies();
 		$this->set_locale();

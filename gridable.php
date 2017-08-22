@@ -3,7 +3,7 @@
  * Plugin Name:       Gridable
  * Plugin URI:        https://pixelgrade.com/
  * Description:       The Missed Grid Content Editor
- * Version:           1.2.1
+ * Version:           1.2.2
  * Author:            Pixelgrade
  * Author URI:        https://pixelgrade.com/
  * License:           GPL-2.0+

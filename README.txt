@@ -2,8 +2,8 @@
 Contributors: pixelgrade, euthelup, babbardel, razvanonofrei
 Tags: grid, preview, render, row, column, inline-edit
 Requires at least: 4.6.1
-Tested up to: 4.7.5
-Stable tag: 1.2.1
+Tested up to: 4.8.1
+Stable tag: 1.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,6 +36,11 @@ We invest a lot of time and energy into developing Gridable in a way that makes 
 3. Enjoy the "Add Row" button
 
 == Changelog ==
+
+= 1.2.2 =
+* A better handling of columns and rows CSS classes
+* Bind the Add Row event dynamically to work with multiple(dynamic) editors. Thanks [@tomusborne](https://github.com/pixelgrade/gridable/issues/76)
+* Avoid triggering errors for Customize Posts plugin by XWP
 
 = 1.2.1 =
 * **Added specificity to CSS Classes**.
