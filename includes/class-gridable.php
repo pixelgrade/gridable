@@ -160,6 +160,12 @@ class Gridable {
 
 		// also inside the wp-editor we cannot localize parameters, so we simply output the javascript code
 		add_action( 'admin_head', array( $plugin_admin, 'my_add_styles_admin' ) );
+
+		if ( apply_filters( 'gridable_support_for_customizer', true ) && ! wp_doing_ajax() ) {
+			// This is needed for wp-editors added in customizer
+			add_action( 'customize_controls_print_footer_scripts', array( $plugin_admin, 'my_add_styles_admin' ) );
+			add_action( 'customize_controls_print_footer_scripts', array( $plugin_admin, 'wp_print_grider_tinymce_templates' ) );
+		}
 	}
 
 	/**
