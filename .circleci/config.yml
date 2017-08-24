@@ -1,0 +1,45 @@
+version: 2
+jobs:
+  build:
+    working_directory: /tmp/wordpress/wp-content/plugins/pixelgrade-care
+    docker:
+      - image: andreilupu/wptrunk:wpcs
+        environment:
+          WORDPRESS_DB_HOST: 127.0.0.1
+        ports:
+          - 8080:80
+          - 3306:3306
+#      - image: phpunit/phpunit
+      - image: mysql:5.7
+        environment:
+          MYSQL_ROOT_HOST: "%"
+          MYSQL_DATABASE: wordpress
+          MYSQL_ROOT_PASSWORD: mypass
+        ports: 3306:3306
+    branches:
+      only:
+        - dev
+        - master
+        - wpcs
+    steps:
+      - checkout
+      - run:
+          name: Add domain
+          command: echo 127.0.0.1 gridable.dev | tee -a /etc/hosts
+
+      - run: /tmp/phpcs/bin/phpcs -l $(find . -name '*.php') --standard=WordPress-Core
+
+      - run:
+          name: Wait for mysql
+          command: |
+            until nc -z -v -w30 127.0.0.1 3306
+            do
+              echo "Waiting for database connection..."
+              # wait for 2 seconds before check again
+              sleep 2
+            done
+
+      - run: wp core config --path=/tmp/wordpress --dbname=wordpress --dbuser=root --allow-root --dbhost=127.0.0.1 --dbpass=mypass
+      - run: wp core install --url=http://gridable.dev --title=Test --admin_user=admin --admin_password=12345 --admin_email=test@test.com --path=/tmp/wordpress --allow-root
+
+      - run: cd ./tests && phpunit --coverage-text

@@ -1,6 +1,7 @@
 <?php
 // print option html
-function gridable_default_attributes_modal_options_templates() { ?>
+function gridable_default_attributes_modal_options_templates() {
+	?>
 	<script type="text/html" id="tmpl-gridable-row-option-color">
 		<fieldset class="colorpicker">
 			<label class="gridable-setting setting" for="{{data.key}}">
@@ -48,5 +49,6 @@ function gridable_default_attributes_modal_options_templates() { ?>
 		</fieldset>
 	</script>
 
-<?php }
+<?php
+}
 add_action( 'gridable_print_row_options_templates', 'gridable_default_attributes_modal_options_templates' );

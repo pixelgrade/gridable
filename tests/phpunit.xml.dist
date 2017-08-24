@@ -1,0 +1,19 @@
+<phpunit
+	bootstrap="bootstrap.php"
+	backupGlobals="false"
+	colors="true"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+>
+	<testsuites>
+		<testsuite>
+			<directory prefix="test-" suffix=".php">./</directory>
+		</testsuite>
+	</testsuites>
+	<filter>
+		<whitelist processUncoveredFilesFromWhitelist="true">
+			<directory prefix="class-pixelgrade_care-" suffix=".php">./../</directory>
+		</whitelist>
+	</filter>
+</phpunit>

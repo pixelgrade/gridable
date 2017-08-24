@@ -17,7 +17,7 @@
  */
 
 do_action( 'gridable_before_column_render' ); ?>
-	<div <?php echo $class ?> <?php echo apply_filters( 'gridable_column_attributes', '', $atts, $content ); ?>>
+	<div <?php echo $class; ?> <?php echo apply_filters( 'gridable_column_attributes', '', $atts, $content ); ?>>
 		<?php
 		do_action( 'gridable_before_column_content_render', $atts );
 
@@ -29,7 +29,8 @@ do_action( 'gridable_before_column_render' ); ?>
 			echo $column_content;
 		}
 
-		do_action( 'gridable_after_column_content_render' ); ?>
+		do_action( 'gridable_after_column_content_render' );
+		?>
 	</div>
 <?php
 do_action( 'gridable_after_column_render' );

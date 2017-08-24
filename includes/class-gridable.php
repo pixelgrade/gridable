@@ -84,7 +84,7 @@ class Gridable {
 	 * Include the following files that make up the plugin:
 	 *
 	 * - Gridable_Loader. Orchestrates the hooks of the plugin.
-	 * - Gridable_i18n. Defines internationalization functionality.
+	 * - Gridable_I18n. Defines internationalization functionality.
 	 * - Gridable_Admin. Defines all hooks for the admin area.
 	 * - Gridable_Public. Defines all hooks for the public side of the site.
 	 *
@@ -128,7 +128,7 @@ class Gridable {
 	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
-	 * Uses the Gridable_i18n class in order to set the domain and to register the hook
+	 * Uses the Gridable_I18n class in order to set the domain and to register the hook
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
@@ -136,7 +136,7 @@ class Gridable {
 	 */
 	private function set_locale() {
 
-		$plugin_i18n = new Gridable_i18n();
+		$plugin_i18n = new Gridable_I18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
 
@@ -190,10 +190,9 @@ class Gridable {
 		if ( ! is_admin() ) {
 			add_filter( 'gridable_the_column_content', array( $plugin_public, 'gridable_fix_lost_p_tags' ), 10, 2 );
 
-			if ( true === apply_filters('gridable_add_empty_column_class', true ) ) {
+			if ( true === apply_filters( 'gridable_add_empty_column_class', true ) ) {
 				add_filter( 'gridable_column_class', array( $plugin_public, 'gridable_add_empty_column_class' ), 10, 4 );
 			}
-
 		}
 	}
 

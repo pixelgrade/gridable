@@ -24,7 +24,7 @@
  * @subpackage Gridable/includes
  * @author     Pixelgrade <contact@pixelgrade.com>
  */
-class Gridable_i18n {
+class Gridable_I18n {
 
 
 	/**

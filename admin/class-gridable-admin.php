@@ -1,15 +1,4 @@
 <?php
-
-/**
- * The admin-specific functionality of the plugin.
- *
- * @link       https://pixelgrade.com
- * @since      1.0.0
- *
- * @package    Gridable
- * @subpackage Gridable/admin
- */
-
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -71,36 +60,43 @@ class Gridable_Admin {
 		 */
 		wp_register_script( 'select2', plugin_dir_url( __FILE__ ) . 'js/select2.min.js', array( 'jquery' ), $this->version );
 
-		wp_enqueue_script( 'gridable-add-row-button', plugin_dir_url( __FILE__ ) . 'js/add-row-button.js', array( 'jquery', 'wp-color-picker', 'select2' ), $this->version, true );
+		wp_enqueue_script( 'gridable-add-row-button', plugin_dir_url( __FILE__ ) . 'js/add-row-button.js', array(
+			'jquery',
+			'wp-color-picker',
+			'select2',
+		), $this->version, true );
 
 		wp_register_style( 'select2', plugin_dir_url( __FILE__ ) . 'css/select2.css', array(), $this->version );
 
-		wp_enqueue_style( 'gridable-admin-style', plugin_dir_url( __FILE__ ) . 'css/admin-style.css', array( 'wp-color-picker', 'select2' ), $this->version, false );
+		wp_enqueue_style( 'gridable-admin-style', plugin_dir_url( __FILE__ ) . 'css/admin-style.css', array(
+			'wp-color-picker',
+			'select2',
+		), $this->version, false );
 
 		wp_localize_script( 'gridable-add-row-button', 'gridable_editor_params', array(
-			'new_column_content' => esc_html__( 'Content', 'gridable' )
+			'new_column_content' => esc_html__( 'Content', 'gridable' ),
 		) );
 
-		wp_localize_script( 'gridable-add-row-button', 'gridable_row_options', apply_filters('gridable_row_options', array(
+		wp_localize_script( 'gridable-add-row-button', 'gridable_row_options', apply_filters( 'gridable_row_options', array(
 			'cols_nr' => array(
-				'default' => 2
-			)
+				'default' => 2,
+			),
 		) ) );
 
-		wp_localize_script( 'gridable-add-row-button', 'gridable_column_options', apply_filters('gridable_column_options', array(
+		wp_localize_script( 'gridable-add-row-button', 'gridable_column_options', apply_filters( 'gridable_column_options', array(
 			'size' => array(
-				'default' => 6
-			)
+				'default' => 6,
+			),
 		) ) );
 
 		global $editor_styles;
-		if ( ! empty( $editor_styles ) && is_array($editor_styles) ) {
+		if ( ! empty( $editor_styles ) && is_array( $editor_styles ) ) {
 			$editor_styles = array_merge( $editor_styles, array(
-				plugin_dir_url( __FILE__ ) . 'css/editor-style.css'
+				plugin_dir_url( __FILE__ ) . 'css/editor-style.css',
 			) );
 		} else {
 			$editor_styles = array(
-				plugin_dir_url( __FILE__ ) . 'css/editor-style.css'
+				plugin_dir_url( __FILE__ ) . 'css/editor-style.css',
 			);
 		}
 	}
@@ -109,14 +105,24 @@ class Gridable_Admin {
 		$row_classes = array(
 			'gridable',
 			'gridable--grid',
-			'grid'
+			'grid',
 		);
 		$col_classes = array(
-			'grid__item'
+			'grid__item',
 		); ?>
-<script type="text/html" id="tmpl-gridable-grider-row"><section contenteditable="false" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_row_classes', $row_classes ) ); ?>" {{{data.atts}}} data-gridable-row="1" data-mce-resize="false" data-mce-placeholder="1">{{{data.content}}}</section></script>
-<script type="text/html" id="tmpl-gridable-grider-col"><section unselectable="true" contenteditable="true" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_col_classes', $col_classes ) ); ?>" {{{data.atts}}} data-mce-resize="false" data-mce-placeholder="1">{{{data.content}}}</section></script>
-	<?php
+		<script type="text/html" id="tmpl-gridable-grider-row">
+			<section contenteditable="false" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_row_classes', $row_classes ) ); ?>" {{{data.atts}}} data-gridable-row="1" data-mce-resize="false" data-mce-placeholder="1">
+				{{{data.content}}}
+			</section>
+		</script>
+		<script type="text/html" id="tmpl-gridable-grider-col">
+			<section
+					unselectable="true" contenteditable="true"
+					class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_col_classes', $col_classes ) ); ?>"
+					{{{data.atts}}} data-mce-resize="false" data-mce-placeholder="1">{{{data.content}}}
+			</section>
+		</script>
+		<?php
 		do_action( 'gridable_print_row_options_templates' );
 		do_action( 'gridable_print_column_options_templates' );
 	}
@@ -130,20 +136,23 @@ class Gridable_Admin {
 	function my_add_styles_admin() {
 		global $current_screen;
 
-		if ( is_admin() ) { ?>
+		if ( is_admin() ) {
+
+			$localized_labels = json_encode( apply_filters( 'gridable_editor_l10n_labels', array(
+				'remove_row'         => esc_html__( 'Remove Row', 'gridable' ),
+				'remove_column'      => esc_html__( 'Remove Column', 'gridable' ),
+				'edit_row'           => esc_html__( 'Edit Row Options', 'gridable' ),
+				'edit_column'        => esc_html__( 'Edit Column Options', 'gridable' ),
+				'add_column'         => esc_html__( 'Add Column', 'gridable' ),
+				'new_column_content' => esc_html__( 'Content', 'gridable' ),
+				'column'             => esc_html__( 'Column', 'gridable' ),
+				'row'                => esc_html__( 'Row', 'gridable' ),
+			) ) );
+			?>
 			<script type="text/javascript">
 				var gridable_params = {
-					l10n: JSON.parse('<?php echo json_encode( apply_filters( 'gridable_editor_l10n_labels', array(
-						'remove_row'         => esc_html__( 'Remove Row', 'gridable' ),
-						'remove_column'      => esc_html__( 'Remove Column', 'gridable' ),
-						'edit_row'           => esc_html__( 'Edit Row Options', 'gridable' ),
-						'edit_column'           => esc_html__( 'Edit Column Options', 'gridable' ),
-						'add_column'         => esc_html__( 'Add Column', 'gridable' ),
-						'new_column_content' => esc_html__( 'Content', 'gridable' ),
-						'column'         => esc_html__( 'Column', 'gridable' ),
-						'row'         => esc_html__( 'Row', 'gridable' ),
-					) ) ) ?>')
-				};
+						l10n: JSON.parse( '<?php echo $localized_labels; ?>' ),
+					};
 			</script>
 			<?php
 		}
