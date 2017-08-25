@@ -1,4 +1,9 @@
 version: 2
+branches:
+  only:
+    - dev
+    - master
+    - wpcs
 jobs:
   build:
     working_directory: /tmp/wordpress/wp-content/plugins/pixelgrade-care
@@ -15,11 +20,6 @@ jobs:
           MYSQL_DATABASE: wordpress
           MYSQL_ROOT_PASSWORD: mypass
         ports: 3306:3306
-    branches:
-      only:
-        - dev
-        - master
-        - wpcs
     steps:
       - checkout
       - run:
@@ -48,11 +48,6 @@ jobs:
     docker:
       - image: jakzal/phpqa
         ports: 3306:3306
-    branches:
-      only:
-        - dev
-        - master
-        - wpcs
     steps:
       - checkout
       #- run: /usr/local/bin/list-tools.sh #list of commands
