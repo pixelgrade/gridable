@@ -306,9 +306,6 @@ class Gridable_Public {
 		 */
 
 		wp_enqueue_script( $this->gridable, plugin_dir_url( __FILE__ ) . 'js/gridable-scripts.js', array( 'jquery' ), $this->version, false );
-
 	}
-
-
 }
 
