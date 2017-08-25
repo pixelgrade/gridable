@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  test:
+  build:
     working_directory: /tmp/wordpress/wp-content/plugins/pixelgrade-care
     docker:
       - image: andreilupu/wptrunk:wpcs
@@ -9,7 +9,6 @@ jobs:
         ports:
           - 8080:80
           - 3306:3306
-#      - image: phpunit/phpunit
       - image: mysql:5.7
         environment:
           MYSQL_ROOT_HOST: "%"
@@ -43,7 +42,8 @@ jobs:
       - run: wp core install --url=http://gridable.dev --title=Test --admin_user=admin --admin_password=12345 --admin_email=test@test.com --path=/tmp/wordpress --allow-root
 
       - run: cd ./tests && phpunit
-  build:
+
+  code_check:
     working_directory: /tmp/wordpress/wp-content/plugins/pixelgrade-care
     docker:
       - image: jakzal/phpqa
@@ -55,7 +55,7 @@ jobs:
         - wpcs
     steps:
       - checkout
-#      - run: /usr/local/bin/list-tools.sh #list of commands
+      #- run: /usr/local/bin/list-tools.sh #list of commands
       - run: parallel-lint . #syntax errors checks
       - run: phpmd . text codesize,unusedcode,naming --ignore-violations-on-exit
       - run: phpa . # check for weak assumptions
@@ -66,7 +66,5 @@ workflows:
   version: 2
   build-test-and-deploy:
     jobs:
-      - test
-      - build:
-          requires:
-            - test
+      - code_check
+      - build
