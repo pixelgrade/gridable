@@ -485,9 +485,12 @@
 				xLast = xStart;
 
 				if ( e.target.className.indexOf('col gridable-mceItem') !== -1) {
-					var $el = editor.dom.$( e.target );
+					var $el = editor.dom.$( e.target ),
+						bodyOffset = $( e.target ).closest( 'html' ).css( 'borderLeftWidth' );
 
-					if ( ( e.clientX - $el.offset().left ) <= 25 ) {
+					bodyOffset = bodyOffset ? parseInt( bodyOffset, 10 ) : 0;
+
+					if ( ( e.clientX - bodyOffset - $el.offset().left ) <= 25 ) {
 						e.preventDefault();
 						e.stopImmediatePropagation();
 
