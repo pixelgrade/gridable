@@ -39,7 +39,7 @@
 			$container.find( '.gridable--col' ).each( function( i, obj ) {
 				var $col = $( obj );
 
-				if ( $col.text().trim() === "" && $col.find( 'img' ).length === 0 ) {
+				if ( $col.text().trim() === "" && $col.find( 'img, video, input, textarea, [class]' ).length === 0 ) {
 					$col.addClass( 'is-empty' );
 				}
 			} );
