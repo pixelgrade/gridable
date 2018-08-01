@@ -39,6 +39,7 @@ We invest a lot of time and energy into developing Gridable in a way that makes 
 
 = 1.2.3 =
 * Improve handling and display of empty columns *
+* Fix column resize when the WordPress editor has borders *
 
 = 1.2.2 =
 * A better handling of columns and rows CSS classes
