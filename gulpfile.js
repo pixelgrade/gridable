@@ -2,23 +2,14 @@ var plugin = 'gridable',
 	source_SCSS = { admin: './admin/scss/**/*.scss', public: './public/scss/**/*.scss'},
 	dest_CSS = { admin:'./admin/css/', public: './public/css/'},
 
-	gulp 		= require('gulp'),
-	sass 		= require('gulp-ruby-sass'),
-	prefix 		= require('gulp-autoprefixer'),
-	exec 		= require('gulp-exec'),
-	replace 	= require('gulp-replace'),
-	minify 		= require('gulp-minify-css'),
-	concat 		= require('gulp-concat'),
-	notify 		= require('gulp-notify'),
-	beautify 	= require('gulp-beautify'),
-	csscomb 	= require('gulp-csscomb'),
-	cmq 		= require('gulp-combine-media-queries'),
-	chmod 		= require('gulp-chmod'),
-	fs          = require('fs'),
-	rtlcss 		= require('rtlcss'),
-	postcss 	= require('gulp-postcss'),
-	del         = require('del'),
-	rename 		= require('gulp-rename');
+	gulp 		= require( 'gulp-help' )( require( 'gulp' ) ),
+    plugins = require( 'gulp-load-plugins' )(),
+    fs = require('fs'),
+    del = require('del');
+
+var u = plugins.util,
+    c = plugins.util.colors,
+    log = plugins.util.log;
 
 require('es6-promise').polyfill();
 
@@ -28,125 +19,186 @@ var options = {
 	continueOnError: true // default: false
 };
 
-// styles related
-gulp.task('styles-admin', function () {
-	return gulp.src(source_SCSS.admin)
-		.pipe(sass({'sourcemap': false, style: 'compact'}))
-			.on('error', function (e) {
-				console.log(e.message);
-			})
-		.pipe(prefix("last 1 version", "> 1%", "ie 8", "ie 7"))
-		.pipe(gulp.dest(dest_CSS.admin));
-});
+function logError( err, res ) {
+    log( c.red( 'Sass failed to compile' ) );
+    log( c.red( '> ' ) + err.file.split( '/' )[err.file.split( '/' ).length - 1] + ' ' + c.underline( 'line ' + err.line ) + ': ' + err.message );
+}
 
-gulp.task('styles-public', function () {
-	return gulp.src(source_SCSS.public)
-		.pipe(sass({'sourcemap': false, style: 'compact'}))
-		.on('error', function (e) {
-			console.log(e.message);
-		})
-		.pipe(prefix("last 1 version", "> 1%", "ie 8", "ie 7"))
-		.pipe(gulp.dest(dest_CSS.public));
-});
+// -----------------------------------------------------------------------------
+// Stylesheets
+// -----------------------------------------------------------------------------
 
-gulp.task('styles', ['styles-admin', 'styles-public'], function () {
-	// ok
-});
+function stylesAdmin() {
+    return gulp.src( source_SCSS.admin )
+        .pipe( plugins.sass( {'sourcemap': false, style: 'compact'} ).on( 'error', logError ) )
+        .pipe( plugins.autoprefixer( "last 1 version", "> 1%", "ie 8", "ie 7" ) )
+        .pipe( gulp.dest( dest_CSS.admin ) );
+}
+stylesAdmin.description = 'Compiles admin css files';
+gulp.task( 'styles-admin', stylesAdmin );
+
+function stylesPublic() {
+    return gulp.src( source_SCSS.public )
+        .pipe( plugins.sass( {'sourcemap': false, style: 'compact'} ).on( 'error', logError ) )
+        .pipe( plugins.autoprefixer( "last 1 version", "> 1%", "ie 8", "ie 7" ) )
+        .pipe( gulp.dest( dest_CSS.public ) );
+}
+stylesPublic.description = 'Compiles frontend/public css files';
+gulp.task( 'styles-public', stylesPublic );
+
+function stylesSequence(cb) {
+    return gulp.parallel( 'styles-admin', 'styles-public' )(cb);
+}
+stylesSequence.description = 'Compile styles';
+gulp.task( 'styles', stylesSequence );
 
 gulp.task('watch-admin', function () {
-	return gulp.watch(source_SCSS.admin, ['styles-admin']);
+	return gulp.watch(source_SCSS.admin, stylesAdmin );
 });
 
 gulp.task('watch-public', function () {
-	return gulp.watch(source_SCSS.public, ['styles-public']);
+	return gulp.watch(source_SCSS.public, stylesPublic );
 });
 
-/**
- * Create a zip archive out of the cleaned folder and delete the folder
- */
-gulp.task( 'zip', ['build'], function() {
-	return gulp.src( './' )
-		.pipe( exec( 'cd ./../; rm -rf gridable.zip; cd ./build/; zip -r -X ./../gridable.zip ./gridable; cd ./../; rm -rf build' ) );
+// -----------------------------------------------------------------------------
+// Scripts
+// -----------------------------------------------------------------------------
 
-} );
+
+
+// -----------------------------------------------------------------------------
+// Build
+// -----------------------------------------------------------------------------
 
 /**
- * Copy theme folder outside in a build folder, recreate styles before that
+ * Copy plugin folder outside in a build folder, recreate styles before that
  */
-gulp.task( 'copy-folder', function() {
-	return gulp.src( './' )
-		.pipe( exec( 'rm -Rf ./../build; mkdir -p ./../build/gridable; cp -Rf ./* ./../build/gridable/' ) );
-} );
+function copyFolder() {
+    var dir = process.cwd();
+    return gulp.src( './*' )
+        .pipe( plugins.exec( 'rm -Rf ./../build; mkdir -p ./../build/' + plugin + ';', {
+            silent: true,
+            continueOnError: true // default: false
+        } ) )
+        .pipe( plugins.rsync({
+            root: dir,
+            destination: '../build/' + plugin + '/',
+            // archive: true,
+            progress: false,
+            silent: false,
+            compress: false,
+            recursive: true,
+            emptyDirectories: true,
+            clean: true,
+            exclude: ['node_modules']
+        }));
+}
+gulp.task( 'copy-folder', copyFolder );
 
 /**
  * Clean the folder of unneeded files and folders
  */
-gulp.task( 'build', ['copy-folder'], function() {
+function removeUnneededFiles( done ) {
 
-	// files that should not be present in build zip
-	files_to_remove = [
-		'**/codekit-config.json',
-		'node_modules',
-		'tests',
-		'.travis.yml',
-		'circle.yml',
-		'phpunit.xml.dist',
-		'.sass-cache',
-		'config.rb',
-		'gulpfile.js',
-		'package.json',
-		'pxg.json',
-		'build',
-		'.idea',
-		'**/*.css.map',
-		'**/.git*',
-		'*.sublime-project',
-		'.DS_Store',
-		'**/.DS_Store',
-		'__MACOSX',
-		'**/__MACOSX',
-		'+development.rb',
-		'+production.rb',
-		'README.md',
-		'.labels'
-	];
+    // files that should not be present in build zip
+    var files_to_remove = [
+        '**/codekit-config.json',
+        'node_modules',
+        'bin',
+        'tests',
+        '.travis.yml',
+        '.babelrc',
+        '.gitignore',
+        '.codeclimate.yml',
+        '.csslintrc',
+        '.eslintignore',
+        '.eslintrc',
+        'circle.yml',
+        'phpunit.xml.dist',
+        '.sass-cache',
+        'config.rb',
+        'gulpfile.js',
+        'webpack.config.js',
+        'package.json',
+        'package-lock.json',
+        'pxg.json',
+        'build',
+        '.idea',
+        '**/*.css.map',
+        '**/.git*',
+        '*.sublime-project',
+        '.DS_Store',
+        '**/.DS_Store',
+        '__MACOSX',
+        '**/__MACOSX',
+        '+development.rb',
+        '+production.rb',
+        'README.md',
+        'admin/src',
+        'admin/scss',
+        'admin/js/**/*.map',
+        'admin/css/**/*.map',
+        '.csscomb',
+        '.csscomb.json',
+        '.codeclimate.yml',
+        'tests',
+        'circle.yml',
+        '.circleci',
+        '.labels',
+        '.jscsrc',
+        '.jshintignore',
+        'browserslist'
+    ];
 
-	files_to_remove.forEach( function( e, k ) {
-		files_to_remove[k] = '../build/gridable/' + e;
-	} );
+    files_to_remove.forEach( function( e, k ) {
+        files_to_remove[k] = '../build/' + plugin + '/' + e;
+    } );
 
-	del.sync(files_to_remove, {force: true});
-} );
+    del.sync(files_to_remove, {force: true});
 
-// usually there is a default task  for lazy people who just wanna type gulp
-gulp.task('default', ['styles'], function () {
-	// silence
-});
+    done();
+}
+gulp.task( 'remove-files', removeUnneededFiles );
 
 /**
- * Short commands help
+ * Create a zip archive out of the cleaned folder and delete the folder
  */
+function createZipFile() {
+    var versionString = '';
+    // get plugin version from the main plugin file
+    var contents = fs.readFileSync("./" + plugin + ".php", "utf8");
 
-gulp.task('help', function () {
+    // split it by lines
+    var lines = contents.split(/[\r\n]/);
 
-	var $help = '\nCommands available : \n \n' +
-		'=== General Commands === \n' +
-		'start              (default)Compiles all styles and scripts and makes the theme ready to start \n' +
-		'zip                Generate the zip archive \n' +
-		'build              Generate the build directory with the cleaned theme \n' +
-		'help               Print all commands \n' +
-		'=== Style === \n' +
-		'styles             Compiles styles in production mode\n' +
-		'styles-dev         Compiles styles in development mode \n' +
-		'styles-admin       Compiles admin styles \n' +
-		'=== Scripts === \n' +
-		'scripts            Concatenate all js scripts \n' +
-		'scripts-dev        Concatenate all js scripts \n' +
-		'=== Watchers === \n' +
-		'watch              Watches all js and scss files \n' +
-		'styles-watch       Watch only styles\n' +
-		'scripts-watch      Watch scripts only \n';
+    function checkIfVersionLine(value, index, ar) {
+        var myRegEx = /^[\s\*]*[Vv]ersion:/;
+        if (myRegEx.test(value)) {
+            return true;
+        }
+        return false;
+    }
 
-	console.log($help);
+    // apply the filter
+    var versionLine = lines.filter(checkIfVersionLine);
 
-});
+    versionString = versionLine[0].replace(/^[\s\*]*[Vv]ersion:/, '').trim();
+    versionString = '-' + versionString.replace(/\./g, '-');
+
+    return gulp.src('./')
+        .pipe( plugins.exec('cd ./../; rm -rf ' + plugin[0].toUpperCase() + plugin.slice(1) + '*.zip; cd ./build/; zip -r -X ./../' + plugin[0].toUpperCase() + plugin.slice(1) + versionString + '.zip ./; cd ./../; rm -rf build'));
+
+}
+gulp.task( 'make-zip', createZipFile );
+
+function buildSequence(cb) {
+    return gulp.series( 'copy-folder', 'remove-files' )(cb);
+}
+buildSequence.description = 'Sets up the build folder';
+gulp.task( 'build', buildSequence );
+
+function zipSequence(cb) {
+    return gulp.series( 'build', 'make-zip' )(cb);
+}
+zipSequence.description = 'Creates the zip file';
+gulp.task( 'zip', zipSequence  );

@@ -1,24 +1,24 @@
 {
-    "name": "gridable",
-    "devDependencies": {
-        "gulp": "*",
-        "gulp-sass": "*",
-        "gulp-ruby-sass": "~0.7.1",
-        "gulp-autoprefixer": "~1.0.1",
-        "gulp-minify-css": "*",
-        "gulp-ignore": "*",
-        "gulp-notify": "*",
-        "gulp-concat": "~2.1.7",
-        "gulp-exec": "~2.0.1",
-        "gulp-replace": "~0.4.0",
-        "gulp-beautify": "*",
-        "gulp-csscomb": "*",
-        "gulp-rename": "*",
-        "gulp-combine-media-queries": "*",
-        "gulp-chmod": "*",
-        "del": "*",
-        "gulp-postcss": "*",
-        "rtlcss": "*",
-        "es6-promise": "*"
-    }
+  "name": "gridable",
+  "repository": "git+https://github.com/pixelgrade/gridable.git",
+  "author": "Pixelgrade",
+  "license": "GPL-2.0+",
+  "keywords": [
+    "Pixelgrade",
+    "Grid"
+  ],
+  "devDependencies": {
+    "gulp": "^4.0.0",
+    "gulp-autoprefixer": "^6.0.0",
+    "gulp-exec": "^3.0.2",
+    "gulp-concat": "*",
+    "gulp-help": "github:chmontgomery/gulp-help#gulp4",
+    "gulp-load-plugins": "*",
+    "gulp-sass": "*",
+    "gulp-rsync": "*",
+    "gulp-rtlcss": "^1.2.0",
+    "gulp-util": "*",
+    "del": "*",
+    "es6-promise": "*"
+  }
 }
