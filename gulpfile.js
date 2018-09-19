@@ -147,7 +147,8 @@ function removeUnneededFiles( done ) {
         '.labels',
         '.jscsrc',
         '.jshintignore',
-        'browserslist'
+        'browserslist',
+        'admin/scss'
     ];
 
     files_to_remove.forEach( function( e, k ) {
