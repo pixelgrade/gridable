@@ -1,8 +1,8 @@
 === Gridable - The Missing Grid Content Editor ===
-Contributors: pixelgrade, euthelup, babbardel, razvanonofrei
+Contributors: pixelgrade, vlad.olaru, euthelup, babbardel, razvanonofrei,
 Tags: grid, preview, render, row, column, inline-edit
-Requires at least: 4.6.1
-Tested up to: 4.8.1
+Requires at least: 4.7.0
+Tested up to: 4.9.8
 Stable tag: 1.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -33,13 +33,16 @@ We invest a lot of time and energy into developing Gridable in a way that makes 
 
 1. Activate the plugin through the 'Plugins' menu in WordPress
 2. Edit a post, page or a custom post type
-3. Enjoy the "Add Row" button
+3. Enjoy the "Add Row" button in the editor toolbar.
 
 == Changelog ==
 
+= 1.2.4 =
+* Fixed strange nbsp characters when switching between Visual and Text mode
+
 = 1.2.3 =
-* Improve handling and display of empty columns *
-* Fix column resize when the WordPress editor has borders *
+* Improve handling and display of empty columns
+* Fix column resize when the WordPress editor has borders
 
 = 1.2.2 =
 * A better handling of columns and rows CSS classes
