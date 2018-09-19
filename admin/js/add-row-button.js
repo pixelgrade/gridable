@@ -47,10 +47,6 @@
 		});
 
 		if ( typeof tinyMCE.activeEditor !== "undefined" ) {
-		    // We need to disable keeping the scroll position when switching between Visual and Text mode
-            // due to the fact that this functionality relies on some inline spans that get autop'd
-            // and result in certain cases in &nbsp; characters. Making a solid Regex for this is very tricky.
-            tinyMCE.activeEditor.settings.wp_keep_scroll_position = false;
 			/**
 			 * Insert the new shortcode in the editor
 			 */

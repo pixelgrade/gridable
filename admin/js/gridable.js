@@ -590,23 +590,43 @@
 				content = content.replace(/<p[^>]*>\s*(\[\s*row[^\]]*\])\s*(\[\s*col[^\]]*\])?\s*<\s*\/p\s*>/gmi, '$1$2');
 
 				// This catches anything like <p>[row] [col] some text </p> or <p>[row] some text</p> and replaces it with [row][col]<p>some text</p> or [row]<p>some text</p>
-				content = content.replace(/<p[^>]*>\s*(\[\s*row[^\]]*\])\s*(\[\s*col[^\]]*\])?(.*?)<\s*\/p\s*>/gmi, '$1$2<p>$3</p>');
+				//content = content.replace(/<p[^>]*>\s*(\[\s*row[^\]]*\])\s*(\[\s*col[^\]]*\])?(.*?)<\s*\/p\s*>/gmi, '$1$2<p>$3</p>');
+                content = content.replace(/<p[^>]*>\s*(\[\s*row[^\]]*\])\s*(\[\s*col[^\]]*\])?(<[^>]+>)?(.*?)<\s*\/p\s*>/gmi, function replace(match, m1, m2, m3, m4) {
+                    return m1+m2+m3+(typeof m4 !== "undefined" && m4.length?'<p>' + m4 + '</p>':'');
+                });
 
 				// This catches anything like <p>[col] some text </p> and replaces it with [col]<p> some text</p>
 				content = content.replace(/<p[^>]*>\s*(\[\s*col[^\]]*\])(.*?)<\s*\/p\s*>/gmi, '$1<p>$2</p>');
 
 				/** Ending shortcodes or Ending and Opening **/
 
-				// This catches anything like <p>[/col] [/row]<p> or <p>[/col</p> or <p>[/row]</p>
-				content = content.replace(/<p[^>]*>\s*(\[\s*\/col[^\]]*\])?\s*(\[\s*\/row[^\]]*\])?\s*<\s*\/p\s*>/gmi, '$1$2');
+				// <p>[/col][/row]</p>
+                content = content.replace(/<p[^>]*>\s*(\[\s*\/col[^\]]*\]\s*)?(\[\s*\/row[^\]]*\]\s*)\s*<\s*\/p\s*>/gmi, function replace(match, m1, m2) {
+                    return ( typeof m1 !== "undefined"?m1:'')+m2;
+                });
 
-				// This catches anything like <p>[/col] [col]<p>
-				content = content.replace(/<p[^>]*>\s*(\[\s*\/col[^\]]*\])\s*(\[\s*col[^\]]*\])\s*<\s*\/p\s*>/gmi, '$1$2');
+                // <p>[/col][col]</p> or <p>[col]</p> or <p>[/col]</p>
+                content = content.replace(/<p[^>]*>\s*(\[\s*\/col[^\]]*\]\s*)?(\[\s*col[^\]]*\]\s*)?\s*<\s*\/p\s*>/gmi, function replace(match, m1, m2) {
+                    return ( typeof m1 !== "undefined"?m1:'')+ ( typeof m2 !== "undefined"?m2:'');
+                });
 
-				// This catches anything like <p>[/col] [col] some text<p> and replaces it with [/col][col]<p>some text</p>
-				content = content.replace(/<p[^>]*>\s*(\[\s*\/col[^\]]*\])\s*(\[\s*col[^\]]*\])(.*?)<\s*\/p\s*>/gmi, '$1$2<p>$3</p>');
+                // This catches anything like <p>[/col] [col] some text<p> and replaces it with [/col][col]<p>some text</p>
+                content = content.replace(/<p[^>]*>\s*(\[\s*\/col[^\]]*\])\s*(\[\s*col[^\]]*\])(<[^>]+>)?(.*?)<\s*\/p\s*>/gmi, function replace(match, m1, m2, m3, m4) {
+                    return m1+m2+(typeof m3 !== "undefined"?m3:'') + (typeof m4 !== "undefined" && m4.length?'<p>' + m4 + '</p>':'');
+                });
 
-				// This catches anything like <p>[/row] [row]<p>
+                // // This catches anything like <p>some text [/col] [col] some text<p> and replaces it with <p>sometext</p>[/col][col]<p>some text</p>
+                // content = content.replace(/<p[^>]*>\s*(<[^>]+>)?(.+?)(\[\s*\/col[^\]]*\])\s*(\[\s*col[^\]]*\])(<[^>]+>)?(.*?)<\s*\/p\s*>/gmi, function replace(match, m1, m2, m3, m4, m5, m6) {
+                //     return (typeof m1 !== "undefined"?m1:'') + (typeof m2 !== "undefined" && m2.length?'<p>' + m2 + '</p>':'') +m3+m4+(typeof m5 !== "undefined"?m5:'')+ (typeof m6 !== "undefined" && m6.length?'<p>' + m6 + '</p>':'');
+                // });
+
+				// This catches anything like <p>some text[/col] [/row]some text<p> or <p>some text [/row]some text<p>
+                content = content.replace(/<p[^>]*>\s*(<[^>]+>)?([^\[]*?)(\[\s*\/col[^\]]*\]\s*)?(\[\s*\/row[^\]]*\]\s*)(<[^>]+>)?(.*?)<\s*\/p\s*>/gmi, function replace(match, m1, m2, m3, m4, m5, m6) {
+                    return (typeof m1 !== "undefined"?m1:'') + (typeof m2 !== "undefined" && m2.length?'<p>' + m2 + '</p>':'') +(typeof m3 !== "undefined"?m3:'')+m4+(typeof m5 !== "undefined"?m5:'')+ (typeof m6 !== "undefined" && m6.length?'<p>' + m6 + '</p>':'');
+                });
+
+
+                // This catches anything like <p>[/row] [row]<p>
 				content = content.replace(/<p[^>]*>\s*(\[\s*\/row[^\]]*\])\s*(\[\s*row[^\]]*\])\s*<\s*\/p\s*>/gmi, '$1$2');
 
 				// This catches anything like <p>[/row] [row] some text<p> and replaces it with [/row] [row]<p>some text</p>

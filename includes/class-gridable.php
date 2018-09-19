@@ -135,7 +135,7 @@ class Gridable {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function set_locale() {
+	protected function set_locale() {
 
 		$plugin_i18n = new Gridable_i18n();
 
@@ -150,22 +150,23 @@ class Gridable {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_admin_hooks() {
+	protected function define_admin_hooks() {
 
 		$plugin_admin = new Gridable_Admin( $this->get_gridable(), $this->get_version() );
 
 		add_action( 'media_buttons', array( $plugin_admin, 'add_media_button' ), 15 );
 
-		add_filter( 'mce_external_plugins', array( $plugin_admin, 'add_grider_tinymce_plugin' ) );
-		add_action( 'admin_footer', array( $plugin_admin, 'wp_print_grider_tinymce_templates' ) );
+		add_filter( 'mce_external_plugins', array( $plugin_admin, 'add_tinymce_plugin' ) );
+		add_filter( 'wp_editor_settings',  array( $plugin_admin, 'change_tinymce_settings' ) );
+		add_action( 'admin_footer', array( $plugin_admin, 'print_tinymce_templates' ) );
 
 		// also inside the wp-editor we cannot localize parameters, so we simply output the javascript code
-		add_action( 'admin_head', array( $plugin_admin, 'my_add_styles_admin' ) );
+		add_action( 'admin_head', array( $plugin_admin, 'styles_scripts' ) );
 
 		if ( apply_filters( 'gridable_support_for_customizer', true ) && ! wp_doing_ajax() ) {
 			// This is needed for wp-editors added in customizer
-			add_action( 'customize_controls_print_footer_scripts', array( $plugin_admin, 'my_add_styles_admin' ) );
-			add_action( 'customize_controls_print_footer_scripts', array( $plugin_admin, 'wp_print_grider_tinymce_templates' ) );
+			add_action( 'customize_controls_print_footer_scripts', array( $plugin_admin, 'styles_scripts' ) );
+			add_action( 'customize_controls_print_footer_scripts', array( $plugin_admin, 'print_tinymce_templates' ) );
 		}
 	}
 
@@ -176,7 +177,7 @@ class Gridable {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_public_hooks() {
+	protected function define_public_hooks() {
 
 		$plugin_public = new Gridable_Public( $this->get_gridable(), $this->get_version() );
 

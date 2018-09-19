@@ -37,6 +37,9 @@ We invest a lot of time and energy into developing Gridable in a way that makes 
 
 == Changelog ==
 
+= 1.2.5 =
+* More fixes around switching between Visual and Text mode
+
 = 1.2.4 =
 * Fixed strange nbsp characters when switching between Visual and Text mode
 
