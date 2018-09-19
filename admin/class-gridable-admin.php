@@ -62,7 +62,7 @@ class Gridable_Admin {
 			esc_attr( $editor_id ),
 			esc_attr__( 'Add Row', 'gridable' ),
 			$icon,
-			__( 'Add Row', 'gridable' )
+			esc_html__( 'Add Row', 'gridable' )
 		);
 
 		/**

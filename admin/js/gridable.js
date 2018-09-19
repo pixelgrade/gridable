@@ -302,7 +302,7 @@
 				var bm = tinyMCE.activeEditor.selection.getBookmark();
 				var node =  event.target.selection.getNode();
 
-				// mceInsertContent is messing our resize handlers, we stick with this simple replce for now
+				// mceInsertContent is messing our resize handlers, we stick with this simple replace for now
 				$(node).replaceWith( event.node.innerHTML );
 				// editor.execCommand('mceInsertContent', false,  event.node.innerHTML);
 
@@ -376,8 +376,7 @@
 				content_process.innerHTML = content_process.innerHTML.replace(/(<p>&nbsp;<\/p>)/gi, '<br />');
 
 				// get all the columns inside the editor
-				var columns = content_process.querySelectorAll('.col.gridable-mceItem'),
-					columnReplacement = '';
+				var columns = content_process.querySelectorAll('.col.gridable-mceItem');
 
 				for (var columnIndex = 0; columnIndex < columns.length; columnIndex++) {
 
@@ -395,8 +394,7 @@
 				}
 
 				// first restore back the row shortcodes
-				var rows = content_process.querySelectorAll('.row.gridable-mceItem'),
-					rowReplacement = '';
+				var rows = content_process.querySelectorAll('.row.gridable-mceItem');
 
 				for (var rowIndex = 0; rowIndex < rows.length; rowIndex++) {
 					// this is the shortcode representation of the row
@@ -525,7 +523,7 @@
 					xLast = e.clientX;
 					return false;
 				}
-			};
+			}
 
 			function onMouseUp(e) {
 				// console.log('handler mouse out');
@@ -536,7 +534,7 @@
 
 				xEnd = e.clientX;
 				gridable_resizing = false;
-			};
+			}
 
 			function updateLoop() {
 
@@ -544,11 +542,12 @@
 					return false;
 				}
 
-				if ( $next.length && $prev.length && typeof xStart !== "unedfined" ) {
+				if ( $next.length && $prev.length && typeof xStart !== "undefined" ) {
+                    let nextSpan, prevSpan;
 
 					if ( xLast - xStart >= colWidth / 2 ) {
-						var nextSpan = parseInt($next[0].getAttribute('data-sh-column-attr-size'), 10),
-							prevSpan = parseInt($prev[0].getAttribute('data-sh-column-attr-size'), 10);
+						nextSpan = parseInt($next[0].getAttribute('data-sh-column-attr-size'), 10);
+						prevSpan = parseInt($prev[0].getAttribute('data-sh-column-attr-size'), 10);
 
 						if (nextSpan != 1) {
 							$next[0].setAttribute('data-sh-column-attr-size', nextSpan - 1);
@@ -557,8 +556,8 @@
 							xStart += 1 * colWidth;
 						}
 					} else if (xStart - xLast >= colWidth / 2) {
-						var nextSpan = parseInt($next[0].getAttribute('data-sh-column-attr-size'), 10),
-							prevSpan = parseInt($prev[0].getAttribute('data-sh-column-attr-size'), 10);
+						nextSpan = parseInt($next[0].getAttribute('data-sh-column-attr-size'), 10);
+						prevSpan = parseInt($prev[0].getAttribute('data-sh-column-attr-size'), 10);
 
 						if (prevSpan != 1) {
 							$next[0].setAttribute('data-sh-column-attr-size', nextSpan + 1);
@@ -645,7 +644,7 @@
 				var next = wp.shortcode.next('row', content);
 
 				if (typeof next !== "undefined") {
-					var template_attrs = {
+					let template_attrs = {
 						tag: "row",
 						content: next.shortcode.content,
 						atts: next.shortcode.attrs.named
@@ -676,7 +675,7 @@
 
 				//content = remove_p_around_shortcodes(content);
 
-				var next = wp.shortcode.next('col', content);
+				let next = wp.shortcode.next('col', content);
 
 				if (typeof next !== "undefined") {
 
@@ -710,7 +709,7 @@
 				var needle = 'data-sh-row-attr-';
 
 				Array.prototype.slice.call(el.attributes).forEach(function (item) {
-					var attr_name = item.name.replace(needle, '');
+					let attr_name = item.name.replace(needle, '');
 
 					if (item.name.indexOf(needle) !== -1 && attr_name in gridable_row_options) {
 
@@ -732,7 +731,7 @@
 
 				Array.prototype.slice.call(el.attributes).forEach(function (item) {
 
-					var attr_name = item.name.replace(needle, '');
+					let attr_name = item.name.replace(needle, '');
 
 					if (item.name.indexOf(needle) !== -1 && attr_name in gridable_column_options) {
 
@@ -754,7 +753,7 @@
 			 * @returns {*}
 			 */
 			function getRowTemplate(args) {
-				var rowSh = wp.template("gridable-grider-row"),
+				let rowSh = wp.template("gridable-grider-row"),
 					atts = get_attrs_string('row', args.atts);
 				return rowSh({
 					content: args.content, //wpAutoP(args.content),
@@ -770,7 +769,7 @@
 			 * @returns {*}
 			 */
 			function getColTemplate(args) {
-				var atts = get_attrs_string('column', args.atts),
+				let atts = get_attrs_string('column', args.atts),
 					colSh = wp.template("gridable-grider-col");
 
 				return colSh({
@@ -788,7 +787,7 @@
 			 * @returns {string}
 			 */
 			function get_attrs_string(tag, atts) {
-				var atts_string = '';
+				let atts_string = '';
 
 				if (typeof atts !== "undefined" && Object.keys(atts).length > 0) {
 					Object.keys(atts).forEach(function (key, index) {
@@ -814,7 +813,7 @@
 					content = switchEditors.wpautop(content);
 				}
 				return content;
-			};
+			}
 
 			/**
 			 * Strip 'p' and 'br' tags, replace with line breaks.
@@ -829,7 +828,7 @@
 					content = switchEditors.pre_wpautop(content);
 				}
 				return content;
-			};
+			}
 
 			/** Development functions, they can be removed in production **/
 

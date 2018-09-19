@@ -65,11 +65,12 @@ class Gridable {
 	 * the public-facing side of the site.
 	 *
 	 * @since    1.0.0
+	 * @param string $version The current plugin version.
 	 */
-	public function __construct() {
+	public function __construct( $version = '1.0.0') {
 
 		$this->gridable = 'gridable';
-		$this->version = '1.2.3';
+		$this->version = $version;
 
 		$this->load_dependencies();
 		$this->set_locale();

@@ -2,8 +2,8 @@
 /**
  * Plugin Name:       Gridable
  * Plugin URI:        https://pixelgrade.com/
- * Description:       The Missed Grid Content Editor
- * Version:           1.2.3
+ * Description:       A simple and intuitive tool for organizing your content into columns and rows.
+ * Version:           1.2.4
  * Author:            Pixelgrade
  * Author URI:        https://pixelgrade.com/
  * License:           GPL-2.0+
@@ -55,7 +55,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-gridable.php';
  */
 function run_gridable() {
 	global $gridable_plugin;
-	$gridable_plugin = new Gridable();
+	$gridable_plugin = new Gridable( '1.2.4');
 	$gridable_plugin->run();
 
 }
