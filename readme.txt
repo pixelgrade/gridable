@@ -2,8 +2,8 @@
 Contributors: pixelgrade, vlad.olaru, euthelup, babbardel, razvanonofrei,
 Tags: grid, preview, render, row, column, inline-edit
 Requires at least: 4.7.0
-Tested up to: 5.0.2
-Stable tag: 1.2.6
+Tested up to: 5.0.3
+Stable tag: 1.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,6 +36,9 @@ We invest a lot of time and energy into developing Gridable in a way that makes 
 3. Enjoy the "Add Row" button in the editor toolbar.
 
 == Changelog ==
+
+= 1.2.6 =
+* Fix Warning related to the new block editor (Gutenberg).
 
 = 1.2.5 =
 * More fixes around switching between Visual and Text mode
