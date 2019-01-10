@@ -1,9 +1,9 @@
 === Gridable - The Missing Grid Content Editor ===
 Contributors: pixelgrade, vlad.olaru, euthelup, babbardel, razvanonofrei,
-Tags: grid, preview, render, row, column, inline-edit
+Tags: grid, preview, render, row, column, inline-edit, editor, gutenberg
 Requires at least: 4.7.0
 Tested up to: 5.0.3
-Stable tag: 1.2.5
+Stable tag: 1.2.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
