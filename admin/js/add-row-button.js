@@ -46,13 +46,29 @@
 			content: column
 		});
 
-		if ( typeof tinyMCE.activeEditor !== "undefined" ) {
-			/**
+		function addRowShortcodeToText() {
+            /**
+             * Insert the new shortcode in the Text editor
+             */
+            var column_shortcode = '[col size="6"]\n\n' + gridable_editor_params.new_column_content + '\n\n[/col]';
+            var row_shortcode = '[row cols_nr="2"]' + column_shortcode + column_shortcode + '[/row]';
+            window.QTags.insertContent( row_shortcode );
+        }
+
+        if ( typeof tinyMCE.activeEditor !== "undefined" && tinyMCE.activeEditor ) {
+            /**
 			 * Insert the new shortcode in the editor
 			 */
-			tinyMCE.activeEditor.insertContent( row );
-			tinyMCE.activeEditor.execCommand('gridableAddResizeHandlers');
-		}
+
+            if ( ! tinyMCE.activeEditor.hidden ) {
+                tinyMCE.activeEditor.insertContent( row );
+                tinyMCE.activeEditor.execCommand('gridableAddResizeHandlers');
+            } else {
+                addRowShortcodeToText();
+            }
+        } else {
+            addRowShortcodeToText();
+        }
 
 		function wpAutoP( content ) {
 			if ( switchEditors && switchEditors.wpautop ) {
