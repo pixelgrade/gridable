@@ -135,7 +135,7 @@ class Gridable_Admin {
 	}
 
 	public function change_tinymce_settings( $settings ) {
-		if ( false !== $settings['tinymce'] ) {
+		if ( ! empty( $settings['tinymce'] ) ) {
 			if ( ! is_array( $settings['tinymce'] ) ) {
 				$settings['tinymce'] = array();
 			}
