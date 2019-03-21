@@ -2,8 +2,8 @@
 Contributors: pixelgrade, vlad.olaru, euthelup, babbardel, razvanonofrei,
 Tags: grid, preview, render, row, column, inline-edit, editor, gutenberg
 Requires at least: 4.7.0
-Tested up to: 5.0.3
-Stable tag: 1.2.6
+Tested up to: 5.1.1
+Stable tag: 1.2.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,8 +37,15 @@ We invest a lot of time and energy into developing Gridable in a way that makes 
 
 == Changelog ==
 
+= 1.2.7 =
+* Fixed warning that appeared when Elementor was active.
+* Fixed issue where, when using the Gutenberg editor, the interface was not working.
+* "Add Row" button now works properly in the "Text" editor tab.
+* Fixed warning that was appearing in the Hero Content area.
+* Solved issue where replying to the readers directly from Dashboard would not work.
+
 = 1.2.6 =
-* Fix Warning related to the new block editor (Gutenberg).
+* Fixed warning related to the new block editor (Gutenberg).
 
 = 1.2.5 =
 * More fixes around switching between Visual and Text mode

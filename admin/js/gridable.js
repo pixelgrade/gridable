@@ -24,6 +24,7 @@
 				$next,
 				$prev;
 
+
 			// The bix X button that removes the entire row shortcode
 			editor.addButton('gridable_row_remove', {
 				tooltip: l10n.remove_row,
@@ -54,8 +55,8 @@
 			/**
 			 * The Add Column button comes with a few rules:
 			 *
-			 * * A row suppports only 6 columns
-			 * * When adding a new column take the space from the biggest one
+			 * A row supports only 6 columns
+			 * When adding a new column take the space from the biggest one
 			 *
 			 */
 			editor.addButton('gridable_add_col', {
@@ -80,7 +81,7 @@
 					}
 
 					if ( new_size === 0 ) {
-						new_size = 12; // asta e
+						new_size = 12;
 					}
 
 					/**
@@ -202,7 +203,7 @@
 			editor.once('preinit', function () {
 				if (editor.wp && editor.wp._createToolbar) {
 
-					// the fist two options must be the add / remove columns
+					// the first two options must be the add / remove columns
 					var toolbar_buttons = [
 						'gridable_col_label',
 						'gridable_add_col',
@@ -469,7 +470,7 @@
 
 			/**
 			 * Each column has a before pseudo element which acts as a resize handler
-			 * Detect if the click event is made over this pseude elements and add the resize class if so
+			 * Detect if the click event is made over this pseudo elements and add the resize class if so
 			 * @param e
 			 * @returns {boolean}
 			 */
@@ -645,7 +646,7 @@
 
 			/**
 			 * Incresease the column size based on a given number
-			 * @TODO maybe decrese the number of columns since we already know that 1 column will be deleted
+			 * @TODO maybe decrease the number of columns since we already know that 1 column will be deleted
 			 * @param column_size
 			 * @param node
 			 */

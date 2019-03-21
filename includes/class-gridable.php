@@ -127,6 +127,32 @@ class Gridable {
 	}
 
 	/**
+	 * Check if Gutenberg is active.
+	 * Must be used not earlier than plugins_loaded action fired.
+	 *
+	 * @return bool
+	 */
+	protected function is_gutenberg_active() {
+
+		// Check version and if Gutenberg is installed and activated.
+		if ( has_filter( 'replace_editor', 'gutenberg_init' ) &&
+		     version_compare( $GLOBALS['wp_version'], '5.0-beta', '>' ) ) {
+			return true;
+		}
+
+		include_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+		if ( is_plugin_active( 'classic-editor/classic-editor.php' ) ||
+		     is_plugin_active( 'disable-gutenberg/disable-gutenberg.php' ) ) {
+			return false;
+		}
+
+		$use_block_editor = ( get_option( 'classic-editor-replace' ) === 'no-replace' );
+
+		return $use_block_editor;
+	}
+
+	/**
 	 * Define the locale for this plugin for internationalization.
 	 *
 	 * Uses the Gridable_i18n class in order to set the domain and to register the hook
@@ -156,7 +182,11 @@ class Gridable {
 
 		add_action( 'media_buttons', array( $plugin_admin, 'add_media_button' ), 15 );
 
-		add_filter( 'mce_external_plugins', array( $plugin_admin, 'add_tinymce_plugin' ) );
+		//Check if Gutenberg is active and if we are in the Editor screen
+		if ( ! $this->is_gutenberg_active() && is_admin() ) {
+			add_filter( 'mce_external_plugins', array( $plugin_admin, 'add_tinymce_plugin' ) );
+		}
+
 		add_filter( 'wp_editor_settings',  array( $plugin_admin, 'change_tinymce_settings' ) );
 		add_action( 'admin_footer', array( $plugin_admin, 'print_tinymce_templates' ) );
 
