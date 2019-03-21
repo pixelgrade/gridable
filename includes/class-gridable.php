@@ -133,36 +133,24 @@ class Gridable {
 	 * @return bool
 	 */
 	protected function is_gutenberg_active() {
-		$gutenberg    = false;
-		$block_editor = false;
 
-		if ( has_filter( 'replace_editor', 'gutenberg_init' ) ) {
-			// Gutenberg is installed and activated.
-			$gutenberg = true;
-		}
-
-		if ( version_compare( $GLOBALS['wp_version'], '5.0-beta', '>' ) ) {
-			// Block editor.
-			$block_editor = true;
-		}
-
-		if ( ! $gutenberg && ! $block_editor ) {
-			return false;
+		// Check version and if Gutenberg is installed and activated.
+		if ( has_filter( 'replace_editor', 'gutenberg_init' ) &&
+		     version_compare( $GLOBALS['wp_version'], '5.0-beta', '>' ) ) {
+			return true;
 		}
 
 		include_once ABSPATH . 'wp-admin/includes/plugin.php';
 
-		if ( is_plugin_active( 'classic-editor/classic-editor.php' ) ) {
+		if ( is_plugin_active( 'classic-editor/classic-editor.php' ) ||
+		     is_plugin_active( 'disable-gutenberg/disable-gutenberg.php' ) ) {
 			return false;
 		}
 
-		if ( is_plugin_active( 'disable-gutenberg/disable-gutenberg.php' ) ) {
-			return false;
-		}
+		$use_block_editor = ( get_option( 'classic-editor-replace' ) === 'no-replace' );
 
-		return true;
+		return $use_block_editor;
 	}
-
 
 	/**
 	 * Define the locale for this plugin for internationalization.
