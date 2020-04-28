@@ -8,17 +8,17 @@
     "Grid"
   ],
   "devDependencies": {
+    "del": "*",
+    "es6-promise": "*",
     "gulp": "^4.0.0",
     "gulp-autoprefixer": "^6.0.0",
+    "gulp-concat": "^2.6.1",
     "gulp-exec": "^3.0.2",
-    "gulp-concat": "*",
     "gulp-help": "github:chmontgomery/gulp-help#gulp4",
     "gulp-load-plugins": "*",
-    "gulp-sass": "*",
     "gulp-rsync": "*",
     "gulp-rtlcss": "^1.2.0",
-    "gulp-util": "*",
-    "del": "*",
-    "es6-promise": "*"
+    "gulp-sass": "*",
+    "gulp-util": "*"
   }
 }
