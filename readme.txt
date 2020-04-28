@@ -1,9 +1,10 @@
 === Gridable - The Missing Grid Content Editor ===
-Contributors: pixelgrade, vlad.olaru, euthelup, babbardel, razvanonofrei,
+Contributors: pixelgrade, vlad.olaru, euthelup, babbardel, razvanonofrei
 Tags: grid, preview, render, row, column, inline-edit, editor, gutenberg
-Requires at least: 4.7.0
-Tested up to: 5.1.1
-Stable tag: 1.2.7
+Requires at least: 4.9.9
+Tested up to: 5.4.0
+Stable tag: 1.2.8
+Requires PHP: 5.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,6 +37,9 @@ We invest a lot of time and energy into developing Gridable in a way that makes 
 3. Enjoy the "Add Row" button in the editor toolbar.
 
 == Changelog ==
+
+= 1.2.8 =
+* Fixed compatibility with latest developments in core related to the block editor and the Classic Editor plugin
 
 = 1.2.7 =
 * Fixed warning that appeared when Elementor was active.
