@@ -298,6 +298,5 @@ class Gridable_Public {
 
 	}
 
-
 }
 

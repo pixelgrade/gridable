@@ -35,7 +35,7 @@ class Gridable {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      Gridable_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      Gridable_Loader $loader Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -44,7 +44,7 @@ class Gridable {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $gridable    The string used to uniquely identify this plugin.
+	 * @var      string $gridable The string used to uniquely identify this plugin.
 	 */
 	protected $gridable;
 
@@ -53,7 +53,7 @@ class Gridable {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
+	 * @var      string $version The current version of the plugin.
 	 */
 	protected $version;
 
@@ -64,13 +64,14 @@ class Gridable {
 	 * Load the dependencies, define the locale, and set the hooks for the admin area and
 	 * the public-facing side of the site.
 	 *
-	 * @since    1.0.0
 	 * @param string $version The current plugin version.
+	 *
+	 * @since    1.0.0
 	 */
-	public function __construct( $version = '1.0.0') {
+	public function __construct( $version = '1.0.0' ) {
 
 		$this->gridable = 'gridable';
-		$this->version = $version;
+		$this->version  = $version;
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -133,42 +134,41 @@ class Gridable {
 	 * @return bool
 	 */
 	protected function is_gutenberg_active() {
-	// Gutenberg plugin is installed and activated.
-	    $gutenberg = !(false === has_filter('replace_editor', 'gutenberg_init'));
+		// Gutenberg plugin is installed and activated.
+		$gutenberg = ! ( false === has_filter( 'replace_editor', 'gutenberg_init' ) );
 
-	    // Block editor since 5.0.
-	    $block_editor = version_compare($GLOBALS['wp_version'], '5.0-beta', '>');
+		// Block editor since 5.0.
+		$block_editor = version_compare( $GLOBALS['wp_version'], '5.0-beta', '>' );
 
-	    if (!$gutenberg && !$block_editor) {
-	      return false;
-	    }
+		if ( ! $gutenberg && ! $block_editor ) {
+			return false;
+		}
 
-	    if ($this->is_classic_editor_plugin_active()) {
-	      $editor_option       = get_option('classic-editor-replace');
-	      $block_editor_active = array('no-replace', 'block');
+		if ( $this->is_classic_editor_plugin_active() ) {
+			$editor_option = get_option( 'classic-editor-replace' );
+			$block_editor_active = array( 'no-replace', 'block' );
 
-	      return in_array($editor_option, $block_editor_active, true);
-	    }
+			return in_array( $editor_option, $block_editor_active, true );
+		}
 
-	    return true;
-	  }
+		return true;
+	}
 
-	  /**
-	   * Check if Classic Editor plugin is active.
-	   *
-	   * @return bool
-	   */
-	  function is_classic_editor_plugin_active()
-	  {
-	    if (!function_exists('is_plugin_active')) {
-	      include_once ABSPATH . 'wp-admin/includes/plugin.php';
-	    }
+	/**
+	 * Check if Classic Editor plugin is active.
+	 *
+	 * @return bool
+	 */
+	protected function is_classic_editor_plugin_active() {
+		if ( ! function_exists( 'is_plugin_active' ) ) {
+			include_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
 
-	    if (is_plugin_active('classic-editor/classic-editor.php')) {
-	      return true;
-	    }
+		if ( is_plugin_active( 'classic-editor/classic-editor.php' ) ) {
+			return true;
+		}
 
-	    return false;
+		return false;
 	}
 
 	/**
@@ -201,12 +201,12 @@ class Gridable {
 
 		add_action( 'media_buttons', array( $plugin_admin, 'add_media_button' ), 15 );
 
-		//Check if Gutenberg is active and if we are in the Editor screen
+		// Check if Gutenberg is active and if we are in the Editor screen
 		if ( ! $this->is_gutenberg_active() && is_admin() ) {
 			add_filter( 'mce_external_plugins', array( $plugin_admin, 'add_tinymce_plugin' ) );
 		}
 
-		add_filter( 'wp_editor_settings',  array( $plugin_admin, 'change_tinymce_settings' ) );
+		add_filter( 'wp_editor_settings', array( $plugin_admin, 'change_tinymce_settings' ) );
 		add_action( 'admin_footer', array( $plugin_admin, 'print_tinymce_templates' ) );
 
 		// also inside the wp-editor we cannot localize parameters, so we simply output the javascript code
@@ -241,8 +241,11 @@ class Gridable {
 		if ( ! is_admin() ) {
 			add_filter( 'gridable_the_column_content', array( $plugin_public, 'gridable_fix_lost_p_tags' ), 10, 2 );
 
-			if ( true === apply_filters('gridable_add_empty_column_class', true ) ) {
-				add_filter( 'gridable_column_class', array( $plugin_public, 'gridable_add_empty_column_class' ), 10, 4 );
+			if ( true === apply_filters( 'gridable_add_empty_column_class', true ) ) {
+				add_filter( 'gridable_column_class', array(
+					$plugin_public,
+					'gridable_add_empty_column_class',
+				), 10, 4 );
 			}
 
 		}
@@ -261,8 +264,8 @@ class Gridable {
 	 * The name of the plugin used to uniquely identify it within the context of
 	 * WordPress and to define internationalization functionality.
 	 *
-	 * @since     1.0.0
 	 * @return    string    The name of the plugin.
+	 * @since     1.0.0
 	 */
 	public function get_gridable() {
 		return $this->gridable;
@@ -271,8 +274,8 @@ class Gridable {
 	/**
 	 * The reference to the class that orchestrates the hooks with the plugin.
 	 *
-	 * @since     1.0.0
 	 * @return    Gridable_Loader    Orchestrates the hooks of the plugin.
+	 * @since     1.0.0
 	 */
 	public function get_loader() {
 		return $this->loader;
@@ -281,8 +284,8 @@ class Gridable {
 	/**
 	 * Retrieve the version number of the plugin.
 	 *
-	 * @since     1.0.0
 	 * @return    string    The version number of the plugin.
+	 * @since     1.0.0
 	 */
 	public function get_version() {
 		return $this->version;
