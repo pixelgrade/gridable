@@ -75,7 +75,9 @@ class Gridable {
 
 		$this->load_dependencies();
 		$this->set_locale();
-		$this->define_admin_hooks();
+
+		// We need to define the admin hooks (and their conditions) later to allow the theme to have its say (like in the case of the Classic Editor bundled with Pixelgrade Care).
+		add_action( 'after_setup_theme', array( $this, 'define_admin_hooks' ), 3 );
 		$this->define_public_hooks();
 
 	}
@@ -160,6 +162,10 @@ class Gridable {
 	 * @return bool
 	 */
 	protected function is_classic_editor_plugin_active() {
+		if ( class_exists( 'Classic_Editor') && method_exists('Classic_Editor', 'init_actions' ) ) {
+			return true;
+		}
+
 		if ( ! function_exists( 'is_plugin_active' ) ) {
 			include_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
@@ -195,7 +201,7 @@ class Gridable {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	protected function define_admin_hooks() {
+	public function define_admin_hooks() {
 
 		$plugin_admin = new Gridable_Admin( $this->get_gridable(), $this->get_version() );
 
