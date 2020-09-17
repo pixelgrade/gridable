@@ -3,7 +3,7 @@
  * Plugin Name:       Gridable
  * Plugin URI:        https://pixelgrade.com/
  * Description:       A simple and intuitive tool for organizing your content into columns and rows.
- * Version:           1.2.8
+ * Version:           1.2.9
  * Author:            Pixelgrade
  * Author URI:        https://pixelgrade.com/
  * License:           GPL-2.0+
@@ -11,7 +11,7 @@
  * Text Domain:       gridable
  * Domain Path:       /languages
  * Requires at least: 4.9.9
- * Tested up to: 5.4.0
+ * Tested up to: 5.5.1
  * Requires PHP: 5.4.0
  */
 
@@ -58,7 +58,7 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-gridable.php';
  */
 function run_gridable() {
 	global $gridable_plugin;
-	$gridable_plugin = new Gridable( '1.2.8');
+	$gridable_plugin = new Gridable( '1.2.9');
 	$gridable_plugin->run();
 
 }
