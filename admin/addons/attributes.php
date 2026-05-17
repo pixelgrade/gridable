@@ -1,5 +1,9 @@
 <?php
-// print option html
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+// Print option HTML templates used by the Classic Editor media modal.
 function gridable_default_attributes_modal_options_templates() { ?>
 	<script type="text/html" id="tmpl-gridable-row-option-color">
 		<fieldset class="colorpicker">

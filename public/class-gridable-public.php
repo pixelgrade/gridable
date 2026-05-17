@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * The public-facing functionality of the plugin.
  *
@@ -68,9 +72,9 @@ class Gridable_Public {
 	public function add_row_shortcode( $atts, $content ) {
 		$tag = 'row';
 
-		$atts = shortcode_atts( $atts, array(
+		$atts = array_merge( (array) $atts, shortcode_atts( array(
 			'cols_nr' => '',
-		) );
+		), (array) $atts, $tag ) );
 
 		$cols_nr = 1;
 
@@ -82,10 +86,7 @@ class Gridable_Public {
 
 		$classes = array_map( 'esc_attr', $classes );
 
-		$class = '';
-		if ( ! empty( $classes ) ) {
-			$class = 'class="' . join( ' ', array_unique( $classes ) ) . '"';
-		}
+		$class = join( ' ', array_unique( $classes ) );
 
 		// get sh template
 		$template = $this->get_localed_sh_templated( $tag );
@@ -109,6 +110,10 @@ class Gridable_Public {
 	public function add_column_shortcode( $atts, $content ) {
 		$tag = 'col';
 
+		$atts = array_merge( (array) $atts, shortcode_atts( array(
+			'size' => '',
+		), (array) $atts, $tag ) );
+
 		$size = 1;
 		if ( ! empty( $atts['size'] ) ) {
 			$size = (int) $atts['size'];
@@ -120,10 +125,7 @@ class Gridable_Public {
 
 		$classes = array_map( 'esc_attr', $classes );
 
-		$class = '';
-		if ( ! empty( $classes ) ) {
-			$class = 'class="' . join( ' ', array_unique( $classes ) ) . '"';
-		}
+		$class = join( ' ', array_unique( $classes ) );
 
 		// get sh template
 		$template = $this->get_localed_sh_templated( $tag );
@@ -141,7 +143,7 @@ class Gridable_Public {
 	 *
 	 * @return bool|string
 	 */
-	function get_localed_sh_templated( $tag ) {
+	public function get_localed_sh_templated( $tag ) {
 
 		if ( empty( $tag ) ) {
 			return false;
@@ -150,12 +152,12 @@ class Gridable_Public {
 		/**
 		 * Template localization between plugin and theme
 		 */
-		$theme_path = apply_filters( 'gridable_theme_templates_path_filter', "template-parts/gridable/", $tag );
+		$theme_path = apply_filters( 'gridable_theme_templates_path_filter', 'template-parts/gridable/', $tag );
 		$theme_path = $theme_path . $tag . '.php';
 		$located    = locate_template( $theme_path, false, false );
 
 		if ( ! $located ) {
-			$located =  dirname( __FILE__ ) . '/partials/' . $tag . '.php';
+			$located = dirname( __FILE__ ) . '/partials/' . $tag . '.php';
 		}
 
 		return $located;
@@ -194,23 +196,23 @@ class Gridable_Public {
 	 *
 	 * @return string
 	 */
-	function gridable_fix_lost_p_tags( $content, $atts ){
-		$first_4_chars = substr($content, 0, 4);
+	public function gridable_fix_lost_p_tags( $content, $atts ) {
+		$first_4_chars = substr( $content, 0, 4 );
 
-		$last_3_chars = substr($content, -3, 4);
+		$last_3_chars = substr( $content, -3, 4 );
 
 		if ( '</p>' === $first_4_chars ) {
-			$content = substr($content, 5);
+			$content = substr( $content, 5 );
 		}
 
 		if ( '<p>' === $last_3_chars ) {
-			$content = substr($content, 0, -4);
+			$content = substr( $content, 0, -4 );
 		}
 
 		return $content;
 	}
 
-	function gridable_add_empty_column_class( $classes, $size, $atts, $content ){
+	public function gridable_add_empty_column_class( $classes, $size, $atts, $content ) {
 
 		if ( empty( $content ) ) {
 			$classes[] = 'empty_column';
@@ -225,10 +227,10 @@ class Gridable_Public {
 	 *
 	 * @return mixed
 	 */
-	function parse_content_for_nested_rows( $content, $rec = false ){
+	public function parse_content_for_nested_rows( $content, $rec = false ) {
 		$rows_matches = array();
 
-		preg_match_all( '#' . get_shortcode_regex( array('row') ) . '#ims' , $content, $rows_matches);
+		preg_match_all( '#' . get_shortcode_regex( array( 'row' ) ) . '#ims', $content, $rows_matches );
 
 		/**
 		 * Basically in the first group of matches are the plain row texts
@@ -237,7 +239,7 @@ class Gridable_Public {
 		if ( ! empty( $rows_matches[0] ) ) {
 
 			// iterate through each row and check if anyone has a nested row
-			foreach ($rows_matches[0] as $key => $match ) {
+			foreach ( $rows_matches[0] as $key => $match ) {
 
 				$row_pos = strpos( $rows_matches[0][$key], '[row cols_nr="', 5 );
 
@@ -246,7 +248,7 @@ class Gridable_Public {
 					// make a clone of the original row
 					$temp_row = $match;
 					// if this row has an inner row, let's render it and replace it in the clone row
-					preg_match(  '#' . get_shortcode_regex( array('row') ) . '#', $match, $smatch);
+					preg_match( '#' . get_shortcode_regex( array( 'row' ) ) . '#', $match, $smatch );
 					if ( substr_count( $smatch[0], '[row ' ) > 1 ) {
 						$inner_rows = array();
 
@@ -255,18 +257,18 @@ class Gridable_Public {
 						$remove_starting_row = '~\[' . $smatch[1] . $smatch[2] . $smatch[3] . '\]~';
 						$temp_content = preg_replace( $remove_starting_row, '', $smatch[0], 1 );
 
-						preg_match_all( '#' . get_shortcode_regex( array( 'row' ) ) . '#ms' , $temp_content, $inner_rows);
+						preg_match_all( '#' . get_shortcode_regex( array( 'row' ) ) . '#ms', $temp_content, $inner_rows );
 
 						// there may be more than one inner row, catch'em all
-						foreach ($inner_rows[0] as $inner_row ) {
-							$temp_row = str_replace( $inner_row, do_shortcode($inner_row), $temp_row );
+						foreach ( $inner_rows[0] as $inner_row ) {
+							$temp_row = str_replace( $inner_row, do_shortcode( $inner_row ), $temp_row );
 						}
 					}
 
 					// now we have a [row] content <div class="row"></div>
 					// the closing [/row] is definetly somewhere after
-					$content = str_replace( $match, $temp_row, $content);
-				} else if ( ! $rec ) {
+					$content = str_replace( $match, $temp_row, $content );
+				} elseif ( ! $rec ) {
 					$content = $this->parse_content_for_nested_rows( $content, true );
 				}
 			}
@@ -298,5 +300,39 @@ class Gridable_Public {
 
 	}
 
-}
+	/**
+	 * Sanitizes attribute fragments provided by Gridable extension filters.
+	 *
+	 * @since 1.2.10
+	 *
+	 * @param string $attributes Raw attribute fragment.
+	 * @return string Sanitized attribute fragment.
+	 */
+	public function sanitize_attribute_fragment( $attributes ) {
+		$attributes = trim( (string) $attributes );
 
+		if ( '' === $attributes ) {
+			return '';
+		}
+
+		$allowed_html = array(
+			'div' => array(
+				'aria-*' => true,
+				'class'  => true,
+				'data-*' => true,
+				'id'     => true,
+				'role'   => true,
+				'style'  => true,
+				'title'  => true,
+			),
+		);
+		$sanitized    = wp_kses( '<div ' . $attributes . '></div>', $allowed_html );
+
+		if ( preg_match( '/^<div\\s+([^>]*)><\\/div>$/', $sanitized, $matches ) ) {
+			return $matches[1];
+		}
+
+		return '';
+	}
+
+}

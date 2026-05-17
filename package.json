@@ -2,7 +2,7 @@
   "name": "gridable",
   "repository": "git+https://github.com/pixelgrade/gridable.git",
   "author": "Pixelgrade",
-  "license": "GPL-2.0+",
+  "license": "GPL-2.0-or-later",
   "keywords": [
     "Pixelgrade",
     "Grid"
@@ -14,7 +14,7 @@
     "gulp-autoprefixer": "^6.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-exec": "^3.0.2",
-    "gulp-help": "github:chmontgomery/gulp-help#gulp4",
+    "gulp-help": "git+https://github.com/chmontgomery/gulp-help.git#gulp4",
     "gulp-load-plugins": "*",
     "gulp-rsync": "*",
     "gulp-rtlcss": "^1.2.0",

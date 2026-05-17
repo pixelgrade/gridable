@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Define the internationalization functionality
  *
@@ -33,13 +37,7 @@ class Gridable_i18n {
 	 * @since    1.0.0
 	 */
 	public function load_plugin_textdomain() {
-
-		load_plugin_textdomain(
-			'gridable',
-			false,
-			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
-		);
-
+		// WordPress.org loads plugin language packs for this slug automatically.
 	}
 
 

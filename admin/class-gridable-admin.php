@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -58,10 +62,15 @@ class Gridable_Admin {
 		$icon = '<span class="wp-media-buttons-icon dashicons dashicons-layout" style="font-size:16px;margin-top:-2px;"></span>';
 
 		printf( '<a href="#" class="button gridable-insert-row-button" id="%s" data-editor="%s" title="%s">%s %s</a>',
-			'gridable-add-row-button-' . $editor_id,
+			esc_attr( 'gridable-add-row-button-' . $editor_id ),
 			esc_attr( $editor_id ),
 			esc_attr__( 'Add Row', 'gridable' ),
-			$icon,
+			wp_kses( $icon, array(
+				'span' => array(
+					'class' => true,
+					'style' => true,
+				),
+			) ),
 			esc_html__( 'Add Row', 'gridable' )
 		);
 
@@ -69,11 +78,17 @@ class Gridable_Admin {
 		 * Enqueue the editor script only when there is an editor on page.
 		 * We ditch `admin_enqueue_scripts` intentionally since the editor can appear on non-edit pages like theme options
 		 */
-		wp_register_script( 'select2', plugin_dir_url( __FILE__ ) . 'js/select2.min.js', array( 'jquery' ), $this->version );
+		wp_register_script( 'select2', plugin_dir_url( __FILE__ ) . 'js/select2.min.js', array( 'jquery' ), $this->version, true );
 
 		wp_enqueue_script( 'gridable-add-row-button', plugin_dir_url( __FILE__ ) . 'js/add-row-button.js', array(
+			'backbone',
 			'jquery',
+			'media-editor',
+			'media-views',
+			'quicktags',
+			'shortcode',
 			'wp-color-picker',
+			'wp-util',
 			'select2',
 		), $this->version, true );
 
@@ -116,13 +131,13 @@ class Gridable_Admin {
 		$row_classes = array(
 			'gridable',
 			'gridable--grid',
-			'grid'
+			'grid',
 		);
 		$col_classes = array(
-			'grid__item'
+			'grid__item',
 		); ?>
-<script type="text/html" id="tmpl-gridable-grider-row"><section contenteditable="false" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_row_classes', $row_classes ) ); ?>" {{{data.atts}}} data-gridable-row="1" data-mce-resize="false" data-mce-placeholder="1">{{{data.content}}}</section></script>
-<script type="text/html" id="tmpl-gridable-grider-col"><section unselectable="true" contenteditable="true" class="{{data.classes}} <?php echo join( ' ', apply_filters( 'gridable_mce_sh_col_classes', $col_classes ) ); ?>" {{{data.atts}}} data-mce-resize="false" data-mce-placeholder="1">{{{data.content}}}</section></script>
+<script type="text/html" id="tmpl-gridable-grider-row"><section contenteditable="false" class="{{data.classes}} <?php echo esc_attr( implode( ' ', array_map( 'sanitize_html_class', apply_filters( 'gridable_mce_sh_row_classes', $row_classes ) ) ) ); ?>" {{{data.atts}}} data-gridable-row="1" data-mce-resize="false" data-mce-placeholder="1">{{{data.content}}}</section></script>
+<script type="text/html" id="tmpl-gridable-grider-col"><section unselectable="true" contenteditable="true" class="{{data.classes}} <?php echo esc_attr( implode( ' ', array_map( 'sanitize_html_class', apply_filters( 'gridable_mce_sh_col_classes', $col_classes ) ) ) ); ?>" {{{data.atts}}} data-mce-resize="false" data-mce-placeholder="1">{{{data.content}}}</section></script>
 	<?php
 		do_action( 'gridable_print_row_options_templates' );
 		do_action( 'gridable_print_column_options_templates' );
@@ -150,8 +165,8 @@ class Gridable_Admin {
 
 	public function styles_scripts() { ?>
 		<script type="text/javascript">
-            var gridable_params = {
-                l10n: JSON.parse('<?php echo json_encode( apply_filters( 'gridable_editor_l10n_labels', array(
+			window.gridable_params = window.gridable_params || {};
+			window.gridable_params.l10n = <?php echo wp_json_encode( apply_filters( 'gridable_editor_l10n_labels', array(
 					'remove_row'         => esc_html__( 'Remove Row', 'gridable' ),
 					'remove_column'      => esc_html__( 'Remove Column', 'gridable' ),
 					'edit_row'           => esc_html__( 'Edit Row Options', 'gridable' ),
@@ -160,8 +175,7 @@ class Gridable_Admin {
 					'new_column_content' => esc_html__( 'Content', 'gridable' ),
 					'column'             => esc_html__( 'Column', 'gridable' ),
 					'row'                => esc_html__( 'Row', 'gridable' ),
-				) ) ) ?>')
-            };
+				) ) ); ?>;
 		</script>
 		<?php
 	}

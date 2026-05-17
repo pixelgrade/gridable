@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * Register all actions and filters for the plugin
  *
@@ -102,7 +106,7 @@ class Gridable_Loader {
 			'component'     => $component,
 			'callback'      => $callback,
 			'priority'      => $priority,
-			'accepted_args' => $accepted_args
+			'accepted_args' => $accepted_args,
 		);
 
 		return $hooks;

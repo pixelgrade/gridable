@@ -1,18 +1,20 @@
-=== Gridable - The Missing Grid Content Editor ===
+=== Gridable ===
 Contributors: pixelgrade, vlad.olaru, euthelup, babbardel, razvanonofrei
-Tags: grid, preview, render, row, column, inline-edit, editor, gutenberg
-Requires at least: 4.9.9
-Tested up to: 5.5.1
-Stable tag: 1.2.9
-Requires PHP: 5.4.0
-License: GPLv2 or later
+Tags: grid, columns, rows, classic-editor, tinymce
+Requires at least: 5.9.0
+Tested up to: 7.0
+Stable tag: 1.2.10
+Requires PHP: 7.4
+License: GPL-2.0-or-later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Gridable — The Missing Grid Content Editor
+Gridable adds row and column layout controls to the WordPress Classic Editor.
 
 == Description ==
 
-Gridable is a witty solution for WordPress lovers who want to create flexible and reliable grids. Being smoothly integrated into the **WordPress's Editor** interface, our plugin becomes a suitable choice for everyone: from people with a technical background to those who are non-techy. It simplifies the entire process of building an extensive range of grids that fit perfectly into various environments.
+Gridable is a witty solution for WordPress lovers who want to create flexible and reliable grids in the Classic Editor. Being smoothly integrated into the **WordPress Classic Editor** interface, our plugin becomes a suitable choice for everyone: from people with a technical background to those who are non-techy. It simplifies the entire process of building an extensive range of grids that fit perfectly into various environments.
+
+Gridable is intended for Classic Editor and TinyMCE workflows. It does not add a block editor interface.
 
 Gridable allows you to create an adaptable and fully responsive grid in no time. Thanks to options such as row spacing top and bottom, row gutter and row background color everything comes in the right place without effort. Imagine playing around with bold approaches for different sections of your website through a grid system that puts convenience on top of the digital experience.
 
@@ -37,6 +39,11 @@ We invest a lot of time and energy into developing Gridable in a way that makes 
 3. Enjoy the "Add Row" button in the editor toolbar.
 
 == Changelog ==
+
+= 1.2.10 =
+* Updated WordPress compatibility metadata for WordPress 7.0.
+* Clarified Classic Editor support scope.
+* Fixed Plugin Check errors in Gridable's release package.
 
 = 1.2.9 =
 * Fixed compatibility with latest developments in core related to the block editor and the Classic Editor plugin

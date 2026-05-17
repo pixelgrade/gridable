@@ -1,4 +1,8 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * This is the col template output
  *
@@ -17,16 +21,16 @@
  */
 
 do_action( 'gridable_before_column_render' ); ?>
-	<div <?php echo $class ?> <?php echo apply_filters( 'gridable_column_attributes', '', $atts, $content ); ?>>
+	<div class="<?php echo esc_attr( $class ); ?>" <?php echo wp_kses_data( $this->sanitize_attribute_fragment( apply_filters( 'gridable_column_attributes', '', $atts, $content ) ) ); ?>>
 		<?php
 		do_action( 'gridable_before_column_content_render', $atts );
 
-		$column_content = apply_filters( 'gridable_the_column_content', $content, $atts );
+		$gridable_column_content = apply_filters( 'gridable_the_column_content', $content, $atts );
 
 		if ( apply_filters( 'gridable_render_shortcodes_in_column', true, $content, $atts ) ) {
-			echo do_shortcode( $column_content );
+			echo wp_kses_post( do_shortcode( $gridable_column_content ) );
 		} else {
-			echo $column_content;
+			echo wp_kses_post( $gridable_column_content );
 		}
 
 		do_action( 'gridable_after_column_content_render' ); ?>

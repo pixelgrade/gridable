@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * The file that defines the core plugin class
  *
@@ -162,7 +166,7 @@ class Gridable {
 	 * @return bool
 	 */
 	protected function is_classic_editor_plugin_active() {
-		if ( class_exists( 'Classic_Editor') && method_exists('Classic_Editor', 'init_actions' ) ) {
+		if ( class_exists( 'Classic_Editor' ) && method_exists( 'Classic_Editor', 'init_actions' ) ) {
 			return true;
 		}
 
@@ -207,8 +211,10 @@ class Gridable {
 
 		add_action( 'media_buttons', array( $plugin_admin, 'add_media_button' ), 15 );
 
-		// Check if Gutenberg is active and if we are in the Editor screen
-		if ( ! $this->is_gutenberg_active() && is_admin() ) {
+		// Gridable's editing UI is intentionally limited to Classic Editor/TinyMCE.
+		// Register the TinyMCE plugin whenever admin TinyMCE initializes so Classic Editor
+		// per-post switching works even when the global default editor is the block editor.
+		if ( is_admin() ) {
 			add_filter( 'mce_external_plugins', array( $plugin_admin, 'add_tinymce_plugin' ) );
 		}
 
