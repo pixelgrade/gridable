@@ -2,7 +2,7 @@
 Contributors: pixelgrade, vlad.olaru, euthelup, babbardel, razvanonofrei
 Tags: grid, columns, rows, classic-editor, tinymce
 Requires at least: 5.9.0
-Tested up to: 7.0
+Tested up to: 7.1
 Stable tag: 1.2.10
 Requires PHP: 7.4
 License: GPL-2.0-or-later
