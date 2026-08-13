@@ -3,7 +3,7 @@ Contributors: pixelgrade, vlad.olaru, euthelup, babbardel, razvanonofrei
 Tags: grid, columns, rows, classic-editor, tinymce
 Requires at least: 5.9.0
 Tested up to: 7.1
-Stable tag: 1.2.10
+Stable tag: 1.2.11
 Requires PHP: 7.4
 License: GPL-2.0-or-later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -39,6 +39,9 @@ We invest a lot of time and energy into developing Gridable in a way that makes 
 3. Enjoy the "Add Row" button in the editor toolbar.
 
 == Changelog ==
+
+= 1.2.11 =
+* Declared compatibility with WordPress 7.1.
 
 = 1.2.10 =
 * Updated WordPress compatibility metadata for WordPress 7.0.
