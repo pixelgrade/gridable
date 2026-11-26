@@ -11,7 +11,7 @@
  * Text Domain:       gridable
  * Domain Path:       /languages
  * Requires at least: 5.9.0
- * Tested up to: 7.1
+ * Tested up to: 7.2
  * Requires PHP: 7.4
  */
 
